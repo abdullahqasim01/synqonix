@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { WorkspaceGithub } from "@/components/github/workspace-github";
 import { useWorkspace } from "@/components/workspace/workspace-context";
 import { Button } from "@/components/ui/button";
 import { Alert, Card, Field, Input } from "@/components/ui/form";
@@ -67,6 +68,7 @@ export default function WorkspaceSettingsPage() {
           {isAdmin && <Button type="submit" className="w-fit">Save</Button>}
         </form>
       </Card>
+      <Suspense><WorkspaceGithub /></Suspense>
       {isAdmin && <AuditLog workspaceId={workspace.id} />}
       <Card>
         <h2 className="mb-3 font-medium">Danger zone</h2>

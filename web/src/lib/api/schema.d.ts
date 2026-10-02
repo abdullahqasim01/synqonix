@@ -1727,6 +1727,167 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/github": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubController_status_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github/install-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Where to send the browser to install the GitHub App on an account. Workspace admins only. */
+        get: operations["GithubController_installUrl_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github/installations/{installationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["GithubController_removeInstallation_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github/contributors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubController_contributors_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github/contributors/{login}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["GithubController_setContributor_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/repos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubProjectController_list_v1"];
+        put?: never;
+        post: operations["GithubProjectController_link_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubProjectController_available_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/repos/{linkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["GithubProjectController_unlink_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["GithubProjectController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/github": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubTaskController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/github/branches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GithubTaskController_createBranch_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2885,6 +3046,140 @@ export interface components {
             projectId: string;
             /** @description Defaults to the first line of the message. */
             title?: string;
+        };
+        GithubInstallationDto: {
+            id: string;
+            accountLogin: string;
+            accountType: string;
+            suspended: boolean;
+            repositoryCount: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        GithubStatusDto: {
+            /** @description False until the server has GitHub App credentials; the rest of the integration is inert. */
+            configured: boolean;
+            installations: components["schemas"]["GithubInstallationDto"][];
+        };
+        GithubInstallUrlDto: {
+            url: string;
+        };
+        ContributorDto: {
+            login: string;
+            userId: string | null;
+        };
+        SetContributorDto: {
+            userId: string | null;
+        };
+        LinkedRepoDto: {
+            id: string;
+            projectId: string;
+            installationId: string;
+            githubRepoId: string;
+            fullName: string;
+            htmlUrl: string;
+            defaultBranch: string;
+            autoTransition: boolean;
+            prOpenedStatusId: string | null;
+            prMergedStatusId: string | null;
+            /** @description The status actually used for "opened" (the configured one, or the default), or null if there is none. */
+            effectiveOpenedStatusId: string | null;
+            effectiveMergedStatusId: string | null;
+            importIssues: boolean;
+            syncIssues: boolean;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AvailableRepoDto: {
+            installationId: string;
+            githubRepoId: string;
+            fullName: string;
+            htmlUrl: string;
+            defaultBranch: string;
+            private: boolean;
+            /** @description Whether this project already has it. */
+            linked: boolean;
+        };
+        LinkRepoDto: {
+            installationId: string;
+            githubRepoId: string;
+        };
+        UpdateLinkedRepoDto: {
+            autoTransition?: boolean;
+            /** @description Status to move tasks to when a pull request opens; null restores the default. */
+            prOpenedStatusId?: string | null;
+            prMergedStatusId?: string | null;
+            importIssues?: boolean;
+            syncIssues?: boolean;
+        };
+        TaskRepoDto: {
+            id: string;
+            fullName: string;
+            defaultBranch: string;
+        };
+        GithubBranchDto: {
+            id: string;
+            repo: string;
+            name: string;
+            url: string;
+            deleted: boolean;
+        };
+        GithubCommitDto: {
+            sha: string;
+            repo: string;
+            /** @description First line of the message. */
+            message: string;
+            url: string;
+            authorLogin: string | null;
+            /** @description The workspace member this GitHub login is mapped to, if any. */
+            authorName: string | null;
+            /** Format: date-time */
+            committedAt: string;
+        };
+        GithubPullRequestDto: {
+            id: string;
+            repo: string;
+            number: number;
+            title: string;
+            /** @enum {string} */
+            state: "OPEN" | "CLOSED" | "MERGED";
+            draft: boolean;
+            url: string;
+            authorLogin: string;
+            authorName: string | null;
+            headBranch: string;
+            baseBranch: string;
+            /** @enum {string|null} */
+            reviewState: "APPROVED" | "CHANGES_REQUESTED" | "COMMENTED" | null;
+            /** @enum {string|null} */
+            ci: "PENDING" | "SUCCESS" | "FAILURE" | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        GithubIssueDto: {
+            id: string;
+            repo: string;
+            number: number;
+            title: string;
+            /** @enum {string} */
+            state: "OPEN" | "CLOSED";
+            url: string;
+        };
+        TaskGithubDto: {
+            /** @description Repositories linked to the task's project, for creating branches. */
+            repos: components["schemas"]["TaskRepoDto"][];
+            /** @description Name suggested for a new branch. */
+            suggestedBranch: string;
+            branches: components["schemas"]["GithubBranchDto"][];
+            commits: components["schemas"]["GithubCommitDto"][];
+            pullRequests: components["schemas"]["GithubPullRequestDto"][];
+            issues: components["schemas"]["GithubIssueDto"][];
+        };
+        CreateBranchDto: {
+            repoId: string;
+            name?: string;
+            /** @description Branch to start from; defaults to the repository's default branch. */
+            from?: string;
         };
     };
     responses: never;
@@ -6506,6 +6801,281 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    GithubController_status_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GithubStatusDto"];
+                };
+            };
+        };
+    };
+    GithubController_installUrl_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GithubInstallUrlDto"];
+                };
+            };
+        };
+    };
+    GithubController_removeInstallation_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                installationId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GithubController_contributors_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributorDto"][];
+                };
+            };
+        };
+    };
+    GithubController_setContributor_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                login: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetContributorDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributorDto"];
+                };
+            };
+        };
+    };
+    GithubProjectController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedRepoDto"][];
+                };
+            };
+        };
+    };
+    GithubProjectController_link_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkRepoDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedRepoDto"];
+                };
+            };
+        };
+    };
+    GithubProjectController_available_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AvailableRepoDto"][];
+                };
+            };
+        };
+    };
+    GithubProjectController_unlink_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                linkId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GithubProjectController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                linkId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLinkedRepoDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedRepoDto"];
+                };
+            };
+        };
+    };
+    GithubTaskController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskGithubDto"];
+                };
+            };
+        };
+    };
+    GithubTaskController_createBranch_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBranchDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskGithubDto"];
                 };
             };
         };

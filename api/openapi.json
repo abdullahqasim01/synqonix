@@ -7449,6 +7449,546 @@
           "messages"
         ]
       }
+    },
+    "/api/v1/workspaces/{workspaceId}/github": {
+      "get": {
+        "operationId": "GithubController_status_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/github/install-url": {
+      "get": {
+        "operationId": "GithubController_installUrl_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubInstallUrlDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Where to send the browser to install the GitHub App on an account. Workspace admins only.",
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/github/installations/{installationId}": {
+      "delete": {
+        "operationId": "GithubController_removeInstallation_v1",
+        "parameters": [
+          {
+            "name": "installationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/github/contributors": {
+      "get": {
+        "operationId": "GithubController_contributors_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContributorDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/github/contributors/{login}": {
+      "put": {
+        "operationId": "GithubController_setContributor_v1",
+        "parameters": [
+          {
+            "name": "login",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetContributorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContributorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/repos": {
+      "get": {
+        "operationId": "GithubProjectController_list_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkedRepoDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      },
+      "post": {
+        "operationId": "GithubProjectController_link_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkRepoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkedRepoDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/available": {
+      "get": {
+        "operationId": "GithubProjectController_available_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AvailableRepoDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/repos/{linkId}": {
+      "patch": {
+        "operationId": "GithubProjectController_update_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "linkId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLinkedRepoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkedRepoDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      },
+      "delete": {
+        "operationId": "GithubProjectController_unlink_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "linkId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/github": {
+      "get": {
+        "operationId": "GithubTaskController_get_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskGithubDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/github/branches": {
+      "post": {
+        "operationId": "GithubTaskController_createBranch_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBranchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskGithubDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "github"
+        ]
+      }
     }
   },
   "info": {
@@ -11765,6 +12305,515 @@
         },
         "required": [
           "projectId"
+        ]
+      },
+      "GithubInstallationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountLogin": {
+            "type": "string"
+          },
+          "accountType": {
+            "type": "string"
+          },
+          "suspended": {
+            "type": "boolean"
+          },
+          "repositoryCount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "accountLogin",
+          "accountType",
+          "suspended",
+          "repositoryCount",
+          "createdAt"
+        ]
+      },
+      "GithubStatusDto": {
+        "type": "object",
+        "properties": {
+          "configured": {
+            "type": "boolean",
+            "description": "False until the server has GitHub App credentials; the rest of the integration is inert."
+          },
+          "installations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GithubInstallationDto"
+            }
+          }
+        },
+        "required": [
+          "configured",
+          "installations"
+        ]
+      },
+      "GithubInstallUrlDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "ContributorDto": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "login",
+          "userId"
+        ]
+      },
+      "SetContributorDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "userId"
+        ]
+      },
+      "LinkedRepoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "installationId": {
+            "type": "string"
+          },
+          "githubRepoId": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "htmlUrl": {
+            "type": "string"
+          },
+          "defaultBranch": {
+            "type": "string"
+          },
+          "autoTransition": {
+            "type": "boolean"
+          },
+          "prOpenedStatusId": {
+            "type": "string",
+            "nullable": true
+          },
+          "prMergedStatusId": {
+            "type": "string",
+            "nullable": true
+          },
+          "effectiveOpenedStatusId": {
+            "type": "string",
+            "nullable": true,
+            "description": "The status actually used for \"opened\" (the configured one, or the default), or null if there is none."
+          },
+          "effectiveMergedStatusId": {
+            "type": "string",
+            "nullable": true
+          },
+          "importIssues": {
+            "type": "boolean"
+          },
+          "syncIssues": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "installationId",
+          "githubRepoId",
+          "fullName",
+          "htmlUrl",
+          "defaultBranch",
+          "autoTransition",
+          "prOpenedStatusId",
+          "prMergedStatusId",
+          "effectiveOpenedStatusId",
+          "effectiveMergedStatusId",
+          "importIssues",
+          "syncIssues",
+          "createdAt"
+        ]
+      },
+      "AvailableRepoDto": {
+        "type": "object",
+        "properties": {
+          "installationId": {
+            "type": "string"
+          },
+          "githubRepoId": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "htmlUrl": {
+            "type": "string"
+          },
+          "defaultBranch": {
+            "type": "string"
+          },
+          "private": {
+            "type": "boolean"
+          },
+          "linked": {
+            "type": "boolean",
+            "description": "Whether this project already has it."
+          }
+        },
+        "required": [
+          "installationId",
+          "githubRepoId",
+          "fullName",
+          "htmlUrl",
+          "defaultBranch",
+          "private",
+          "linked"
+        ]
+      },
+      "LinkRepoDto": {
+        "type": "object",
+        "properties": {
+          "installationId": {
+            "type": "string"
+          },
+          "githubRepoId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "installationId",
+          "githubRepoId"
+        ]
+      },
+      "UpdateLinkedRepoDto": {
+        "type": "object",
+        "properties": {
+          "autoTransition": {
+            "type": "boolean"
+          },
+          "prOpenedStatusId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Status to move tasks to when a pull request opens; null restores the default."
+          },
+          "prMergedStatusId": {
+            "type": "string",
+            "nullable": true
+          },
+          "importIssues": {
+            "type": "boolean"
+          },
+          "syncIssues": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TaskRepoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "defaultBranch": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "fullName",
+          "defaultBranch"
+        ]
+      },
+      "GithubBranchDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "repo",
+          "name",
+          "url",
+          "deleted"
+        ]
+      },
+      "GithubCommitDto": {
+        "type": "object",
+        "properties": {
+          "sha": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "First line of the message."
+          },
+          "url": {
+            "type": "string"
+          },
+          "authorLogin": {
+            "type": "string",
+            "nullable": true
+          },
+          "authorName": {
+            "type": "string",
+            "nullable": true,
+            "description": "The workspace member this GitHub login is mapped to, if any."
+          },
+          "committedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sha",
+          "repo",
+          "message",
+          "url",
+          "authorLogin",
+          "authorName",
+          "committedAt"
+        ]
+      },
+      "GithubPullRequestDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "number": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED",
+              "MERGED"
+            ]
+          },
+          "draft": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string"
+          },
+          "authorLogin": {
+            "type": "string"
+          },
+          "authorName": {
+            "type": "string",
+            "nullable": true
+          },
+          "headBranch": {
+            "type": "string"
+          },
+          "baseBranch": {
+            "type": "string"
+          },
+          "reviewState": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "APPROVED",
+              "CHANGES_REQUESTED",
+              "COMMENTED"
+            ]
+          },
+          "ci": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "PENDING",
+              "SUCCESS",
+              "FAILURE"
+            ]
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "repo",
+          "number",
+          "title",
+          "state",
+          "draft",
+          "url",
+          "authorLogin",
+          "authorName",
+          "headBranch",
+          "baseBranch",
+          "reviewState",
+          "ci",
+          "updatedAt"
+        ]
+      },
+      "GithubIssueDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "number": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "repo",
+          "number",
+          "title",
+          "state",
+          "url"
+        ]
+      },
+      "TaskGithubDto": {
+        "type": "object",
+        "properties": {
+          "repos": {
+            "description": "Repositories linked to the task's project, for creating branches.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskRepoDto"
+            }
+          },
+          "suggestedBranch": {
+            "type": "string",
+            "description": "Name suggested for a new branch."
+          },
+          "branches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GithubBranchDto"
+            }
+          },
+          "commits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GithubCommitDto"
+            }
+          },
+          "pullRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GithubPullRequestDto"
+            }
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GithubIssueDto"
+            }
+          }
+        },
+        "required": [
+          "repos",
+          "suggestedBranch",
+          "branches",
+          "commits",
+          "pullRequests",
+          "issues"
+        ]
+      },
+      "CreateBranchDto": {
+        "type": "object",
+        "properties": {
+          "repoId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "from": {
+            "type": "string",
+            "description": "Branch to start from; defaults to the repository's default branch.",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "repoId"
         ]
       }
     }

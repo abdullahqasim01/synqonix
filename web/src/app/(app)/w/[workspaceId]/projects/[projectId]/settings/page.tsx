@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { ProjectGithub } from "@/components/github/project-github";
 import { useWorkspace } from "@/components/workspace/workspace-context";
 import { Button } from "@/components/ui/button";
 import { Alert, Badge, Card, Field, Input, Select, Textarea } from "@/components/ui/form";
@@ -394,6 +395,7 @@ export default function ProjectSettingsPage() {
       <CustomFields project={project} />
       <Labels project={project} reload={reload} />
       <Members project={project} />
+      <ProjectGithub project={project} />
       {project.canManage && <AgileSettings project={project} reload={reload} />}
       {project.canManage ? <ProjectSettings project={project} reload={reload} /> : <p className="text-sm text-muted-foreground">Only project admins can change these settings.</p>}
     </div>

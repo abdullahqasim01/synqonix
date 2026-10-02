@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, Badge, Input, Select } from "@/components/ui/form";
 import { MultiSelect } from "@/components/tasks/multi-select";
+import { Development } from "@/components/github/development";
 import { AcceptanceCriteria, Attachments, Checklists, Description, Discussions, Relations, Subtasks, type TaskDetail } from "@/components/tasks/task-sections";
 import { Timeline } from "@/components/tasks/task-timeline";
 import { LabelChip, TypeIcon } from "@/components/tasks/badges";
@@ -185,6 +186,7 @@ export function TaskDetailView({
           <Checklists {...sectionProps} />
           <Relations {...sectionProps} />
           <Attachments {...sectionProps} />
+          <Development taskId={task.id} ws={ws} canEdit={task.canEdit} version={version} />
           <Discussions task={task} ws={ws} />
           <Timeline task={task} ws={ws} canManage={canManage} version={version} />
         </div>

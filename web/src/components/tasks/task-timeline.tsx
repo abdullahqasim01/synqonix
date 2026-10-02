@@ -63,8 +63,8 @@ export function Timeline({ task, ws, canManage, version }: { task: TaskDetail; w
         {items.map((it) =>
           it.kind === "activity" ? (
             <li key={it.id} className="flex gap-2 text-xs text-muted-foreground">
-              <Avatar name={memberName(it.a.actorId)} />
-              <span className="pt-1"><strong className="font-medium text-foreground">{memberName(it.a.actorId)}</strong> {describeActivity(it.a, memberName)} · {when(it.at)}</span>
+              <Avatar name={it.a.actorId ? memberName(it.a.actorId) : "GitHub"} />
+              <span className="pt-1"><strong className="font-medium text-foreground">{it.a.actorId ? memberName(it.a.actorId) : "GitHub"}</strong> {describeActivity(it.a, memberName)} · {when(it.at)}</span>
             </li>
           ) : (
             <li key={it.id} className="flex gap-2">

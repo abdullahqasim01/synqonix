@@ -56,6 +56,8 @@ export function describeActivity(a: Activity, userName: (id: string) => string):
     case "attachment_removed": return `removed attachment ${show(a.from)}`;
     case "relation_added": return `${show(a.to)}`;
     case "relation_removed": return "removed a relation";
+    case "github_linked": return `linked ${show(a.to)} from GitHub`;
+    case "github_branch": return `created branch ${show(a.to)}`;
     case "updated":
       switch (a.field) {
         case "description": return "updated the description";
