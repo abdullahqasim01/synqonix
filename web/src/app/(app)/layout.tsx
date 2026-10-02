@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/lib/auth/auth-context";
@@ -34,9 +35,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <Link href="/dashboard" className="font-semibold tracking-tight">Synqonix</Link>
           <Link href="/settings/profile" className="text-muted-foreground hover:text-foreground">Profile</Link>
           <Link href="/settings/security" className="text-muted-foreground hover:text-foreground">Security</Link>
+          <Link href="/settings/notifications" className="text-muted-foreground hover:text-foreground">Notifications</Link>
         </nav>
         <div className="flex items-center gap-3 text-sm">
           <span className="text-muted-foreground">{user.email}</span>
+          <NotificationBell />
           <ThemeToggle />
           <Button variant="outline" size="sm" onClick={() => void logout().then(() => router.replace("/login"))}>
             Sign out

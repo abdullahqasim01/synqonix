@@ -5,6 +5,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChatProvider, useChat } from "@/components/chat/chat-provider";
 import { Button } from "@/components/ui/button";
+import { CommandPalette } from "@/components/command-palette";
 import { QuickCreate } from "@/components/tasks/quick-create";
 import { WorkspaceProvider } from "@/components/workspace/workspace-context";
 import { Alert, Select } from "@/components/ui/form";
@@ -84,10 +85,18 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             </Link>
           ))}
         </nav>
-        <Button size="sm" className="ml-auto" onClick={() => setCreating(true)} title="Press C">New task</Button>
+        <button
+          className="ml-auto flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted"
+          onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }))}
+          aria-label="Search"
+        >
+          Search <kbd className="rounded border border-border px-1 text-xs">Ctrl K</kbd>
+        </button>
+        <Button size="sm" onClick={() => setCreating(true)} title="Press C">New task</Button>
       </div>
       {children}
       <QuickCreate open={creating} onClose={() => setCreating(false)} />
+      <CommandPalette workspaceId={workspaceId} onCreateTask={() => setCreating(true)} />
       </ChatProvider>
     </WorkspaceProvider>
   );

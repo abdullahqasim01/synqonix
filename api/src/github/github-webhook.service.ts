@@ -6,6 +6,7 @@ import { ActivityService } from '../tasks/activity.service.js';
 import { TaskEvents, type TaskStatusChangedEvent } from '../tasks/events.js';
 import { taskKey } from '../tasks/task-ref.js';
 import { TasksService } from '../tasks/tasks.service.js';
+import { GithubEvents, type GithubCiFailedEvent, type GithubPullRequestEvent } from './events.js';
 import { GithubClient } from './github.client.js';
 import { keysFromBranch, keysFromPullRequest, keysFromText } from './github-links.js';
 import { effectiveStatuses } from './github-status.js';
@@ -219,9 +220,19 @@ export class GithubWebhookService {
     );
     const { opened, merged } = await effectiveStatuses(this.prisma, repo);
 
-    if (p.action === 'closed' && state === 'MERGED') await this.transition(repo, all, merged, actor);
-    else if (['opened', 'reopened', 'ready_for_review'].includes(p.action ?? '') && state === 'OPEN' && !pr.draft) {
+    const notice = (action: GithubPullRequestEvent['action']) => {
+      const e: GithubPullRequestEvent = {
+        workspaceId: repo.workspaceId, prKey: `${repo.id}:${pr.number}`, action, number: pr.number, title: pr.title, url: pr.html_url,
+        taskIds: all.map((t) => t.id), actorId: actor.person,
+      };
+      this.events.emit(GithubEvents.pullRequest, e);
+    };
+    if (p.action === 'closed' && state === 'MERGED') {
+      await this.transition(repo, all, merged, actor);
+      notice('merged');
+    } else if (['opened', 'reopened', 'ready_for_review'].includes(p.action ?? '') && state === 'OPEN' && !pr.draft) {
       await this.transition(repo, all, opened, actor);
+      notice('opened');
     }
     this.refresh(repo, all, actor.event);
   }
@@ -252,7 +263,17 @@ export class GithubWebhookService {
       update: { status: c.status, conclusion: c.conclusion, url: c.html_url ?? null },
     });
     const prs = await this.prisma.githubPullRequest.findMany({ where: { repoId: repo.id, headSha: c.head_sha } });
-    for (const pr of prs) await this.refreshForPr(repo, pr.id);
+    for (const pr of prs) {
+      await this.refreshForPr(repo, pr.id);
+      if (c.status === 'completed' && c.conclusion && ['failure', 'timed_out', 'startup_failure'].includes(c.conclusion) && pr.state === 'OPEN') {
+        const links = await this.prisma.taskGithubLink.findMany({ where: { pullRequestId: pr.id }, select: { taskId: true } });
+        const e: GithubCiFailedEvent = {
+          workspaceId: repo.workspaceId, prKey: `${repo.id}:${pr.number}`, headSha: c.head_sha, checkName: c.name, number: pr.number, title: pr.title,
+          url: pr.url, taskIds: links.map((l) => l.taskId),
+        };
+        this.events.emit(GithubEvents.ciFailed, e);
+      }
+    }
   }
 
   // ---------------------------------------------------------------- issues

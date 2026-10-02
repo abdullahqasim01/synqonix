@@ -10,6 +10,7 @@ import { ChannelsService } from '../channels/channels.service.js';
 import {
   ChatEvents, type ChatAccessChangedEvent, type ChatChannelsChangedEvent, type ChatMemberEvent, type ChatMessageEvent, type ChatReadEvent,
 } from '../channels/events.js';
+import { NotificationEvents, type NotificationChangedEvent } from '../notifications/events.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ProjectAccessService } from '../projects/project-access.service.js';
 import {
@@ -265,5 +266,12 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
       }
       if (!allowed) s.leave(channelRoom(channelId));
     }
+  }
+
+  /** Tells the user's open tabs to refetch their inbox; the event carries no content. */
+  @OnEvent(NotificationEvents.created)
+  @OnEvent(NotificationEvents.changed)
+  onNotification(e: NotificationChangedEvent) {
+    this.server?.to(userRoom(e.userId)).emit('notification', {});
   }
 }

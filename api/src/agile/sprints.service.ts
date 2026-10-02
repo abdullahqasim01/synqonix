@@ -9,6 +9,7 @@ import { TaskEvents } from '../tasks/events.js';
 import { refInclude, summaryInclude, toRefDto } from '../tasks/task-mapper.js';
 import { taskKey } from '../tasks/task-ref.js';
 import { TasksService } from '../tasks/tasks.service.js';
+import { SprintEvents, type SprintEvent } from './events.js';
 import { SprintTracker } from './sprint-tracker.service.js';
 import type {
   BacklogDto, BacklogQueryDto, CompleteSprintDto, CompleteSprintResultDto, CreateSprintDto, SprintDto,
@@ -197,6 +198,7 @@ export class SprintsService {
       });
     });
     await this.tracker.record(sprintId, 'START');
+    this.events.emit(SprintEvents.started, { workspaceId: m.workspaceId, projectId, sprintId, sprintName: started.name, actorId: m.userId } satisfies SprintEvent);
     return this.dtoFor(started);
   }
 
@@ -283,6 +285,7 @@ export class SprintsService {
         actorId: m.userId, fields: ['sprint'],
       });
     }
+    this.events.emit(SprintEvents.completed, { workspaceId: m.workspaceId, projectId, sprintId, sprintName: result.completed.name, actorId: m.userId } satisfies SprintEvent);
     const [done, next] = await Promise.all([this.dtoFor(result.completed), result.target ? this.dtoFor(result.target) : null]);
     return { sprint: done, nextSprint: next, carriedOverCount: result.moved.length };
   }

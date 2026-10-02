@@ -412,6 +412,42 @@ describe('GitHub integration (e2e)', () => {
     });
   });
 
+  describe('notifications', () => {
+    const types = async (u: TestUser) => ((await http().get('/api/v1/notifications').set(u.auth).expect(200)).body.items as { type: string; title: string; body: string | null }[]);
+    const until = async (check: () => Promise<boolean>) => {
+      const end = Date.now() + 3000;
+      while (Date.now() < end) { if (await check()) return; await new Promise((r) => setTimeout(r, 30)); }
+      throw new Error('timed out');
+    };
+
+    it('tells watchers about opened and merged pull requests and failing checks, once each', async () => {
+      await ok('pull_request', 'pull-request-opened');
+      await until(async () => (await types(alice)).some((n) => n.type === 'PR_OPENED'));
+      expect((await types(alice)).find((n) => n.type === 'PR_OPENED')).toMatchObject({ title: 'Pull request #12 opened for SYN-1', body: 'Add login form (SYN-1)' });
+      await ok('pull_request', 'pull-request-opened'); // a different delivery of the same change
+      await ok('check_run', 'check-run-failure');
+      await until(async () => (await types(alice)).some((n) => n.type === 'CI_FAILED'));
+      expect((await types(alice)).find((n) => n.type === 'CI_FAILED')).toMatchObject({ title: 'Checks failed on pull request #12', body: 'tests · SYN-1 · Add login form (SYN-1)' });
+      await ok('check_run', 'check-run-failure');
+      await ok('check_run', 'check-run-success'); // passing checks are not news
+      await ok('pull_request', 'pull-request-merged');
+      await until(async () => (await types(alice)).some((n) => n.type === 'PR_MERGED'));
+      await new Promise((r) => setTimeout(r, 300));
+      const all = (await types(alice)).map((n) => n.type);
+      expect(all.filter((t) => t === 'PR_OPENED')).toHaveLength(1);
+      expect(all.filter((t) => t === 'CI_FAILED')).toHaveLength(1);
+      expect(all.filter((t) => t === 'PR_MERGED')).toHaveLength(1);
+      expect(await types(viv)).toEqual([]);
+    });
+
+    it('does not notify the person who opened the pull request about it', async () => {
+      await http().put(api('/github/contributors/octo-dev')).set(alice.auth).send({ userId: alice.id }).expect(200);
+      await ok('pull_request', 'pull-request-opened');
+      await new Promise((r) => setTimeout(r, 400));
+      expect((await types(alice)).filter((n) => n.type === 'PR_OPENED')).toEqual([]);
+    });
+  });
+
   describe('installation events', () => {
     it('removes everything when the app is uninstalled', async () => {
       await ok('pull_request', 'pull-request-opened');

@@ -1888,6 +1888,151 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["NotificationsController_list_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["NotificationsController_unread_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["NotificationsController_preferences_v1"];
+        put: operations["NotificationsController_updatePreferences_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["NotificationsController_readAll_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["NotificationsController_read_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}/unread": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["NotificationsController_unreadOne_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}/snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["NotificationsController_snooze_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["NotificationsController_dismiss_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tasks, comments, projects, channels, messages and people the caller may see. */
+        get: operations["SearchController_run_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3150,7 +3295,7 @@ export interface components {
             headBranch: string;
             baseBranch: string;
             /** @enum {string|null} */
-            reviewState: "APPROVED" | "CHANGES_REQUESTED" | "COMMENTED" | null;
+            reviewState: "COMMENTED" | "APPROVED" | "CHANGES_REQUESTED" | null;
             /** @enum {string|null} */
             ci: "PENDING" | "SUCCESS" | "FAILURE" | null;
             /** Format: date-time */
@@ -3180,6 +3325,136 @@ export interface components {
             name?: string;
             /** @description Branch to start from; defaults to the repository's default branch. */
             from?: string;
+        };
+        NotificationDto: {
+            id: string;
+            /** @enum {string} */
+            type: "ASSIGNED" | "MENTIONED" | "COMMENTED" | "STATUS_CHANGED" | "DUE_SOON" | "OVERDUE" | "SPRINT_STARTED" | "SPRINT_COMPLETED" | "PR_OPENED" | "PR_MERGED" | "CI_FAILED" | "CHAT_MENTION";
+            workspaceId: string;
+            projectId: string | null;
+            actorId: string | null;
+            title: string;
+            body: string | null;
+            taskKey: string | null;
+            channelId: string | null;
+            /** @description App path to open. */
+            url: string;
+            read: boolean;
+            /**
+             * Format: date-time
+             * @description When it (re)appeared in the inbox.
+             */
+            surfacedAt: string;
+        };
+        NotificationListDto: {
+            items: components["schemas"]["NotificationDto"][];
+            hasMore: boolean;
+        };
+        WorkspaceUnreadDto: {
+            workspaceId: string;
+            count: number;
+        };
+        UnreadCountDto: {
+            count: number;
+            workspaces: components["schemas"]["WorkspaceUnreadDto"][];
+        };
+        QuietHoursDto: {
+            enabled: boolean;
+            /** @description `HH:MM` in `timezone`. */
+            start: string;
+            end: string;
+            /** @description IANA name such as `Europe/Berlin`. */
+            timezone: string;
+        };
+        TypePreferenceDto: {
+            /** @enum {string} */
+            type: "ASSIGNED" | "MENTIONED" | "COMMENTED" | "STATUS_CHANGED" | "DUE_SOON" | "OVERDUE" | "SPRINT_STARTED" | "SPRINT_COMPLETED" | "PR_OPENED" | "PR_MERGED" | "CI_FAILED" | "CHAT_MENTION";
+            inApp: boolean;
+            email: boolean;
+        };
+        PreferencesDto: {
+            /** @enum {string} */
+            emailMode: "INSTANT" | "DIGEST" | "OFF";
+            quietHours: components["schemas"]["QuietHoursDto"];
+            types: components["schemas"]["TypePreferenceDto"][];
+            mutedProjectIds: string[];
+        };
+        UpdatePreferencesDto: {
+            /** @enum {string} */
+            emailMode?: "INSTANT" | "DIGEST" | "OFF";
+            quietHours?: components["schemas"]["QuietHoursDto"];
+            types?: components["schemas"]["TypePreferenceDto"][];
+            mutedProjectIds?: string[];
+        };
+        ReadAllDto: {
+            workspaceId?: string;
+        };
+        SnoozeDto: {
+            /** @description When it should come back, at most 30 days away. */
+            until: string;
+        };
+        ParsedFiltersDto: {
+            text: string;
+            /** @description Filters understood in the query, e.g. `{ "assignee": ["me"] }`. */
+            filters: {
+                [key: string]: string[];
+            };
+        };
+        TaskHitDto: {
+            id: string;
+            key: string;
+            title: string;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            status: components["schemas"]["TaskStatusDto"];
+            projectId: string;
+            /** @description Excerpt of the description when the match is there. */
+            snippet: string | null;
+        };
+        CommentHitDto: {
+            id: string;
+            taskKey: string;
+            taskTitle: string;
+            authorName: string | null;
+            snippet: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ProjectHitDto: {
+            id: string;
+            key: string;
+            name: string;
+        };
+        ChannelHitDto: {
+            id: string;
+            /** @enum {string} */
+            type: "PRIVATE" | "PUBLIC" | "DIRECT";
+            /** @description Names of the other people for a direct message. */
+            name: string;
+            projectId: string | null;
+        };
+        MessageHitDto: {
+            id: string;
+            channelId: string;
+            channelName: string;
+            authorName: string | null;
+            snippet: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        PersonHitDto: {
+            userId: string;
+            name: string;
+            email: string;
+        };
+        SearchResultDto: {
+            query: components["schemas"]["ParsedFiltersDto"];
+            tasks: components["schemas"]["TaskHitDto"][];
+            comments: components["schemas"]["CommentHitDto"][];
+            projects: components["schemas"]["ProjectHitDto"][];
+            channels: components["schemas"]["ChannelHitDto"][];
+            messages: components["schemas"]["MessageHitDto"][];
+            people: components["schemas"]["PersonHitDto"][];
         };
     };
     responses: never;
@@ -7076,6 +7351,227 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TaskGithubDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_list_v1: {
+        parameters: {
+            query?: {
+                workspaceId?: string;
+                /** @description Only unread ones. */
+                unread?: boolean;
+                limit?: number;
+                /** @description Cursor: `surfacedAt` of the last item of the previous page. */
+                before?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationListDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_unread_v1: {
+        parameters: {
+            query?: {
+                workspaceId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadCountDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_preferences_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreferencesDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_updatePreferences_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePreferencesDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreferencesDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_readAll_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReadAllDto"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_read_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_unreadOne_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_snooze_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SnoozeDto"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_dismiss_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SearchController_run_v1: {
+        parameters: {
+            query: {
+                /**
+                 * @description Words to find, plus optional filters for tasks: `assignee:me`, `reporter:me`, `status:open|done|<name>`,
+                 *     `label:<name>`, `type:bug`, `priority:high`, `project:<KEY>`, `is:open|done|overdue|archived`.
+                 */
+                q: string;
+                /** @description Comma separated: tasks, comments, projects, channels, messages, people. Everything by default. */
+                types?: string;
+                /** @description Results per kind (default 8). */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResultDto"];
                 };
             };
         };

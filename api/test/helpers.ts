@@ -25,6 +25,12 @@ export class FakeMailService {
   async sendInvitationEmail(to: string, _inviter: string, workspace: string, token: string) {
     this.invites.push({ to, token, workspace });
   }
+  notifications: { to: string; items: { title: string; body?: string | null; url: string }[] }[] = [];
+  failNotifications = false;
+  async sendNotificationEmail(to: string, items: { title: string; body?: string | null; url: string }[]) {
+    if (this.failNotifications) throw new Error('smtp down');
+    this.notifications.push({ to, items });
+  }
   inviteTokenFor(to: string) { return [...this.invites].reverse().find((i) => i.to === to)?.token; }
   tokenFor(to: string, path: 'verify-email' | 'reset-password') { return this.url(to, `/${path}`); }
 }

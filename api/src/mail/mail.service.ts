@@ -5,6 +5,8 @@ import { Resend } from 'resend';
 import type { Env } from '../config/env.js';
 import {
   inviteTemplate,
+  notificationTemplate,
+  type NotificationMailItem,
   resetPasswordTemplate,
   verifyEmailTemplate,
 } from './mail.templates.js';
@@ -47,6 +49,11 @@ export class MailService {
       return;
     }
     await this.smtp!.sendMail({ from: this.from, ...message });
+  }
+
+  /** Throws on failure, so callers can keep notifications queued and retry. */
+  sendNotificationEmail(to: string, items: NotificationMailItem[]) {
+    return this.send({ to, ...notificationTemplate(items, this.webUrl) });
   }
 
   /** Email delivery must never break the request that triggered it. */

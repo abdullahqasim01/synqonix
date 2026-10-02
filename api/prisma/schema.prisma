@@ -19,17 +19,20 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  sessions       Session[]
-  emailTokens    EmailToken[]
-  apiTokens      ApiToken[]
-  memberships    Membership[]
-  teamMembers    TeamMember[]
-  projectMembers ProjectMember[]
-  taskAssignees  TaskAssignee[]
-  taskWatchers   TaskWatcher[]
-  views          View[]
-  recentTasks    RecentTask[]
-  channelMembers ChannelMember[]
+  sessions               Session[]
+  emailTokens            EmailToken[]
+  apiTokens              ApiToken[]
+  memberships            Membership[]
+  teamMembers            TeamMember[]
+  projectMembers         ProjectMember[]
+  taskAssignees          TaskAssignee[]
+  taskWatchers           TaskWatcher[]
+  views                  View[]
+  recentTasks            RecentTask[]
+  channelMembers         ChannelMember[]
+  notifications          Notification[]
+  notificationPreference NotificationPreference?
+  notificationMutes      NotificationMute[]
 }
 
 /// One login on one device. Refresh tokens rotate within a session.
@@ -147,6 +150,7 @@ model Workspace {
   auditLogs           AuditLog[]
   channels            Channel[]
   githubInstallations GithubInstallation[]
+  notifications       Notification[]
   githubContributors  GithubContributor[]
 }
 
@@ -230,18 +234,20 @@ model Project {
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @updatedAt
 
-  workspace    Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  members      ProjectMember[]
-  statuses     ProjectStatus[]
-  labels       Label[]
-  tasks        Task[]
-  customFields CustomField[]
-  views        View[]
-  sprints      Sprint[]
-  releases     Release[]
-  milestones   Milestone[]
-  githubRepos  LinkedRepository[]
-  channel      Channel?
+  workspace         Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members           ProjectMember[]
+  statuses          ProjectStatus[]
+  labels            Label[]
+  tasks             Task[]
+  customFields      CustomField[]
+  views             View[]
+  sprints           Sprint[]
+  releases          Release[]
+  milestones        Milestone[]
+  githubRepos       LinkedRepository[]
+  notifications     Notification[]
+  notificationMutes NotificationMute[]
+  channel           Channel?
 
   @@unique([workspaceId, key])
 }
@@ -1074,4 +1080,100 @@ model WebhookDelivery {
   id         String   @id
   event      String
   receivedAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------- notifications
+
+enum NotificationType {
+  ASSIGNED
+  MENTIONED
+  COMMENTED
+  STATUS_CHANGED
+  DUE_SOON
+  OVERDUE
+  SPRINT_STARTED
+  SPRINT_COMPLETED
+  PR_OPENED
+  PR_MERGED
+  CI_FAILED
+  CHAT_MENTION
+}
+
+enum EmailMode {
+  /// One email per notification as it happens (batched together after quiet hours).
+  INSTANT
+  /// At most one summary email per hour.
+  DIGEST
+  OFF
+}
+
+enum EmailState {
+  /// Not eligible for email (preferences, or no email wanted).
+  NONE
+  PENDING
+  SENT
+}
+
+model Notification {
+  id           String           @id @default(uuid(7))
+  userId       String
+  workspaceId  String
+  projectId    String?
+  type         NotificationType
+  actorId      String?
+  title        String
+  body         String?
+  taskId       String?
+  taskKey      String?
+  channelId    String?
+  messageId    String?
+  /// App path to open, e.g. /w/<workspace>/tasks/SYN-12.
+  url          String
+  /// Stops the same event from notifying twice (reminders, replays).
+  dedupeKey    String?
+  readAt       DateTime?
+  /// Hidden until this time, then back in the inbox.
+  snoozedUntil DateTime?
+  emailState   EmailState       @default(NONE)
+  /// False when the user only wants the email for this type.
+  inApp        Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  /// When it last (re)appeared in the inbox: creation, or the end of a snooze.
+  surfacedAt   DateTime         @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project   Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dedupeKey])
+  @@index([userId, surfacedAt])
+  @@index([userId, readAt])
+  @@index([emailState, userId])
+}
+
+model NotificationPreference {
+  userId       String    @id
+  emailMode    EmailMode @default(INSTANT)
+  quietEnabled Boolean   @default(false)
+  /// Minutes after midnight in `timezone`.
+  quietStart   Int       @default(1320)
+  quietEnd     Int       @default(480)
+  timezone     String    @default("UTC")
+  /// Per type: { "ASSIGNED": { "inApp": true, "email": false } }. Missing entries use the defaults.
+  types        Json      @default("{}")
+  lastDigestAt DateTime?
+  updatedAt    DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// A project whose notifications a user does not want.
+model NotificationMute {
+  userId    String
+  projectId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([userId, projectId])
 }

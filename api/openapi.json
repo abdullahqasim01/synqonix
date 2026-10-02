@@ -7989,6 +7989,382 @@
           "github"
         ]
       }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "operationId": "NotificationsController_list_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unread",
+            "required": false,
+            "in": "query",
+            "description": "Only unread ones.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "type": "number"
+            }
+          },
+          {
+            "name": "before",
+            "required": false,
+            "in": "query",
+            "description": "Cursor: `surfacedAt` of the last item of the previous page.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/unread-count": {
+      "get": {
+        "operationId": "NotificationsController_unread_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCountDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/preferences": {
+      "get": {
+        "operationId": "NotificationsController_preferences_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferencesDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      },
+      "put": {
+        "operationId": "NotificationsController_updatePreferences_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreferencesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferencesDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "post": {
+        "operationId": "NotificationsController_readAll_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReadAllDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{id}/read": {
+      "post": {
+        "operationId": "NotificationsController_read_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{id}/unread": {
+      "post": {
+        "operationId": "NotificationsController_unreadOne_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{id}/snooze": {
+      "post": {
+        "operationId": "NotificationsController_snooze_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SnoozeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{id}": {
+      "delete": {
+        "operationId": "NotificationsController_dismiss_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/search": {
+      "get": {
+        "operationId": "SearchController_run_v1",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Words to find, plus optional filters for tasks: `assignee:me`, `reporter:me`, `status:open|done|<name>`,\n`label:<name>`, `type:bug`, `priority:high`, `project:<KEY>`, `is:open|done|overdue|archived`.",
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "name": "types",
+            "required": false,
+            "in": "query",
+            "description": "Comma separated: tasks, comments, projects, channels, messages, people. Everything by default.",
+            "schema": {
+              "maxLength": 100,
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Results per kind (default 8).",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tasks, comments, projects, channels, messages and people the caller may see.",
+        "tags": [
+          "search"
+        ]
+      }
     }
   },
   "info": {
@@ -12677,9 +13053,9 @@
             "type": "string",
             "nullable": true,
             "enum": [
+              "COMMENTED",
               "APPROVED",
-              "CHANGES_REQUESTED",
-              "COMMENTED"
+              "CHANGES_REQUESTED"
             ]
           },
           "ci": {
@@ -12814,6 +13190,532 @@
         },
         "required": [
           "repoId"
+        ]
+      },
+      "NotificationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ASSIGNED",
+              "MENTIONED",
+              "COMMENTED",
+              "STATUS_CHANGED",
+              "DUE_SOON",
+              "OVERDUE",
+              "SPRINT_STARTED",
+              "SPRINT_COMPLETED",
+              "PR_OPENED",
+              "PR_MERGED",
+              "CI_FAILED",
+              "CHAT_MENTION"
+            ]
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "actorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string",
+            "nullable": true
+          },
+          "taskKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "channelId": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "description": "App path to open."
+          },
+          "read": {
+            "type": "boolean"
+          },
+          "surfacedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When it (re)appeared in the inbox."
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "workspaceId",
+          "projectId",
+          "actorId",
+          "title",
+          "body",
+          "taskKey",
+          "channelId",
+          "url",
+          "read",
+          "surfacedAt"
+        ]
+      },
+      "NotificationListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationDto"
+            }
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "hasMore"
+        ]
+      },
+      "WorkspaceUnreadDto": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "workspaceId",
+          "count"
+        ]
+      },
+      "UnreadCountDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number"
+          },
+          "workspaces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceUnreadDto"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "workspaces"
+        ]
+      },
+      "QuietHoursDto": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "start": {
+            "type": "string",
+            "description": "`HH:MM` in `timezone`.",
+            "maxLength": 5
+          },
+          "end": {
+            "type": "string",
+            "maxLength": 5
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA name such as `Europe/Berlin`.",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "enabled",
+          "start",
+          "end",
+          "timezone"
+        ]
+      },
+      "TypePreferenceDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ASSIGNED",
+              "MENTIONED",
+              "COMMENTED",
+              "STATUS_CHANGED",
+              "DUE_SOON",
+              "OVERDUE",
+              "SPRINT_STARTED",
+              "SPRINT_COMPLETED",
+              "PR_OPENED",
+              "PR_MERGED",
+              "CI_FAILED",
+              "CHAT_MENTION"
+            ]
+          },
+          "inApp": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "type",
+          "inApp",
+          "email"
+        ]
+      },
+      "PreferencesDto": {
+        "type": "object",
+        "properties": {
+          "emailMode": {
+            "enum": [
+              "INSTANT",
+              "DIGEST",
+              "OFF"
+            ],
+            "type": "string"
+          },
+          "quietHours": {
+            "$ref": "#/components/schemas/QuietHoursDto"
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TypePreferenceDto"
+            }
+          },
+          "mutedProjectIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "emailMode",
+          "quietHours",
+          "types",
+          "mutedProjectIds"
+        ]
+      },
+      "UpdatePreferencesDto": {
+        "type": "object",
+        "properties": {
+          "emailMode": {
+            "type": "string",
+            "enum": [
+              "INSTANT",
+              "DIGEST",
+              "OFF"
+            ]
+          },
+          "quietHours": {
+            "$ref": "#/components/schemas/QuietHoursDto"
+          },
+          "types": {
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TypePreferenceDto"
+            }
+          },
+          "mutedProjectIds": {
+            "maxItems": 500,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ReadAllDto": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "string"
+          }
+        }
+      },
+      "SnoozeDto": {
+        "type": "object",
+        "properties": {
+          "until": {
+            "type": "string",
+            "description": "When it should come back, at most 30 days away."
+          }
+        },
+        "required": [
+          "until"
+        ]
+      },
+      "ParsedFiltersDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filters understood in the query, e.g. `{ \"assignee\": [\"me\"] }`."
+          }
+        },
+        "required": [
+          "text",
+          "filters"
+        ]
+      },
+      "TaskHitDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "STORY",
+              "BUG",
+              "TASK",
+              "EPIC",
+              "SUBTASK"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatusDto"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "snippet": {
+            "type": "string",
+            "nullable": true,
+            "description": "Excerpt of the description when the match is there."
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "title",
+          "type",
+          "status",
+          "projectId",
+          "snippet"
+        ]
+      },
+      "CommentHitDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "taskKey": {
+            "type": "string"
+          },
+          "taskTitle": {
+            "type": "string"
+          },
+          "authorName": {
+            "type": "string",
+            "nullable": true
+          },
+          "snippet": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "taskKey",
+          "taskTitle",
+          "authorName",
+          "snippet",
+          "createdAt"
+        ]
+      },
+      "ProjectHitDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "name"
+        ]
+      },
+      "ChannelHitDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PRIVATE",
+              "PUBLIC",
+              "DIRECT"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Names of the other people for a direct message."
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "name",
+          "projectId"
+        ]
+      },
+      "MessageHitDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "channelName": {
+            "type": "string"
+          },
+          "authorName": {
+            "type": "string",
+            "nullable": true
+          },
+          "snippet": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "channelId",
+          "channelName",
+          "authorName",
+          "snippet",
+          "createdAt"
+        ]
+      },
+      "PersonHitDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "name",
+          "email"
+        ]
+      },
+      "SearchResultDto": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "$ref": "#/components/schemas/ParsedFiltersDto"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskHitDto"
+            }
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentHitDto"
+            }
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectHitDto"
+            }
+          },
+          "channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelHitDto"
+            }
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageHitDto"
+            }
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonHitDto"
+            }
+          }
+        },
+        "required": [
+          "query",
+          "tasks",
+          "comments",
+          "projects",
+          "channels",
+          "messages",
+          "people"
         ]
       }
     }
