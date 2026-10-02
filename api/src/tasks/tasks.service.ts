@@ -335,6 +335,35 @@ export class TasksService {
     return this.detail(m, task.id);
   }
 
+  /**
+   * Moves a task to another status on behalf of an integration (GitHub automations). `actorId` is
+   * who the history credits, if a person is known; `eventActorId` is who realtime and
+   * notification listeners are told caused it. Does nothing when the task is already there.
+   */
+  async setStatusFromIntegration(taskId: string, statusId: string, actorId: string | null, eventActorId: string): Promise<boolean> {
+    const events: TaskEvent[] = [];
+    const changed = await this.prisma.$transaction(async (tx) => {
+      const task = await tx.task.findUnique({ where: { id: taskId }, include: { status: true, project: true } });
+      if (!task || task.statusId === statusId) return false;
+      const status = await this.support.resolveStatus(tx, task.projectId, statusId);
+      await this.support.lockProject(tx, task.projectId);
+      const last = await tx.task.aggregate({ where: { projectId: task.projectId }, _max: { position: true } });
+      await tx.task.update({
+        where: { id: taskId },
+        data: { statusId: status.id, ...this.support.lifecycle(status.category, task), position: (last._max.position ?? 0) + POSITION_STEP },
+      });
+      await this.activity.record(tx, taskId, actorId, [{ type: 'updated', field: 'status', from: task.status.name, to: status.name }]);
+      const base = {
+        workspaceId: task.project.workspaceId, projectId: task.projectId, taskId, taskKey: taskKey(task.project.key, task.number), actorId: eventActorId,
+      };
+      events.push({ name: TaskEvents.statusChanged, payload: { ...base, from: task.status.name, to: status.name } });
+      events.push({ name: TaskEvents.updated, payload: { ...base, fields: ['status'], ...(task.sprintId ? { sprintIds: [task.sprintId] } : {}) } });
+      return true;
+    });
+    this.emit(events);
+    return changed;
+  }
+
   /** Applies `dto` to one task, writing activity rows and collecting events. Runs inside a transaction. */
   async applyUpdate(
     tx: Tx, m: Membership, project: Project, taskId: string, dto: UpdateTaskDto, events: TaskEvent[],

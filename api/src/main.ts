@@ -9,7 +9,7 @@ import { buildOpenApi, setupApp } from './setup-app.js';
 import type { Env } from './config/env.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { rawBody: true });
   const config = app.get<ConfigService<Env, true>>(ConfigService);
   setupApp(app, config.get('WEB_URL'));
 

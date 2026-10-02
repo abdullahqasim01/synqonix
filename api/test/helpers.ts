@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module.js';
+import { GithubClient, type GithubInstallationInfo, type GithubRepoInfo } from '../src/github/github.client.js';
 import { MailService } from '../src/mail/mail.service.js';
 import { PrismaService } from '../src/prisma/prisma.service.js';
 import { setupApp } from '../src/setup-app.js';
@@ -28,17 +29,39 @@ export class FakeMailService {
   tokenFor(to: string, path: 'verify-email' | 'reset-password') { return this.url(to, `/${path}`); }
 }
 
+/** Stands in for GitHub's REST API; records what the app asked it to do. */
+export class FakeGithubClient extends GithubClient {
+  installations = new Map<string, GithubInstallationInfo>();
+  repos = new Map<string, GithubRepoInfo[]>();
+  branches: { installation: string; repo: string; name: string; from: string }[] = [];
+  issueStates: { repo: string; number: number; state: string }[] = [];
+  configured = true;
+  failBranch = false;
+  isConfigured() { return this.configured; }
+  installUrl(state: string) { return `https://github.com/apps/synqonix-test/installations/new?state=${encodeURIComponent(state)}`; }
+  async getInstallation(id: string) { return this.installations.get(id) ?? null; }
+  async listRepositories(id: string) { return this.repos.get(id) ?? []; }
+  async createBranch(installation: string, repo: string, name: string, from: string) {
+    if (this.failBranch) throw new Error('boom');
+    this.branches.push({ installation, repo, name, from });
+    return { sha: 'f'.repeat(40), url: `https://github.com/${repo}/tree/${name}` };
+  }
+  async setIssueState(_installation: string, repo: string, number: number, state: 'open' | 'closed') { this.issueStates.push({ repo, number, state }); }
+}
+
 export async function createTestApp({ throttle = false } = {}) {
   const mail = new FakeMailService();
+  const github = new FakeGithubClient();
   const builder = Test.createTestingModule({ imports: [AppModule] })
-    .overrideProvider(MailService).useValue(mail);
+    .overrideProvider(MailService).useValue(mail)
+    .overrideProvider(GithubClient).useValue(github);
   process.env.THROTTLE_DISABLED = throttle ? '0' : '1';
   const mod = await builder.compile();
-  const app = mod.createNestApplication<NestExpressApplication>();
+  const app = mod.createNestApplication<NestExpressApplication>({ rawBody: true });
   setupApp(app, 'http://localhost:3000');
   await app.init();
   const prisma = app.get(PrismaService);
-  return { app, mail, prisma };
+  return { app, mail, prisma, github };
 }
 
 import request from 'supertest';

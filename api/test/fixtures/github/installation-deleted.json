@@ -1,0 +1,1 @@
+{ "action": "deleted", "installation": { "id": 5001, "account": { "login": "acme", "type": "Organization" } }, "repositories": [], "sender": { "login": "octo-dev", "id": 77, "type": "User" } }

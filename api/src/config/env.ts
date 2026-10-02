@@ -15,6 +15,13 @@ const schema = z.object({
   MAIL_FROM: z.string().default('Synqonix <no-reply@synqonix.local>'),
   SMTP_HOST: z.string().default('localhost'),
   SMTP_PORT: z.coerce.number().int().default(1025),
+  // GitHub App (integration is switched off while these are unset).
+  GITHUB_APP_ID: z.string().optional(),
+  GITHUB_APP_SLUG: z.string().optional(),
+  /** PEM private key; `\n` escapes are accepted so it fits on one line. */
+  GITHUB_APP_PRIVATE_KEY: z.string().optional(),
+  GITHUB_WEBHOOK_SECRET: z.string().optional(),
+  GITHUB_API_URL: z.string().url().default('https://api.github.com'),
 });
 
 export type Env = z.infer<typeof schema>;

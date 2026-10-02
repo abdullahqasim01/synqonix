@@ -140,12 +140,14 @@ model Workspace {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  memberships Membership[]
-  invitations Invitation[]
-  teams       Team[]
-  projects    Project[]
-  auditLogs   AuditLog[]
-  channels    Channel[]
+  memberships         Membership[]
+  invitations         Invitation[]
+  teams               Team[]
+  projects            Project[]
+  auditLogs           AuditLog[]
+  channels            Channel[]
+  githubInstallations GithubInstallation[]
+  githubContributors  GithubContributor[]
 }
 
 model Membership {
@@ -228,7 +230,7 @@ model Project {
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @updatedAt
 
-  workspace    Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace    Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   members      ProjectMember[]
   statuses     ProjectStatus[]
   labels       Label[]
@@ -238,6 +240,7 @@ model Project {
   sprints      Sprint[]
   releases     Release[]
   milestones   Milestone[]
+  githubRepos  LinkedRepository[]
   channel      Channel?
 
   @@unique([workspaceId, key])
@@ -387,6 +390,7 @@ model Task {
   recentTasks      RecentTask[]
   sprintTasks      SprintTask[]
   messageTaskLinks MessageTaskLink[]
+  githubLinks      TaskGithubLink[]
 
   @@unique([projectId, number])
   @@index([projectId, statusId, position])
@@ -868,4 +872,206 @@ model MessageTaskLink {
 
   @@id([messageId, taskId])
   @@index([taskId])
+}
+
+// ---------------------------------------------------------------- GitHub
+
+enum GithubPrState {
+  OPEN
+  CLOSED
+  MERGED
+}
+
+enum GithubIssueState {
+  OPEN
+  CLOSED
+}
+
+/// A GitHub App installation connected to a workspace.
+model GithubInstallation {
+  id            String    @id @default(uuid(7))
+  workspaceId   String
+  /// GitHub's installation id (kept as text to avoid 64-bit surprises).
+  githubId      String    @unique
+  accountLogin  String
+  accountType   String
+  installedById String?
+  suspendedAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  workspace    Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  repositories LinkedRepository[]
+
+  @@index([workspaceId])
+}
+
+/// A GitHub repository linked to a project, with the project's automation settings for it.
+model LinkedRepository {
+  id               String   @id @default(uuid(7))
+  workspaceId      String
+  installationId   String
+  projectId        String
+  githubRepoId     String
+  fullName         String
+  htmlUrl          String
+  defaultBranch    String
+  linkedById       String?
+  /// Move linked tasks when a pull request opens / merges.
+  autoTransition   Boolean  @default(true)
+  /// Status for "pull request opened"; falls back to a status named like "review".
+  prOpenedStatusId String?
+  /// Status for "pull request merged"; falls back to the first done status.
+  prMergedStatusId String?
+  /// Create a task for every new GitHub issue.
+  importIssues     Boolean  @default(false)
+  /// Keep issue and task open/closed state in step, both ways.
+  syncIssues       Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  installation GithubInstallation  @relation(fields: [installationId], references: [id], onDelete: Cascade)
+  project      Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  branches     GithubBranch[]
+  commits      GithubCommit[]
+  pullRequests GithubPullRequest[]
+  issues       GithubIssue[]
+  checks       GithubCheck[]
+
+  @@unique([projectId, githubRepoId])
+  @@index([githubRepoId])
+}
+
+model GithubBranch {
+  id        String    @id @default(uuid(7))
+  repoId    String
+  name      String
+  headSha   String?
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  repo  LinkedRepository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  links TaskGithubLink[]
+
+  @@unique([repoId, name])
+}
+
+model GithubCommit {
+  id          String   @id @default(uuid(7))
+  repoId      String
+  sha         String
+  message     String
+  url         String
+  authorLogin String?
+  authorName  String?
+  committedAt DateTime
+  createdAt   DateTime @default(now())
+
+  repo  LinkedRepository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  links TaskGithubLink[]
+
+  @@unique([repoId, sha])
+}
+
+model GithubPullRequest {
+  id          String        @id @default(uuid(7))
+  repoId      String
+  number      Int
+  title       String
+  body        String?
+  state       GithubPrState
+  draft       Boolean       @default(false)
+  authorLogin String
+  headBranch  String
+  headSha     String
+  baseBranch  String
+  url         String
+  /// Latest review verdict: APPROVED, CHANGES_REQUESTED or COMMENTED.
+  reviewState String?
+  mergedAt    DateTime?
+  closedAt    DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  repo  LinkedRepository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  links TaskGithubLink[]
+
+  @@unique([repoId, number])
+}
+
+model GithubIssue {
+  id          String           @id @default(uuid(7))
+  repoId      String
+  number      Int
+  title       String
+  state       GithubIssueState
+  url         String
+  authorLogin String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  repo  LinkedRepository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  links TaskGithubLink[]
+
+  @@unique([repoId, number])
+}
+
+/// One CI check on a commit (check runs reported by GitHub Actions or other apps).
+model GithubCheck {
+  id         String   @id @default(uuid(7))
+  repoId     String
+  headSha    String
+  name       String
+  /// queued, in_progress or completed.
+  status     String
+  conclusion String?
+  url        String?
+  updatedAt  DateTime @updatedAt
+
+  repo LinkedRepository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  @@unique([repoId, headSha, name])
+}
+
+/// Ties a task to exactly one GitHub object.
+model TaskGithubLink {
+  id            String   @id @default(uuid(7))
+  taskId        String
+  branchId      String?
+  commitId      String?
+  pullRequestId String?
+  issueId       String?
+  createdAt     DateTime @default(now())
+
+  task        Task               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  branch      GithubBranch?      @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  commit      GithubCommit?      @relation(fields: [commitId], references: [id], onDelete: Cascade)
+  pullRequest GithubPullRequest? @relation(fields: [pullRequestId], references: [id], onDelete: Cascade)
+  issue       GithubIssue?       @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, branchId])
+  @@unique([taskId, commitId])
+  @@unique([taskId, pullRequestId])
+  @@unique([taskId, issueId])
+  @@index([taskId])
+}
+
+/// Maps a GitHub login to a workspace member so activity is credited to the right person.
+model GithubContributor {
+  id          String   @id @default(uuid(7))
+  workspaceId String
+  login       String
+  userId      String?
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, login])
+}
+
+/// Every webhook delivery we accepted, so GitHub's retries and replays are processed once.
+model WebhookDelivery {
+  /// GitHub's `X-GitHub-Delivery` guid.
+  id         String   @id
+  event      String
+  receivedAt DateTime @default(now())
 }

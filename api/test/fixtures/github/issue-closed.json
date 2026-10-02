@@ -1,0 +1,8 @@
+{
+  "action": "closed",
+  "issue": {
+    "number": 7, "title": "Crash when saving a draft", "state": "closed", "body": "Steps to reproduce:\n1. Open the editor",
+    "html_url": "https://github.com/acme/synqonix/issues/7", "user": { "login": "octo-dev", "id": 77 }
+  },
+  "repository": { "id": 1001, "name": "synqonix", "full_name": "acme/synqonix", "private": true, "html_url": "https://github.com/acme/synqonix", "default_branch": "main", "owner": { "login": "acme", "type": "Organization" } }, "installation": { "id": 5001, "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNTAwMQ==" }, "sender": { "login": "octo-dev", "id": 77, "type": "User" }
+}

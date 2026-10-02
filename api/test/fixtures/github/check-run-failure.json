@@ -1,0 +1,9 @@
+{
+  "action": "completed",
+  "check_run": {
+    "id": 4001, "name": "tests", "head_sha": "b2c3d4e5f60718293a4b5c6d7e8f901234567890",
+    "status": "completed", "conclusion": "failure", "html_url": "https://github.com/acme/synqonix/runs/4001",
+    "app": { "slug": "github-actions" }, "pull_requests": [ { "number": 12 } ]
+  },
+  "repository": { "id": 1001, "name": "synqonix", "full_name": "acme/synqonix", "private": true, "html_url": "https://github.com/acme/synqonix", "default_branch": "main", "owner": { "login": "acme", "type": "Organization" } }, "installation": { "id": 5001, "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNTAwMQ==" }, "sender": { "login": "octo-dev", "id": 77, "type": "User" }
+}

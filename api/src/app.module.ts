@@ -6,6 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { HttpThrottlerGuard } from './common/http-throttler.guard.js';
 import { validateEnv } from './config/env.js';
+import { GithubModule } from './github/github.module.js';
 import { HealthController } from './health/health.controller.js';
 import { AgileModule } from './agile/agile.module.js';
 import { AuditModule } from './audit/audit.module.js';
@@ -37,6 +38,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module.js';
     TasksModule,
     AgileModule,
     ChannelsModule,
+    GithubModule,
     RealtimeModule,
   ],
   controllers: [HealthController],
