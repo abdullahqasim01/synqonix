@@ -1,3 +1,4 @@
+import { OmitType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize, ArrayMinSize, IsArray, IsBoolean, IsDateString, IsEnum, IsInt, IsNumber, IsObject,
@@ -49,6 +50,10 @@ export class CreateTaskDto {
   @Min(0)
   @Max(1000)
   estimate?: number;
+
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
 
   @IsOptional()
   @IsDateString()
@@ -110,6 +115,11 @@ export class UpdateTaskDto {
   @Min(0)
   @Max(1000)
   estimate?: number | null;
+
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsDateString()
+  startDate?: string | null;
 
   @IsOptional()
   @ValidateIf((_, v) => v !== null)
@@ -199,11 +209,64 @@ export class ListTasksQueryDto {
   @IsOptional() @IsDateString() dueBefore?: string;
   @IsOptional() @IsDateString() dueAfter?: string;
   @IsOptional() @Transform(toBool) @IsBoolean() includeArchived?: boolean;
-  @IsOptional() @IsEnum(['createdAt', 'updatedAt', 'dueDate', 'priority', 'number', 'position', 'title'])
-  sort?: 'createdAt' | 'updatedAt' | 'dueDate' | 'priority' | 'number' | 'position' | 'title';
+  /** Hide sub-tasks (boards do this by default). */
+  @IsOptional() @Transform(toBool) @IsBoolean() excludeSubtasks?: boolean;
+  /** Apply a saved view; explicit parameters override its filters. */
+  @IsOptional() @IsString() view?: string;
+  @IsOptional() @IsEnum(['createdAt', 'updatedAt', 'dueDate', 'startDate', 'priority', 'number', 'position', 'title'])
+  sort?: 'createdAt' | 'updatedAt' | 'dueDate' | 'startDate' | 'priority' | 'number' | 'position' | 'title';
   @IsOptional() @IsEnum(['asc', 'desc']) order?: 'asc' | 'desc';
   @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(200) limit?: number;
   @IsOptional() @Type(() => Number) @IsInt() @Min(0) offset?: number;
+}
+
+export class RankTaskDto {
+  /** Column to drop the card into. Defaults to the card's current status. */
+  @IsOptional()
+  @IsString()
+  statusId?: string;
+
+  /** Place the card directly above this card (which must be in the target column). */
+  @IsOptional()
+  @IsString()
+  beforeId?: string;
+
+  /** Place the card directly below this card (which must be in the target column). */
+  @IsOptional()
+  @IsString()
+  afterId?: string;
+}
+
+export class RecentTasksQueryDto {
+  @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(50) limit?: number;
+}
+
+export class BoardQueryDto extends OmitType(ListTasksQueryDto, ['statusId', 'statusCategory', 'sort', 'order', 'offset'] as const) {}
+
+export class BoardStatusDto {
+  id: string;
+  name: string;
+  category: StatusCategory;
+  color: string;
+  position: number;
+  /** Soft limit: the board warns when a column holds more tasks than this. */
+  wipLimit: number | null;
+}
+
+export class BoardColumnDto {
+  status: BoardStatusDto;
+  /** Matching tasks in this column, ignoring the per-column limit. */
+  total: number;
+  /** Ordered by rank; at most `limit` tasks. */
+  tasks: TaskDto[];
+  hasMore: boolean;
+}
+
+export class BoardDto {
+  projectId: string;
+  columns: BoardColumnDto[];
+  /** Epics of the project, for epic swimlanes. */
+  epics: TaskRefDto[];
 }
 
 export class TaskUserDto {
@@ -239,6 +302,7 @@ export class TaskDto {
   labels: TaskLabelDto[];
   reporterId: string | null;
   estimate: number | null;
+  startDate: Date | null;
   dueDate: Date | null;
   parentId: string | null;
   position: number;

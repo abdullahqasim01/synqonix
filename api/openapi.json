@@ -2314,6 +2314,224 @@
         ]
       }
     },
+    "/api/v1/workspaces/{workspaceId}/views": {
+      "get": {
+        "operationId": "ViewsController_list_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": false,
+            "in": "query",
+            "description": "Views of this project; omit for workspace-wide views.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ViewDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "views"
+        ]
+      },
+      "post": {
+        "operationId": "ViewsController_create_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateViewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "views"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/views/{viewId}": {
+      "get": {
+        "operationId": "ViewsController_get_v1",
+        "parameters": [
+          {
+            "name": "viewId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "views"
+        ]
+      },
+      "patch": {
+        "operationId": "ViewsController_update_v1",
+        "parameters": [
+          {
+            "name": "viewId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateViewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "views"
+        ]
+      },
+      "delete": {
+        "operationId": "ViewsController_remove_v1",
+        "parameters": [
+          {
+            "name": "viewId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "views"
+        ]
+      }
+    },
     "/api/v1/workspaces/{workspaceId}/projects/{projectId}/tasks": {
       "post": {
         "operationId": "TasksController_create_v1",
@@ -2499,6 +2717,24 @@
             }
           },
           {
+            "name": "excludeSubtasks",
+            "required": false,
+            "in": "query",
+            "description": "Hide sub-tasks (boards do this by default).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "view",
+            "required": false,
+            "in": "query",
+            "description": "Apply a saved view; explicit parameters override its filters.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "sort",
             "required": false,
             "in": "query",
@@ -2511,6 +2747,7 @@
                 "position",
                 "title",
                 "priority",
+                "startDate",
                 "dueDate"
               ]
             }
@@ -2573,6 +2810,230 @@
           }
         ],
         "summary": "Lists tasks across the projects the caller can see; filter with `projectId`, `assignee=me`, etc.",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/board": {
+      "get": {
+        "operationId": "TasksController_board_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "projectId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "STORY",
+                "BUG",
+                "TASK",
+                "EPIC",
+                "SUBTASK"
+              ]
+            }
+          },
+          {
+            "name": "priority",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "URGENT",
+                "HIGH",
+                "MEDIUM",
+                "LOW",
+                "NONE"
+              ]
+            }
+          },
+          {
+            "name": "assignee",
+            "required": false,
+            "in": "query",
+            "description": "`me`, `none` (unassigned) or a user id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reporter",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "labelId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "parent",
+            "required": false,
+            "in": "query",
+            "description": "`none` for top-level tasks, or a parent task id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Matches the title, or the key / number (`SYN-12`, `12`).",
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "name": "dueBefore",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dueAfter",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeArchived",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeSubtasks",
+            "required": false,
+            "in": "query",
+            "description": "Hide sub-tasks (boards do this by default).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "view",
+            "required": false,
+            "in": "query",
+            "description": "Apply a saved view; explicit parameters override its filters.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "type": "number"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kanban board of a project: columns in workflow order, cards in rank order.",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/recent-tasks": {
+      "get": {
+        "operationId": "TasksController_recentTasks_v1",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tasks the caller opened recently, newest first.",
         "tags": [
           "tasks"
         ]
@@ -2825,6 +3286,96 @@
                 }
               }
             }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/rank": {
+      "post": {
+        "operationId": "TasksController_rank_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RankTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Drop a card into a column at a position (above/below another card, or at the bottom).",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/viewed": {
+      "post": {
+        "operationId": "TasksController_viewed_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
           }
         },
         "security": [
@@ -4854,6 +5405,10 @@
           },
           "position": {
             "type": "number"
+          },
+          "wipLimit": {
+            "type": "number",
+            "nullable": true
           }
         },
         "required": [
@@ -4861,7 +5416,8 @@
           "name",
           "category",
           "color",
-          "position"
+          "position",
+          "wipLimit"
         ]
       },
       "LabelDto": {
@@ -5055,6 +5611,11 @@
           "color": {
             "type": "string",
             "pattern": "^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$"
+          },
+          "wipLimit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 999
           }
         },
         "required": [
@@ -5098,6 +5659,13 @@
           "color": {
             "type": "string",
             "pattern": "^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$"
+          },
+          "wipLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Kanban WIP limit; pass `null` to remove it.",
+            "minimum": 1,
+            "maximum": 999
           }
         }
       },
@@ -5129,6 +5697,266 @@
           "color": {
             "type": "string",
             "pattern": "^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$"
+          }
+        }
+      },
+      "ViewFiltersDto": {
+        "type": "object",
+        "properties": {
+          "statusId": {
+            "type": "string"
+          },
+          "statusCategory": {
+            "type": "string",
+            "enum": [
+              "TODO",
+              "IN_PROGRESS",
+              "DONE"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "STORY",
+              "BUG",
+              "TASK",
+              "EPIC",
+              "SUBTASK"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "URGENT",
+              "HIGH",
+              "MEDIUM",
+              "LOW",
+              "NONE"
+            ]
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "reporter": {
+            "type": "string"
+          },
+          "labelId": {
+            "type": "string"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "dueBefore": {
+            "type": "string"
+          },
+          "dueAfter": {
+            "type": "string"
+          },
+          "includeArchived": {
+            "type": "boolean"
+          },
+          "excludeSubtasks": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ViewDisplayDto": {
+        "type": "object",
+        "properties": {
+          "hiddenStatusIds": {
+            "description": "Board columns the user chose to hide.",
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hiddenColumns": {
+            "description": "List columns to hide, e.g. `priority`, `assignees`, `due`, `labels`.",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cardFields": {
+            "description": "Fields shown on board cards: `key`, `priority`, `assignees`, `labels`, `due`, `estimate`.",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ViewQueryDto": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "$ref": "#/components/schemas/ViewFiltersDto"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "createdAt",
+              "updatedAt",
+              "dueDate",
+              "startDate",
+              "priority",
+              "number",
+              "position",
+              "title"
+            ]
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "swimlane": {
+            "type": "string",
+            "enum": [
+              "none",
+              "assignee",
+              "priority",
+              "epic"
+            ]
+          },
+          "display": {
+            "$ref": "#/components/schemas/ViewDisplayDto"
+          }
+        }
+      },
+      "ViewDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "PERSONAL",
+              "SHARED"
+            ],
+            "type": "string"
+          },
+          "layout": {
+            "enum": [
+              "LIST",
+              "BOARD",
+              "CALENDAR",
+              "TIMELINE"
+            ],
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "query": {
+            "$ref": "#/components/schemas/ViewQueryDto"
+          },
+          "canEdit": {
+            "type": "boolean",
+            "description": "Whether the caller may rename, change or delete it."
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "scope",
+          "layout",
+          "projectId",
+          "ownerId",
+          "query",
+          "canEdit",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateViewDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "layout": {
+            "type": "string",
+            "enum": [
+              "LIST",
+              "BOARD",
+              "CALENDAR",
+              "TIMELINE"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "PERSONAL",
+              "SHARED"
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Omit for a workspace-wide view that spans every project."
+          },
+          "query": {
+            "$ref": "#/components/schemas/ViewQueryDto"
+          }
+        },
+        "required": [
+          "name",
+          "query"
+        ]
+      },
+      "UpdateViewDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "layout": {
+            "type": "string",
+            "enum": [
+              "LIST",
+              "BOARD",
+              "CALENDAR",
+              "TIMELINE"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "PERSONAL",
+              "SHARED"
+            ]
+          },
+          "query": {
+            "$ref": "#/components/schemas/ViewQueryDto"
           }
         }
       },
@@ -5187,6 +6015,9 @@
             "type": "number",
             "minimum": 0,
             "maximum": 1000
+          },
+          "startDate": {
+            "type": "string"
           },
           "dueDate": {
             "type": "string"
@@ -5323,27 +6154,27 @@
             "type": "string"
           },
           "type": {
-            "type": "string",
             "enum": [
               "STORY",
               "BUG",
               "TASK",
               "EPIC",
               "SUBTASK"
-            ]
+            ],
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/TaskStatusDto"
           },
           "priority": {
-            "type": "string",
             "enum": [
               "URGENT",
               "HIGH",
               "MEDIUM",
               "LOW",
               "NONE"
-            ]
+            ],
+            "type": "string"
           },
           "assignees": {
             "type": "array",
@@ -5363,6 +6194,11 @@
           },
           "estimate": {
             "type": "number",
+            "nullable": true
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
             "nullable": true
           },
           "dueDate": {
@@ -5422,6 +6258,7 @@
           "labels",
           "reporterId",
           "estimate",
+          "startDate",
           "dueDate",
           "parentId",
           "position",
@@ -5681,6 +6518,11 @@
             "type": "number",
             "nullable": true
           },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
           "dueDate": {
             "format": "date-time",
             "type": "string",
@@ -5748,6 +6590,7 @@
           "labels",
           "reporterId",
           "estimate",
+          "startDate",
           "dueDate",
           "parentId",
           "position",
@@ -5777,6 +6620,98 @@
         "required": [
           "items",
           "total"
+        ]
+      },
+      "BoardStatusDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "TODO",
+              "IN_PROGRESS",
+              "DONE"
+            ]
+          },
+          "color": {
+            "type": "string"
+          },
+          "position": {
+            "type": "number"
+          },
+          "wipLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Soft limit: the board warns when a column holds more tasks than this."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "category",
+          "color",
+          "position",
+          "wipLimit"
+        ]
+      },
+      "BoardColumnDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/BoardStatusDto"
+          },
+          "total": {
+            "type": "number",
+            "description": "Matching tasks in this column, ignoring the per-column limit."
+          },
+          "tasks": {
+            "description": "Ordered by rank; at most `limit` tasks.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskDto"
+            }
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "status",
+          "total",
+          "tasks",
+          "hasMore"
+        ]
+      },
+      "BoardDto": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BoardColumnDto"
+            }
+          },
+          "epics": {
+            "description": "Epics of the project, for epic swimlanes.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskRefDto"
+            }
+          }
+        },
+        "required": [
+          "projectId",
+          "columns",
+          "epics"
         ]
       },
       "BulkChangesDto": {
@@ -5914,6 +6849,10 @@
             "minimum": 0,
             "maximum": 1000
           },
+          "startDate": {
+            "type": "string",
+            "nullable": true
+          },
           "dueDate": {
             "type": "string",
             "nullable": true
@@ -5927,6 +6866,23 @@
             "type": "object",
             "additionalProperties": true,
             "description": "Map of custom field id to value; `null` clears a value."
+          }
+        }
+      },
+      "RankTaskDto": {
+        "type": "object",
+        "properties": {
+          "statusId": {
+            "type": "string",
+            "description": "Column to drop the card into. Defaults to the card's current status."
+          },
+          "beforeId": {
+            "type": "string",
+            "description": "Place the card directly above this card (which must be in the target column)."
+          },
+          "afterId": {
+            "type": "string",
+            "description": "Place the card directly below this card (which must be in the target column)."
           }
         }
       },

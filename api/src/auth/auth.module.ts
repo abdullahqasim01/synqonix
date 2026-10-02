@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersController } from '../users/users.controller.js';
 import { ApiTokensController } from './api-tokens.controller.js';
 import { ApiTokensService } from './api-tokens.service.js';
+import { AuthTokenService } from './auth-token.service.js';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
@@ -13,8 +14,10 @@ import { JwtAuthGuard } from './jwt-auth.guard.js';
   controllers: [AuthController, ApiTokensController, UsersController],
   providers: [
     AuthService,
+    AuthTokenService,
     ApiTokensService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
+  exports: [AuthTokenService],
 })
 export class AuthModule {}

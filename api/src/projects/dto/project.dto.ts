@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import {
-  ArrayMaxSize, IsArray, IsBoolean, IsEnum, IsHexColor, IsOptional, IsString, IsUUID,
-  Matches, MaxLength, MinLength, ValidateIf,
+  ArrayMaxSize, IsArray, IsBoolean, IsEnum, IsHexColor, IsInt, IsOptional, IsString, IsUUID,
+  Matches, Max, MaxLength, Min, MinLength, ValidateIf,
 } from 'class-validator';
 import { ProjectRole, ProjectTemplate, ProjectVisibility, StatusCategory } from '../../generated/prisma/enums.js';
 
@@ -86,6 +86,12 @@ export class CreateStatusDto {
   @IsOptional()
   @IsHexColor()
   color?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(999)
+  wipLimit?: number;
 }
 
 export class UpdateStatusDto {
@@ -102,6 +108,14 @@ export class UpdateStatusDto {
   @IsOptional()
   @IsHexColor()
   color?: string;
+
+  /** Kanban WIP limit; pass `null` to remove it. */
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsInt()
+  @Min(1)
+  @Max(999)
+  wipLimit?: number | null;
 }
 
 export class DeleteStatusQueryDto {
@@ -148,6 +162,7 @@ export class StatusDto {
   category: StatusCategory;
   color: string;
   position: number;
+  wipLimit: number | null;
 }
 
 export class LabelDto {

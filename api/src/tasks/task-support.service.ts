@@ -11,6 +11,14 @@ type Tx = Prisma.TransactionClient;
 export class TaskSupportService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Serialises position allocation and ranking within a project for the rest of the transaction.
+   * Re-entrant, so callers that already hold it (ranking) can call helpers that take it again.
+   */
+  lockProject(tx: Tx, projectId: string) {
+    return tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${projectId}))`;
+  }
+
   async resolveStatus(tx: Tx, projectId: string, statusId?: string): Promise<ProjectStatus> {
     const status = statusId
       ? await tx.projectStatus.findFirst({ where: { id: statusId, projectId } })

@@ -5,7 +5,8 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { ProjectAccessService } from '../projects/project-access.service.js';
 import { ActivityService, type ActivityEntry } from './activity.service.js';
 import type {
-  BulkChangesDto, BulkResultDto, CreateTaskDto, ListTasksQueryDto, TaskDetailDto, TaskDto, TaskListDto, UpdateTaskDto,
+  BoardDto, BoardQueryDto, BulkChangesDto, BulkResultDto, CreateTaskDto, ListTasksQueryDto, TaskDetailDto, TaskDto,
+  TaskListDto, UpdateTaskDto,
 } from './dto/task.dto.js';
 import { hierarchyError, validParentTypes } from './hierarchy.js';
 import { TaskEvents, type TaskEvent } from './events.js';
@@ -15,6 +16,7 @@ import { refInclude, summaryInclude, toRefDto, toTaskDto, type TaskRow } from '.
 import { TaskSupportService } from './task-support.service.js';
 import { taskKey } from './task-ref.js';
 import { StorageService } from './storage/storage.service.js';
+import { ViewsService } from '../views/views.service.js';
 
 type Tx = Prisma.TransactionClient;
 const POSITION_STEP = 1000;
@@ -29,6 +31,7 @@ export class TasksService {
     private readonly activity: ActivityService,
     private readonly events: EventEmitter2,
     private readonly storage: StorageService,
+    private readonly views: ViewsService,
   ) {}
 
   private emit(events: TaskEvent[]) {
@@ -43,6 +46,7 @@ export class TasksService {
 
     const events: TaskEvent[] = [];
     const created = await this.prisma.$transaction(async (tx) => {
+      await this.support.lockProject(tx, project.id);
       const type = dto.type ?? 'TASK';
       const parent = dto.parentId ? await this.support.resolveParent(tx, project.id, dto.parentId) : null;
       const problem = hierarchyError(type, parent?.type ?? null);
@@ -73,6 +77,7 @@ export class TasksService {
           priority: dto.priority ?? 'NONE',
           reporterId: m.userId,
           estimate: dto.estimate ?? null,
+          startDate: dto.startDate ? new Date(dto.startDate) : null,
           dueDate: dto.dueDate ? new Date(dto.dueDate) : null,
           parentId: parent?.id ?? null,
           position: (last._max.position ?? 0) + POSITION_STEP,
@@ -134,13 +139,15 @@ export class TasksService {
     return rows.map((r) => toTaskDto(r, done.get(r.id) ?? 0));
   }
 
-  async list(m: Membership, q: ListTasksQueryDto): Promise<TaskListDto> {
+  /** Filters shared by the list and the board. 404s when the project is hidden from the caller. */
+  async buildWhere(m: Membership, q: ListTasksQueryDto): Promise<Prisma.TaskWhereInput> {
     if (q.projectId) await this.projects.load(m, q.projectId); // 404 for hidden/unknown projects
 
     const and: Prisma.TaskWhereInput[] = [];
     if (q.statusId) and.push({ statusId: q.statusId });
     if (q.statusCategory) and.push({ status: { category: q.statusCategory } });
     if (q.type) and.push({ type: q.type });
+    if (q.excludeSubtasks) and.push({ type: { not: 'SUBTASK' } });
     if (q.priority) and.push({ priority: q.priority });
     if (q.reporter) and.push({ reporterId: q.reporter === 'me' ? m.userId : q.reporter });
     if (q.labelId) and.push({ labels: { some: { labelId: q.labelId } } });
@@ -162,7 +169,7 @@ export class TasksService {
       });
     }
 
-    const where: Prisma.TaskWhereInput = {
+    return {
       project: {
         workspaceId: m.workspaceId,
         ...this.projects.visibleProjects(m),
@@ -172,10 +179,18 @@ export class TasksService {
       AND: and,
     };
 
+  }
+
+  async list(m: Membership, rawQuery: ListTasksQueryDto): Promise<TaskListDto> {
+    const q = await this.views.resolveQuery(m, rawQuery);
+    const where = await this.buildWhere(m, q);
+
     const order = q.order ?? (q.sort === 'createdAt' || q.sort === 'updatedAt' ? 'desc' : 'asc');
     const sort = q.sort ?? 'position';
     const orderBy: Prisma.TaskOrderByWithRelationInput[] = [
-      sort === 'dueDate' ? { dueDate: { sort: order, nulls: 'last' } } : ({ [sort]: order } as Prisma.TaskOrderByWithRelationInput),
+      sort === 'dueDate' || sort === 'startDate'
+        ? { [sort]: { sort: order, nulls: 'last' } } as Prisma.TaskOrderByWithRelationInput
+        : ({ [sort]: order } as Prisma.TaskOrderByWithRelationInput),
       { id: 'asc' },
     ];
 
@@ -186,6 +201,42 @@ export class TasksService {
       this.prisma.task.count({ where }),
     ]);
     return { items: await this.toDtos(rows), total };
+  }
+
+
+  /** Kanban data: one column per workflow status, each ranked by position. */
+  async board(m: Membership, projectId: string, rawQuery: BoardQueryDto): Promise<BoardDto> {
+    const { project } = await this.projects.load(m, projectId);
+    const q = await this.views.resolveQuery(m, { ...rawQuery, projectId });
+    const base = await this.buildWhere(m, { ...q, projectId, excludeSubtasks: q.excludeSubtasks ?? true });
+    const limit = Math.min(q.limit ?? 50, 200);
+
+    const statuses = await this.prisma.projectStatus.findMany({ where: { projectId }, orderBy: { position: 'asc' } });
+    const columns = await Promise.all(
+      statuses.map(async (status) => {
+        const where: Prisma.TaskWhereInput = { AND: [base, { statusId: status.id }] };
+        const [rows, total] = await Promise.all([
+          this.prisma.task.findMany({
+            where, include: summaryInclude, take: limit, orderBy: [{ position: 'asc' }, { id: 'asc' }],
+          }),
+          this.prisma.task.count({ where }),
+        ]);
+        return {
+          status: {
+            id: status.id, name: status.name, category: status.category, color: status.color,
+            position: status.position, wipLimit: status.wipLimit,
+          },
+          total,
+          tasks: await this.toDtos(rows),
+          hasMore: total > rows.length,
+        };
+      }),
+    );
+    const epics = await this.prisma.task.findMany({
+      where: { projectId: project.id, type: 'EPIC', archivedAt: null },
+      include: refInclude, orderBy: { number: 'asc' }, take: 100,
+    });
+    return { projectId, columns, epics: epics.map(toRefDto) };
   }
 
   async get(m: Membership, ref: string): Promise<TaskDetailDto> {
@@ -199,7 +250,7 @@ export class TasksService {
       include: {
         ...summaryInclude,
         parent: { include: refInclude },
-        children: { where: { archivedAt: null }, include: summaryInclude, orderBy: { position: 'asc' } },
+        children: { where: { archivedAt: null }, include: summaryInclude, orderBy: { number: 'asc' } },
         relationsFrom: { include: { to: { include: refInclude } } },
         relationsTo: { include: { from: { include: refInclude } } },
         checklists: { include: { items: { orderBy: { position: 'asc' } } }, orderBy: { position: 'asc' } },
@@ -325,6 +376,10 @@ export class TasksService {
       const status = await this.support.resolveStatus(tx, project.id, dto.statusId);
       data.status = { connect: { id: status.id } };
       Object.assign(data, this.support.lifecycle(status.category, task));
+      // A card changed through a form (not dragged) joins the bottom of its new column.
+      await this.support.lockProject(tx, project.id);
+      const last = await tx.task.aggregate({ where: { projectId: project.id }, _max: { position: true } });
+      data.position = (last._max.position ?? 0) + POSITION_STEP;
       entries.push({ type: 'updated', field: 'status', from: task.status.name, to: status.name });
       events.push({ name: TaskEvents.statusChanged, payload: { ...base, from: task.status.name, to: status.name } });
     }
@@ -336,6 +391,13 @@ export class TasksService {
     if (dto.estimate !== undefined && dto.estimate !== task.estimate) {
       data.estimate = dto.estimate;
       entries.push({ type: 'updated', field: 'estimate', from: task.estimate, to: dto.estimate });
+    }
+    if (dto.startDate !== undefined) {
+      const next = dto.startDate ? new Date(dto.startDate) : null;
+      if ((next?.getTime() ?? null) !== (task.startDate?.getTime() ?? null)) {
+        data.startDate = next;
+        entries.push({ type: 'updated', field: 'startDate', from: task.startDate?.toISOString() ?? null, to: next?.toISOString() ?? null });
+      }
     }
     if (dto.dueDate !== undefined) {
       const next = dto.dueDate ? new Date(dto.dueDate) : null;
@@ -413,13 +475,17 @@ export class TasksService {
   }
 
   async remove(m: Membership, ref: string) {
-    const { task, manage } = await this.access.load(m, ref, { write: true });
+    const { task, manage, project } = await this.access.load(m, ref, { write: true });
     if (!manage && task.reporterId !== m.userId) {
       throw new ForbiddenException('Only the reporter or a project admin can delete a task');
     }
     const files = await this.prisma.attachment.findMany({ where: { taskId: task.id }, select: { storageKey: true } });
     await this.prisma.task.delete({ where: { id: task.id } });
     await Promise.all(files.map((f) => this.storage.delete(f.storageKey).catch(() => undefined)));
+    this.events.emit(TaskEvents.deleted, {
+      workspaceId: m.workspaceId, projectId: project.id, taskId: task.id,
+      taskKey: taskKey(project.key, task.number), actorId: m.userId,
+    });
   }
 
   // ---------- bulk ----------

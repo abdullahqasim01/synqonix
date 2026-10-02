@@ -181,7 +181,7 @@ export class ProjectsService {
       return await this.prisma.projectStatus.create({
         data: {
           projectId, name: dto.name.trim(), category: dto.category,
-          ...(dto.color && { color: dto.color }), position: (last._max.position ?? -1) + 1,
+          ...(dto.color && { color: dto.color }), ...(dto.wipLimit && { wipLimit: dto.wipLimit }), position: (last._max.position ?? -1) + 1,
         },
       });
     } catch (e) {
@@ -204,6 +204,7 @@ export class ProjectsService {
           ...(dto.name !== undefined && { name: dto.name.trim() }),
           ...(dto.category !== undefined && { category: dto.category }),
           ...(dto.color !== undefined && { color: dto.color }),
+          ...(dto.wipLimit !== undefined && { wipLimit: dto.wipLimit }),
         },
       });
     } catch (e) {

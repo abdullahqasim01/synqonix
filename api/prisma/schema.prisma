@@ -27,6 +27,8 @@ model User {
   projectMembers ProjectMember[]
   taskAssignees  TaskAssignee[]
   taskWatchers   TaskWatcher[]
+  views          View[]
+  recentTasks    RecentTask[]
 }
 
 /// One login on one device. Refresh tokens rotate within a session.
@@ -222,6 +224,7 @@ model Project {
   labels       Label[]
   tasks        Task[]
   customFields CustomField[]
+  views        View[]
 
   @@unique([workspaceId, key])
 }
@@ -247,6 +250,8 @@ model ProjectStatus {
   category  StatusCategory
   color     String         @default("#6366f1")
   position  Int
+  /// Kanban work-in-progress limit for this column (soft: the board warns, nothing is blocked).
+  wipLimit  Int?
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   tasks   Task[]
@@ -329,6 +334,8 @@ model Task {
   priority    TaskPriority @default(NONE)
   reporterId  String?
   estimate    Float?
+  /// Planned start, used by the timeline view.
+  startDate   DateTime?
   dueDate     DateTime?
   parentId    String?
   /// Sort order inside the project (boards rank within a status).
@@ -354,6 +361,7 @@ model Task {
   customValues  TaskCustomValue[]
   relationsFrom TaskRelation[]    @relation("RelationFrom")
   relationsTo   TaskRelation[]    @relation("RelationTo")
+  recentTasks   RecentTask[]
 
   @@unique([projectId, number])
   @@index([projectId, statusId, position])
@@ -501,4 +509,52 @@ model TaskCustomValue {
   field CustomField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 
   @@id([taskId, fieldId])
+}
+
+// ---------- Phase 4: views ----------
+
+enum ViewLayout {
+  LIST
+  BOARD
+  CALENDAR
+  TIMELINE
+}
+
+enum ViewScope {
+  PERSONAL
+  SHARED
+}
+
+/// A saved combination of layout, filters, sorting, grouping and display options.
+model View {
+  id          String     @id @default(uuid(7))
+  workspaceId String
+  /// Null for workspace-wide views (e.g. across all projects).
+  projectId   String?
+  ownerId     String
+  name        String
+  scope       ViewScope  @default(PERSONAL)
+  layout      ViewLayout @default(LIST)
+  /// See ViewQueryDto: { filters, sort, order, swimlane, display }.
+  query       Json
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  owner   User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, projectId])
+  @@index([ownerId])
+}
+
+model RecentTask {
+  userId   String
+  taskId   String
+  viewedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@id([userId, taskId])
+  @@index([userId, viewedAt])
 }

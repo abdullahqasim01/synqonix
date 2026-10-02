@@ -9,6 +9,11 @@ export const TaskEvents = {
   assigned: 'task.assigned',
   commented: 'task.commented',
   mentioned: 'task.mentioned',
+  /** Position (and possibly status) changed by dragging a card. */
+  ranked: 'task.ranked',
+  deleted: 'task.deleted',
+  /** Moved to another project; `fromProjectId` is where it used to live. */
+  moved: 'task.moved',
 } as const;
 
 export interface TaskEventBase {
@@ -40,10 +45,21 @@ export interface TaskMentionedEvent extends TaskEventBase {
   commentId?: string;
 }
 
+export interface TaskRankedEvent extends TaskEventBase {
+  statusId: string;
+}
+
+export interface TaskMovedEvent extends TaskEventBase {
+  fromProjectId: string;
+}
+
 export type TaskEvent =
   | { name: typeof TaskEvents.created; payload: TaskEventBase }
   | { name: typeof TaskEvents.updated; payload: TaskEventBase & { fields: string[] } }
   | { name: typeof TaskEvents.statusChanged; payload: TaskStatusChangedEvent }
   | { name: typeof TaskEvents.assigned; payload: TaskAssignedEvent }
   | { name: typeof TaskEvents.commented; payload: TaskCommentedEvent }
-  | { name: typeof TaskEvents.mentioned; payload: TaskMentionedEvent };
+  | { name: typeof TaskEvents.mentioned; payload: TaskMentionedEvent }
+  | { name: typeof TaskEvents.ranked; payload: TaskRankedEvent }
+  | { name: typeof TaskEvents.deleted; payload: TaskEventBase }
+  | { name: typeof TaskEvents.moved; payload: TaskMovedEvent };

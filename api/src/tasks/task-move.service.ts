@@ -38,6 +38,7 @@ export class TaskMoveService {
 
     const keysBefore = new Map<string, string>();
     const moved = await this.prisma.$transaction(async (tx) => {
+      await this.support.lockProject(tx, target.id);
       // The subtree, parents before children.
       const subtree = [root];
       for (let frontier = [root.id]; frontier.length; ) {
@@ -112,10 +113,12 @@ export class TaskMoveService {
 
     for (const t of moved) {
       const row = await this.prisma.task.findUniqueOrThrow({ where: { id: t.id }, select: { number: true } });
-      this.events.emit(TaskEvents.updated, {
+      const base = {
         workspaceId: m.workspaceId, projectId: target.id, taskId: t.id,
-        taskKey: taskKey(target.key, row.number), actorId: m.userId, fields: ['project'],
-      });
+        taskKey: taskKey(target.key, row.number), actorId: m.userId,
+      };
+      this.events.emit(TaskEvents.updated, { ...base, fields: ['project'] });
+      this.events.emit(TaskEvents.moved, { ...base, fromProjectId: source.id });
     }
     return this.tasks.detail(m, root.id);
   }
@@ -130,6 +133,7 @@ export class TaskMoveService {
       include: { assignees: true, labels: true, customValues: true, checklists: { include: { items: true } } },
     });
     const created = await this.prisma.$transaction(async (tx) => {
+      await this.support.lockProject(tx, project.id);
       const status = await this.support.resolveStatus(tx, project.id);
       const { nextTaskNumber } = await tx.project.update({
         where: { id: project.id }, data: { nextTaskNumber: { increment: 1 } }, select: { nextTaskNumber: true },
@@ -146,6 +150,7 @@ export class TaskMoveService {
           priority: source.priority,
           reporterId: m.userId,
           estimate: source.estimate,
+          startDate: source.startDate,
           dueDate: source.dueDate,
           parentId: source.parentId,
           position: (last._max.position ?? 0) + POSITION_STEP,

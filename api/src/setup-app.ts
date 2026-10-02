@@ -3,6 +3,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { SocketIoAdapter } from './realtime/socket-adapter.js';
 
 export function setupApp(app: NestExpressApplication, webUrl: string) {
   app.use(helmet());
@@ -13,6 +14,7 @@ export function setupApp(app: NestExpressApplication, webUrl: string) {
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }),
   );
+  app.useWebSocketAdapter(new SocketIoAdapter(app, webUrl));
   app.enableShutdownHooks();
 }
 

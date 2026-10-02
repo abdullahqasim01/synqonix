@@ -30,6 +30,7 @@ export function toTaskDto(t: TaskRow, doneSubtasks = 0): TaskDto {
     labels: t.labels.map((l) => ({ id: l.label.id, name: l.label.name, color: l.label.color })),
     reporterId: t.reporterId,
     estimate: t.estimate,
+    startDate: t.startDate,
     dueDate: t.dueDate,
     parentId: t.parentId,
     position: t.position,
