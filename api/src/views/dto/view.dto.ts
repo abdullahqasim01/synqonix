@@ -17,6 +17,9 @@ export class ViewFiltersDto {
   @IsOptional() @IsString() assignee?: string;
   @IsOptional() @IsString() reporter?: string;
   @IsOptional() @IsString() labelId?: string;
+  @IsOptional() @IsString() sprintId?: string;
+  @IsOptional() @IsString() releaseId?: string;
+  @IsOptional() @IsString() milestoneId?: string;
   @IsOptional() @IsString() parent?: string;
   @IsOptional() @IsString() @MaxLength(200) q?: string;
   @IsOptional() @IsDateString() dueBefore?: string;

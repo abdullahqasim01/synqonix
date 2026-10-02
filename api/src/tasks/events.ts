@@ -55,11 +55,11 @@ export interface TaskMovedEvent extends TaskEventBase {
 
 export type TaskEvent =
   | { name: typeof TaskEvents.created; payload: TaskEventBase }
-  | { name: typeof TaskEvents.updated; payload: TaskEventBase & { fields: string[] } }
+  | { name: typeof TaskEvents.updated; payload: TaskEventBase & { fields: string[]; sprintIds?: string[] } }
   | { name: typeof TaskEvents.statusChanged; payload: TaskStatusChangedEvent }
   | { name: typeof TaskEvents.assigned; payload: TaskAssignedEvent }
   | { name: typeof TaskEvents.commented; payload: TaskCommentedEvent }
   | { name: typeof TaskEvents.mentioned; payload: TaskMentionedEvent }
   | { name: typeof TaskEvents.ranked; payload: TaskRankedEvent }
-  | { name: typeof TaskEvents.deleted; payload: TaskEventBase }
+  | { name: typeof TaskEvents.deleted; payload: TaskEventBase & { sprintIds?: string[] } }
   | { name: typeof TaskEvents.moved; payload: TaskMovedEvent };

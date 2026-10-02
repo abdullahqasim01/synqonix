@@ -2717,6 +2717,33 @@
             }
           },
           {
+            "name": "sprintId",
+            "required": false,
+            "in": "query",
+            "description": "`none` (backlog), `active` (the running sprint) or a sprint id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "releaseId",
+            "required": false,
+            "in": "query",
+            "description": "`none` or a release id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "required": false,
+            "in": "query",
+            "description": "`none` or a milestone id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "excludeSubtasks",
             "required": false,
             "in": "query",
@@ -2923,6 +2950,33 @@
             "in": "query",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": false,
+            "in": "query",
+            "description": "`none` (backlog), `active` (the running sprint) or a sprint id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "releaseId",
+            "required": false,
+            "in": "query",
+            "description": "`none` or a release id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "required": false,
+            "in": "query",
+            "description": "`none` or a milestone id.",
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -3339,6 +3393,60 @@
           }
         ],
         "summary": "Drop a card into a column at a position (above/below another card, or at the bottom).",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/backlog-rank": {
+      "post": {
+        "operationId": "TasksController_backlogRank_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BacklogRankDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Backlog planning: drop a task into a sprint (or the backlog) above/below another task of that list.",
         "tags": [
           "tasks"
         ]
@@ -4593,6 +4701,1402 @@
           "projects"
         ]
       }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints": {
+      "get": {
+        "operationId": "AgileController_listSprints_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PLANNED",
+                "ACTIVE",
+                "COMPLETED"
+              ]
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SprintDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      },
+      "post": {
+        "operationId": "AgileController_createSprint_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSprintDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SprintDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}": {
+      "get": {
+        "operationId": "AgileController_getSprint_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SprintDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      },
+      "patch": {
+        "operationId": "AgileController_updateSprint_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSprintDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SprintDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      },
+      "delete": {
+        "operationId": "AgileController_deleteSprint_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/start": {
+      "post": {
+        "operationId": "AgileController_startSprint_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartSprintDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SprintDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/complete": {
+      "post": {
+        "operationId": "AgileController_completeSprint_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteSprintDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompleteSprintResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/tasks": {
+      "post": {
+        "operationId": "AgileController_addTasks_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SprintTasksDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/tasks/{taskRef}": {
+      "delete": {
+        "operationId": "AgileController_removeTask_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "taskRef",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/burndown": {
+      "get": {
+        "operationId": "AgileController_burndown_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BurndownDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/backlog": {
+      "get": {
+        "operationId": "AgileController_backlog_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "STORY",
+                "BUG",
+                "TASK",
+                "EPIC",
+                "SUBTASK"
+              ]
+            }
+          },
+          {
+            "name": "priority",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "URGENT",
+                "HIGH",
+                "MEDIUM",
+                "LOW",
+                "NONE"
+              ]
+            }
+          },
+          {
+            "name": "assignee",
+            "required": false,
+            "in": "query",
+            "description": "`me`, `none` (unassigned) or a user id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reporter",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "labelId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "parent",
+            "required": false,
+            "in": "query",
+            "description": "`none` for top-level tasks, or a parent task id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Matches the title, or the key / number (`SYN-12`, `12`).",
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "name": "dueBefore",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dueAfter",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "releaseId",
+            "required": false,
+            "in": "query",
+            "description": "`none` or a release id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "required": false,
+            "in": "query",
+            "description": "`none` or a milestone id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "view",
+            "required": false,
+            "in": "query",
+            "description": "Apply a saved view; explicit parameters override its filters.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "type": "number"
+            }
+          },
+          {
+            "name": "includeDone",
+            "required": false,
+            "in": "query",
+            "description": "Also list finished tasks that are not in a sprint.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacklogDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/velocity": {
+      "get": {
+        "operationId": "AgileController_velocity_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VelocityDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/flow": {
+      "get": {
+        "operationId": "AgileController_flow_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 365,
+              "type": "number"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlowDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/epics": {
+      "get": {
+        "operationId": "AgileController_epics_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EpicProgressDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/releases": {
+      "get": {
+        "operationId": "AgileController_listReleases_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReleaseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      },
+      "post": {
+        "operationId": "AgileController_createRelease_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReleaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/releases/{releaseId}": {
+      "patch": {
+        "operationId": "AgileController_updateRelease_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReleaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      },
+      "delete": {
+        "operationId": "AgileController_deleteRelease_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/releases/{releaseId}/ship": {
+      "post": {
+        "operationId": "AgileController_ship_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShipReleaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/releases/{releaseId}/notes": {
+      "get": {
+        "operationId": "AgileController_notes_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseNotesDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/milestones": {
+      "get": {
+        "operationId": "AgileController_listMilestones_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MilestoneDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      },
+      "post": {
+        "operationId": "AgileController_createMilestone_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMilestoneDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MilestoneDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/milestones/{milestoneId}": {
+      "patch": {
+        "operationId": "AgileController_updateMilestone_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMilestoneDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MilestoneDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      },
+      "delete": {
+        "operationId": "AgileController_deleteMilestone_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "agile"
+        ]
+      }
     }
   },
   "info": {
@@ -5308,6 +6812,28 @@
             ],
             "type": "string"
           },
+          "methodology": {
+            "enum": [
+              "SCRUM",
+              "KANBAN"
+            ],
+            "type": "string"
+          },
+          "estimationUnit": {
+            "enum": [
+              "POINTS",
+              "TSHIRT",
+              "HOURS"
+            ],
+            "type": "string"
+          },
+          "sprintDurationDays": {
+            "type": "number"
+          },
+          "definitionOfDone": {
+            "type": "string",
+            "nullable": true
+          },
           "archived": {
             "type": "boolean"
           },
@@ -5329,6 +6855,10 @@
           "leadId",
           "visibility",
           "template",
+          "methodology",
+          "estimationUnit",
+          "sprintDurationDays",
+          "definitionOfDone",
           "archived",
           "createdAt",
           "canManage"
@@ -5364,6 +6894,22 @@
               "KANBAN",
               "BUG_TRACKING",
               "BLANK"
+            ]
+          },
+          "methodology": {
+            "type": "string",
+            "description": "Defaults from the template: Scrum for the Scrum template, Kanban otherwise.",
+            "enum": [
+              "SCRUM",
+              "KANBAN"
+            ]
+          },
+          "estimationUnit": {
+            "type": "string",
+            "enum": [
+              "POINTS",
+              "TSHIRT",
+              "HOURS"
             ]
           },
           "leadId": {
@@ -5470,6 +7016,28 @@
             ],
             "type": "string"
           },
+          "methodology": {
+            "enum": [
+              "SCRUM",
+              "KANBAN"
+            ],
+            "type": "string"
+          },
+          "estimationUnit": {
+            "enum": [
+              "POINTS",
+              "TSHIRT",
+              "HOURS"
+            ],
+            "type": "string"
+          },
+          "sprintDurationDays": {
+            "type": "number"
+          },
+          "definitionOfDone": {
+            "type": "string",
+            "nullable": true
+          },
           "archived": {
             "type": "boolean"
           },
@@ -5503,6 +7071,10 @@
           "leadId",
           "visibility",
           "template",
+          "methodology",
+          "estimationUnit",
+          "sprintDurationDays",
+          "definitionOfDone",
           "archived",
           "createdAt",
           "canManage",
@@ -5533,6 +7105,34 @@
             "type": "string",
             "nullable": true,
             "description": "Pass `null` to clear the lead."
+          },
+          "methodology": {
+            "type": "string",
+            "description": "Switching away from Scrum requires that no sprint is active.",
+            "enum": [
+              "SCRUM",
+              "KANBAN"
+            ]
+          },
+          "estimationUnit": {
+            "type": "string",
+            "enum": [
+              "POINTS",
+              "TSHIRT",
+              "HOURS"
+            ]
+          },
+          "sprintDurationDays": {
+            "type": "number",
+            "description": "Default length of a new sprint, in days.",
+            "minimum": 1,
+            "maximum": 60
+          },
+          "definitionOfDone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Markdown checklist shown on every task. Pass `null` to clear.",
+            "maxLength": 10000
           }
         }
       },
@@ -5733,6 +7333,15 @@
             "type": "string"
           },
           "labelId": {
+            "type": "string"
+          },
+          "sprintId": {
+            "type": "string"
+          },
+          "releaseId": {
+            "type": "string"
+          },
+          "milestoneId": {
             "type": "string"
           },
           "parent": {
@@ -6021,6 +7630,22 @@
           "parentId": {
             "type": "string"
           },
+          "sprintId": {
+            "type": "string",
+            "description": "Plan the task into a (planned or active) sprint of this project."
+          },
+          "releaseId": {
+            "type": "string",
+            "description": "Fix version."
+          },
+          "milestoneId": {
+            "type": "string"
+          },
+          "acceptanceCriteria": {
+            "type": "string",
+            "description": "Markdown.",
+            "maxLength": 20000
+          },
           "customFields": {
             "type": "object",
             "additionalProperties": true,
@@ -6127,6 +7752,45 @@
           "color"
         ]
       },
+      "SprintRefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "PLANNED",
+              "ACTIVE",
+              "COMPLETED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "state"
+        ]
+      },
+      "NamedRefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
       "TaskDto": {
         "type": "object",
         "properties": {
@@ -6187,6 +7851,33 @@
           "reporterId": {
             "type": "string",
             "nullable": true
+          },
+          "sprint": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SprintRefDto"
+              }
+            ]
+          },
+          "release": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NamedRefDto"
+              }
+            ]
+          },
+          "milestone": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NamedRefDto"
+              }
+            ]
           },
           "estimate": {
             "type": "number",
@@ -6253,6 +7944,9 @@
           "assignees",
           "labels",
           "reporterId",
+          "sprint",
+          "release",
+          "milestone",
           "estimate",
           "startDate",
           "dueDate",
@@ -6400,6 +8094,10 @@
             "type": "string",
             "nullable": true
           },
+          "acceptanceCriteria": {
+            "type": "string",
+            "nullable": true
+          },
           "parent": {
             "nullable": true,
             "type": "object",
@@ -6510,6 +8208,33 @@
             "type": "string",
             "nullable": true
           },
+          "sprint": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SprintRefDto"
+              }
+            ]
+          },
+          "release": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NamedRefDto"
+              }
+            ]
+          },
+          "milestone": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NamedRefDto"
+              }
+            ]
+          },
           "estimate": {
             "type": "number",
             "nullable": true
@@ -6564,6 +8289,7 @@
         },
         "required": [
           "description",
+          "acceptanceCriteria",
           "parent",
           "subtasks",
           "relations",
@@ -6585,6 +8311,9 @@
           "assignees",
           "labels",
           "reporterId",
+          "sprint",
+          "release",
+          "milestone",
           "estimate",
           "startDate",
           "dueDate",
@@ -6752,6 +8481,19 @@
           },
           "archived": {
             "type": "boolean"
+          },
+          "sprintId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Sprint to move every selected task into, or `null` for the backlog."
+          },
+          "releaseId": {
+            "type": "string",
+            "nullable": true
+          },
+          "milestoneId": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -6858,6 +8600,24 @@
             "nullable": true,
             "description": "Pass `null` to detach from the parent."
           },
+          "sprintId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Move to a sprint, or `null` for the backlog."
+          },
+          "releaseId": {
+            "type": "string",
+            "nullable": true
+          },
+          "milestoneId": {
+            "type": "string",
+            "nullable": true
+          },
+          "acceptanceCriteria": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000
+          },
           "customFields": {
             "type": "object",
             "additionalProperties": true,
@@ -6881,6 +8641,26 @@
             "description": "Place the card directly below this card (which must be in the target column)."
           }
         }
+      },
+      "BacklogRankDto": {
+        "type": "object",
+        "properties": {
+          "sprintId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Sprint to drop the task into, or `null` for the backlog."
+          },
+          "beforeId": {
+            "type": "string",
+            "description": "Place the task above this one (which must be in the same list)."
+          },
+          "afterId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sprintId"
+        ]
       },
       "MoveTaskDto": {
         "type": "object",
@@ -7138,6 +8918,979 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "SprintSummaryDto": {
+        "type": "object",
+        "properties": {
+          "committedPoints": {
+            "type": "number"
+          },
+          "committedTasks": {
+            "type": "number"
+          },
+          "addedPoints": {
+            "type": "number",
+            "description": "Scope added after the sprint started."
+          },
+          "removedPoints": {
+            "type": "number",
+            "description": "Scope removed after the sprint started."
+          },
+          "completedPoints": {
+            "type": "number"
+          },
+          "completedTasks": {
+            "type": "number"
+          },
+          "carriedOverPoints": {
+            "type": "number"
+          },
+          "carriedOverTasks": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "committedPoints",
+          "committedTasks",
+          "addedPoints",
+          "removedPoints",
+          "completedPoints",
+          "completedTasks",
+          "carriedOverPoints",
+          "carriedOverTasks"
+        ]
+      },
+      "SprintStatsDto": {
+        "type": "object",
+        "properties": {
+          "taskCount": {
+            "type": "number"
+          },
+          "doneCount": {
+            "type": "number"
+          },
+          "points": {
+            "type": "number",
+            "description": "Sum of estimates (unit-agnostic)."
+          },
+          "donePoints": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "taskCount",
+          "doneCount",
+          "points",
+          "donePoints"
+        ]
+      },
+      "SprintDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "number": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "enum": [
+              "PLANNED",
+              "ACTIVE",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "endDate": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "capacity": {
+            "type": "number",
+            "nullable": true
+          },
+          "startedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "completedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "summary": {
+            "nullable": true,
+            "description": "Committed scope once started; full results once completed.",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SprintSummaryDto"
+              }
+            ]
+          },
+          "stats": {
+            "$ref": "#/components/schemas/SprintStatsDto"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "name",
+          "goal",
+          "state",
+          "startDate",
+          "endDate",
+          "capacity",
+          "startedAt",
+          "completedAt",
+          "summary",
+          "stats",
+          "createdAt"
+        ]
+      },
+      "CreateSprintDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Defaults to \"Sprint <number>\".",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "goal": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "number",
+            "description": "Planned capacity in the project's estimation unit.",
+            "minimum": 0,
+            "maximum": 100000
+          }
+        }
+      },
+      "UpdateSprintDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "startDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "endDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "capacity": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 100000
+          }
+        }
+      },
+      "StartSprintDto": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "description": "Defaults to the planned start, or now."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Defaults to the planned end, or start + the project's sprint length."
+          },
+          "capacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000
+          }
+        }
+      },
+      "CompleteSprintDto": {
+        "type": "object",
+        "properties": {
+          "carryOver": {
+            "type": "string",
+            "description": "What happens to unfinished tasks.",
+            "enum": [
+              "BACKLOG",
+              "NEXT_SPRINT",
+              "SPRINT"
+            ]
+          },
+          "targetSprintId": {
+            "type": "string",
+            "description": "Required when `carryOver` is `SPRINT`: a planned sprint of the project."
+          }
+        },
+        "required": [
+          "carryOver"
+        ]
+      },
+      "CompleteSprintResultDto": {
+        "type": "object",
+        "properties": {
+          "sprint": {
+            "$ref": "#/components/schemas/SprintDto"
+          },
+          "nextSprint": {
+            "nullable": true,
+            "description": "The sprint unfinished tasks were moved to, if any.",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SprintDto"
+              }
+            ]
+          },
+          "carriedOverCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "sprint",
+          "nextSprint",
+          "carriedOverCount"
+        ]
+      },
+      "SprintTasksDto": {
+        "type": "object",
+        "properties": {
+          "taskIds": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "taskIds"
+        ]
+      },
+      "SnapshotDto": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "START",
+              "DAILY",
+              "SCOPE_CHANGE",
+              "COMPLETE"
+            ]
+          },
+          "scopePoints": {
+            "type": "number"
+          },
+          "donePoints": {
+            "type": "number"
+          },
+          "remainingPoints": {
+            "type": "number"
+          },
+          "scopeTasks": {
+            "type": "number"
+          },
+          "doneTasks": {
+            "type": "number"
+          },
+          "remainingTasks": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "at",
+          "reason",
+          "scopePoints",
+          "donePoints",
+          "remainingPoints",
+          "scopeTasks",
+          "doneTasks",
+          "remainingTasks"
+        ]
+      },
+      "IdealPointDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "`YYYY-MM-DD` (UTC)."
+          },
+          "remaining": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "remaining"
+        ]
+      },
+      "BurndownDto": {
+        "type": "object",
+        "properties": {
+          "sprint": {
+            "$ref": "#/components/schemas/SprintDto"
+          },
+          "points": {
+            "description": "Every recorded point: at start, daily, on scope changes and at completion.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SnapshotDto"
+            }
+          },
+          "ideal": {
+            "description": "Straight line from the committed scope to zero at the sprint end.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdealPointDto"
+            }
+          }
+        },
+        "required": [
+          "sprint",
+          "points",
+          "ideal"
+        ]
+      },
+      "BacklogSprintDto": {
+        "type": "object",
+        "properties": {
+          "sprint": {
+            "$ref": "#/components/schemas/SprintDto"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskDto"
+            }
+          }
+        },
+        "required": [
+          "sprint",
+          "tasks"
+        ]
+      },
+      "BacklogSectionDto": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "points": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "tasks",
+          "total",
+          "points"
+        ]
+      },
+      "BacklogDto": {
+        "type": "object",
+        "properties": {
+          "sprints": {
+            "description": "Planned and active sprints, active first, then by number.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BacklogSprintDto"
+            }
+          },
+          "backlog": {
+            "$ref": "#/components/schemas/BacklogSectionDto"
+          },
+          "epics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskRefDto"
+            }
+          }
+        },
+        "required": [
+          "sprints",
+          "backlog",
+          "epics"
+        ]
+      },
+      "VelocityEntryDto": {
+        "type": "object",
+        "properties": {
+          "sprintId": {
+            "type": "string"
+          },
+          "number": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "completedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "committedPoints": {
+            "type": "number"
+          },
+          "completedPoints": {
+            "type": "number"
+          },
+          "addedPoints": {
+            "type": "number"
+          },
+          "carriedOverPoints": {
+            "type": "number"
+          },
+          "completedTasks": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "sprintId",
+          "number",
+          "name",
+          "completedAt",
+          "committedPoints",
+          "completedPoints",
+          "addedPoints",
+          "carriedOverPoints",
+          "completedTasks"
+        ]
+      },
+      "VelocityDto": {
+        "type": "object",
+        "properties": {
+          "unit": {
+            "type": "string"
+          },
+          "sprints": {
+            "description": "Oldest first.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VelocityEntryDto"
+            }
+          },
+          "average": {
+            "type": "number",
+            "description": "Average completed points over the returned sprints."
+          },
+          "recentAverage": {
+            "type": "number",
+            "description": "Average over the three most recent sprints."
+          }
+        },
+        "required": [
+          "unit",
+          "sprints",
+          "average",
+          "recentAverage"
+        ]
+      },
+      "FlowStatsDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number"
+          },
+          "avgLeadDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "medianLeadDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "p85LeadDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "avgCycleDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "medianCycleDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "p85CycleDays": {
+            "type": "number",
+            "nullable": true
+          }
+        },
+        "required": [
+          "count",
+          "avgLeadDays",
+          "medianLeadDays",
+          "p85LeadDays",
+          "avgCycleDays",
+          "medianCycleDays",
+          "p85CycleDays"
+        ]
+      },
+      "ThroughputDto": {
+        "type": "object",
+        "properties": {
+          "weekStart": {
+            "type": "string",
+            "description": "Monday of the week, `YYYY-MM-DD`."
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "weekStart",
+          "count"
+        ]
+      },
+      "FlowTaskDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "STORY",
+              "BUG",
+              "TASK",
+              "EPIC",
+              "SUBTASK"
+            ]
+          },
+          "completedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "leadTimeDays": {
+            "type": "number",
+            "description": "From creation to completion."
+          },
+          "cycleTimeDays": {
+            "type": "number",
+            "nullable": true,
+            "description": "From the first move into progress to completion."
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "type",
+          "completedAt",
+          "leadTimeDays",
+          "cycleTimeDays"
+        ]
+      },
+      "FlowDto": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/FlowStatsDto"
+          },
+          "throughput": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThroughputDto"
+            }
+          },
+          "wip": {
+            "type": "number",
+            "description": "Tasks currently in progress."
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlowTaskDto"
+            }
+          }
+        },
+        "required": [
+          "days",
+          "stats",
+          "throughput",
+          "wip",
+          "tasks"
+        ]
+      },
+      "EpicProgressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "childCount": {
+            "type": "number"
+          },
+          "doneCount": {
+            "type": "number"
+          },
+          "points": {
+            "type": "number"
+          },
+          "donePoints": {
+            "type": "number"
+          },
+          "progress": {
+            "type": "number",
+            "description": "0-100, by estimate when the children have estimates, otherwise by count."
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "title",
+          "status",
+          "startDate",
+          "dueDate",
+          "childCount",
+          "doneCount",
+          "points",
+          "donePoints",
+          "progress"
+        ]
+      },
+      "CountsDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "done": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "done"
+        ]
+      },
+      "ReleaseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "enum": [
+              "UNRELEASED",
+              "RELEASED",
+              "ARCHIVED"
+            ],
+            "type": "string"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "releaseDate": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "releasedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "counts": {
+            "$ref": "#/components/schemas/CountsDto"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "status",
+          "startDate",
+          "releaseDate",
+          "releasedAt",
+          "counts",
+          "createdAt"
+        ]
+      },
+      "CreateReleaseDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 20000
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "releaseDate": {
+            "type": "string",
+            "description": "Planned release date."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateReleaseDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000
+          },
+          "startDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "releaseDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Use `POST …/ship` to release; this only toggles archiving.",
+            "enum": [
+              "UNRELEASED",
+              "ARCHIVED"
+            ]
+          }
+        }
+      },
+      "ShipReleaseDto": {
+        "type": "object",
+        "properties": {
+          "moveUnfinishedTo": {
+            "type": "string",
+            "description": "Move unfinished tasks to this (unreleased) release instead of leaving them on the shipped one."
+          }
+        }
+      },
+      "ReleaseNoteSectionDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "title"
+              ]
+            }
+          }
+        },
+        "required": [
+          "title",
+          "tasks"
+        ]
+      },
+      "ReleaseNotesDto": {
+        "type": "object",
+        "properties": {
+          "markdown": {
+            "type": "string"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReleaseNoteSectionDto"
+            }
+          },
+          "unfinished": {
+            "type": "number",
+            "description": "Tasks on the release that are not done yet (not listed in the notes)."
+          }
+        },
+        "required": [
+          "markdown",
+          "sections",
+          "unfinished"
+        ]
+      },
+      "MilestoneDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "closedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "counts": {
+            "$ref": "#/components/schemas/CountsDto"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "dueDate",
+          "closedAt",
+          "counts",
+          "createdAt"
+        ]
+      },
+      "CreateMilestoneDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "dueDate": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateMilestoneDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 5000
+          },
+          "dueDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "closed": {
+            "type": "boolean",
+            "description": "Close or reopen."
           }
         }
       }

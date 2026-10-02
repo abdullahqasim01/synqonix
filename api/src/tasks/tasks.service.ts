@@ -57,6 +57,11 @@ export class TasksService {
       const labels = await this.support.assertLabels(tx, project.id, dto.labelIds ?? []);
       const defs = await this.support.customFieldDefs(tx, project.id);
       const custom = this.support.normalizeCustomInput(defs, dto.customFields ?? {});
+      this.support.assertEstimate(project, dto.estimate);
+      const sprint = dto.sprintId ? await this.support.resolveSprint(tx, project.id, dto.sprintId) : null;
+      if (sprint && type === 'EPIC') throw new BadRequestException('Epics cannot be planned into a sprint');
+      const release = dto.releaseId ? await this.support.resolveRelease(tx, project.id, dto.releaseId) : null;
+      const milestone = dto.milestoneId ? await this.support.resolveMilestone(tx, project.id, dto.milestoneId) : null;
 
       // Atomic counter: concurrent creators each get a distinct number.
       const { nextTaskNumber } = await tx.project.update({
@@ -80,6 +85,10 @@ export class TasksService {
           startDate: dto.startDate ? new Date(dto.startDate) : null,
           dueDate: dto.dueDate ? new Date(dto.dueDate) : null,
           parentId: parent?.id ?? null,
+          sprintId: sprint?.id ?? null,
+          releaseId: release?.id ?? null,
+          milestoneId: milestone?.id ?? null,
+          acceptanceCriteria: dto.acceptanceCriteria?.trim() || null,
           position: (last._max.position ?? 0) + POSITION_STEP,
           ...this.support.lifecycle(status.category, { startedAt: null, completedAt: null }),
           assignees: { create: assigneeIds.map((userId) => ({ userId })) },
@@ -93,12 +102,14 @@ export class TasksService {
         },
       });
       await this.activity.record(tx, task.id, m.userId, [{ type: 'created' }]);
+      if (sprint) await this.support.trackSprintChange(tx, task, null, sprint);
       return task;
     });
 
     const key = taskKey(project.key, created.number);
     const base = { workspaceId: m.workspaceId, projectId: project.id, taskId: created.id, taskKey: key, actorId: m.userId };
     events.push({ name: TaskEvents.created, payload: base });
+    if (created.sprintId) events.push({ name: TaskEvents.updated, payload: { ...base, fields: ['sprint'], sprintIds: [created.sprintId] } });
     if (dto.assigneeIds?.length) events.push({ name: TaskEvents.assigned, payload: { ...base, assigneeIds: [...new Set(dto.assigneeIds)] } });
     await this.pushMentions(events, base, project, m.workspaceId, extractMentionedUserIds(dto.description), 'description');
     this.emit(events);
@@ -148,6 +159,13 @@ export class TasksService {
     if (q.statusCategory) and.push({ status: { category: q.statusCategory } });
     if (q.type) and.push({ type: q.type });
     if (q.excludeSubtasks) and.push({ type: { not: 'SUBTASK' } });
+    if (q.sprintId === 'none') and.push({ sprintId: null });
+    else if (q.sprintId === 'active') and.push({ sprint: { state: 'ACTIVE' } });
+    else if (q.sprintId) and.push({ sprintId: q.sprintId });
+    if (q.releaseId === 'none') and.push({ releaseId: null });
+    else if (q.releaseId) and.push({ releaseId: q.releaseId });
+    if (q.milestoneId === 'none') and.push({ milestoneId: null });
+    else if (q.milestoneId) and.push({ milestoneId: q.milestoneId });
     if (q.priority) and.push({ priority: q.priority });
     if (q.reporter) and.push({ reporterId: q.reporter === 'me' ? m.userId : q.reporter });
     if (q.labelId) and.push({ labels: { some: { labelId: q.labelId } } });
@@ -285,6 +303,7 @@ export class TasksService {
     return {
       ...summary,
       description: row.description,
+      acceptanceCriteria: row.acceptanceCriteria,
       parent: row.parent ? toRefDto(row.parent) : null,
       subtasks,
       relations,
@@ -324,7 +343,7 @@ export class TasksService {
       where: { id: taskId },
       include: {
         status: true, parent: true, children: { select: { type: true } },
-        assignees: true, labels: { include: { label: true } },
+        assignees: true, labels: { include: { label: true } }, sprint: true,
       },
     });
     const entries: ActivityEntry[] = [];
@@ -389,6 +408,7 @@ export class TasksService {
       entries.push({ type: 'updated', field: 'priority', from: task.priority, to: dto.priority });
     }
     if (dto.estimate !== undefined && dto.estimate !== task.estimate) {
+      this.support.assertEstimate(project, dto.estimate);
       data.estimate = dto.estimate;
       entries.push({ type: 'updated', field: 'estimate', from: task.estimate, to: dto.estimate });
     }
@@ -404,6 +424,50 @@ export class TasksService {
       if ((next?.getTime() ?? null) !== (task.dueDate?.getTime() ?? null)) {
         data.dueDate = next;
         entries.push({ type: 'updated', field: 'dueDate', from: task.dueDate?.toISOString() ?? null, to: next?.toISOString() ?? null });
+      }
+    }
+
+    // ---- agile planning fields
+    let sprintTouched = false;
+    let nextSprint: Pick<import('../generated/prisma/client.js').Sprint, 'id' | 'name' | 'state'> | null | undefined;
+    if (dto.sprintId !== undefined) {
+      if (dto.sprintId === (task.sprintId ?? null)) nextSprint = undefined;
+      else if (dto.sprintId === null) nextSprint = null;
+      else nextSprint = await this.support.resolveSprint(tx, project.id, dto.sprintId);
+    }
+    // A task finished in a closed sprint that is reopened goes back to the backlog.
+    if (nextSprint === undefined && task.sprint?.state === 'COMPLETED' && data.status && !(await this.isDone(tx, dto.statusId))) {
+      nextSprint = null;
+    }
+    if (nextSprint !== undefined) {
+      if (task.sprint?.state === 'COMPLETED' && task.status.category === 'DONE' && !(data.status && !(await this.isDone(tx, dto.statusId)))) {
+        throw new BadRequestException('This task was finished in a closed sprint');
+      }
+      if (nextSprint && newType === 'EPIC') throw new BadRequestException('Epics cannot be planned into a sprint');
+      if (nextSprint && task.archivedAt) throw new BadRequestException('Archived tasks cannot be planned into a sprint');
+      const openFrom = task.sprint && task.sprint.state !== 'COMPLETED' ? task.sprint : null;
+      await this.support.trackSprintChange(tx, task, openFrom, nextSprint);
+      data.sprint = nextSprint ? { connect: { id: nextSprint.id } } : { disconnect: true };
+      entries.push({ type: 'updated', field: 'sprint', from: task.sprint?.name ?? null, to: nextSprint?.name ?? null });
+      sprintTouched = true;
+    }
+    if (dto.releaseId !== undefined && dto.releaseId !== (task.releaseId ?? null)) {
+      const release = dto.releaseId ? await this.support.resolveRelease(tx, project.id, dto.releaseId) : null;
+      const before = task.releaseId ? await tx.release.findUnique({ where: { id: task.releaseId } }) : null;
+      data.release = release ? { connect: { id: release.id } } : { disconnect: true };
+      entries.push({ type: 'updated', field: 'release', from: before?.name ?? null, to: release?.name ?? null });
+    }
+    if (dto.milestoneId !== undefined && dto.milestoneId !== (task.milestoneId ?? null)) {
+      const milestone = dto.milestoneId ? await this.support.resolveMilestone(tx, project.id, dto.milestoneId) : null;
+      const before = task.milestoneId ? await tx.milestone.findUnique({ where: { id: task.milestoneId } }) : null;
+      data.milestone = milestone ? { connect: { id: milestone.id } } : { disconnect: true };
+      entries.push({ type: 'updated', field: 'milestone', from: before?.name ?? null, to: milestone?.name ?? null });
+    }
+    if (dto.acceptanceCriteria !== undefined) {
+      const next = dto.acceptanceCriteria?.trim() || null;
+      if (next !== task.acceptanceCriteria) {
+        data.acceptanceCriteria = next;
+        entries.push({ type: 'updated', field: 'acceptanceCriteria' });
       }
     }
 
@@ -458,17 +522,35 @@ export class TasksService {
     if (Object.keys(data).length) await tx.task.update({ where: { id: taskId }, data });
     else await tx.task.update({ where: { id: taskId }, data: { updatedAt: new Date() } });
     await this.activity.record(tx, taskId, m.userId, entries);
-    events.push({ name: TaskEvents.updated, payload: { ...base, fields: entries.map((e) => e.field ?? e.type) } });
+    const fields = entries.map((e) => e.field ?? e.type);
+    // Sprints whose burndown may have changed: the old and new one, or the current one if progress changed.
+    const sprintIds = new Set<string>();
+    if (sprintTouched) {
+      if (task.sprintId) sprintIds.add(task.sprintId);
+      if (nextSprint) sprintIds.add(nextSprint.id);
+    } else if (task.sprintId && fields.some((f) => f === 'status' || f === 'estimate')) {
+      sprintIds.add(task.sprintId);
+    }
+    events.push({ name: TaskEvents.updated, payload: { ...base, fields, ...(sprintIds.size ? { sprintIds: [...sprintIds] } : {}) } });
+  }
+
+  private async isDone(tx: Tx, statusId: string | undefined): Promise<boolean> {
+    if (!statusId) return false;
+    return (await tx.projectStatus.findUnique({ where: { id: statusId } }))?.category === 'DONE';
   }
 
   // ---------- archive / delete ----------
 
   async setArchived(m: Membership, ref: string, archived: boolean): Promise<TaskDetailDto> {
-    const { task } = await this.access.load(m, ref, { write: true });
+    const { task, project } = await this.access.load(m, ref, { write: true });
     if (archived !== (task.archivedAt !== null)) {
       await this.prisma.$transaction(async (tx) => {
         await tx.task.update({ where: { id: task.id }, data: { archivedAt: archived ? new Date() : null } });
         await this.activity.record(tx, task.id, m.userId, [{ type: archived ? 'archived' : 'restored' }]);
+      });
+      this.events.emit(TaskEvents.updated, {
+        workspaceId: m.workspaceId, projectId: task.projectId, taskId: task.id, taskKey: taskKey(project.key, task.number),
+        actorId: m.userId, fields: ['archived'], ...(task.sprintId ? { sprintIds: [task.sprintId] } : {}),
       });
     }
     return this.detail(m, task.id);
@@ -485,6 +567,7 @@ export class TasksService {
     this.events.emit(TaskEvents.deleted, {
       workspaceId: m.workspaceId, projectId: project.id, taskId: task.id,
       taskKey: taskKey(project.key, task.number), actorId: m.userId,
+      ...(task.sprintId ? { sprintIds: [task.sprintId] } : {}),
     });
   }
 
@@ -515,6 +598,9 @@ export class TasksService {
         if (changes.priority !== undefined) dto.priority = changes.priority;
         if (changes.assigneeIds !== undefined) dto.assigneeIds = changes.assigneeIds;
         if (changes.dueDate !== undefined) dto.dueDate = changes.dueDate;
+        if (changes.sprintId !== undefined) dto.sprintId = changes.sprintId;
+        if (changes.releaseId !== undefined) dto.releaseId = changes.releaseId;
+        if (changes.milestoneId !== undefined) dto.milestoneId = changes.milestoneId;
         if (changes.addLabelIds || changes.removeLabelIds) {
           const labels = new Set(row.labels.map((l) => l.labelId));
           changes.addLabelIds?.forEach((id) => labels.add(id));

@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { HttpThrottlerGuard } from './common/http-throttler.guard.js';
 import { validateEnv } from './config/env.js';
 import { HealthController } from './health/health.controller.js';
+import { AgileModule } from './agile/agile.module.js';
 import { AuditModule } from './audit/audit.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { MailModule } from './mail/mail.module.js';
@@ -19,6 +21,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module.js';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
     EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({
       throttlers: [{ ttl: 60_000, limit: 120 }],
       // Lets e2e suites that create many accounts run without tripping limits.
@@ -31,6 +34,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module.js';
     WorkspacesModule,
     ViewsModule,
     TasksModule,
+    AgileModule,
     RealtimeModule,
   ],
   controllers: [HealthController],

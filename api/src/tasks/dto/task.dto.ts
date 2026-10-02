@@ -4,7 +4,7 @@ import {
   ArrayMaxSize, ArrayMinSize, IsArray, IsBoolean, IsDateString, IsEnum, IsInt, IsNumber, IsObject,
   IsOptional, IsString, Max, MaxLength, Min, MinLength, ValidateIf, ValidateNested,
 } from 'class-validator';
-import { StatusCategory, TaskPriority, TaskType } from '../../generated/prisma/enums.js';
+import { SprintState, StatusCategory, TaskPriority, TaskType } from '../../generated/prisma/enums.js';
 
 const toBool = ({ value }: { value: unknown }) => value === 'true' || value === true;
 
@@ -62,6 +62,26 @@ export class CreateTaskDto {
   @IsOptional()
   @IsString()
   parentId?: string;
+
+  /** Plan the task into a (planned or active) sprint of this project. */
+  @IsOptional()
+  @IsString()
+  sprintId?: string;
+
+  /** Fix version. */
+  @IsOptional()
+  @IsString()
+  releaseId?: string;
+
+  @IsOptional()
+  @IsString()
+  milestoneId?: string;
+
+  /** Markdown. */
+  @IsOptional()
+  @IsString()
+  @MaxLength(20_000)
+  acceptanceCriteria?: string;
 
   /** Map of custom field id to value. */
   @IsOptional()
@@ -132,6 +152,28 @@ export class UpdateTaskDto {
   @IsString()
   parentId?: string | null;
 
+  /** Move to a sprint, or `null` for the backlog. */
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  sprintId?: string | null;
+
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  releaseId?: string | null;
+
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  milestoneId?: string | null;
+
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  @MaxLength(20_000)
+  acceptanceCriteria?: string | null;
+
   /** Map of custom field id to value; `null` clears a value. */
   @IsOptional()
   @IsObject()
@@ -172,6 +214,22 @@ export class BulkChangesDto {
   @IsOptional()
   @IsBoolean()
   archived?: boolean;
+
+  /** Sprint to move every selected task into, or `null` for the backlog. */
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  sprintId?: string | null;
+
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  releaseId?: string | null;
+
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  milestoneId?: string | null;
 }
 
 export class BulkUpdateTasksDto {
@@ -209,6 +267,12 @@ export class ListTasksQueryDto {
   @IsOptional() @IsDateString() dueBefore?: string;
   @IsOptional() @IsDateString() dueAfter?: string;
   @IsOptional() @Transform(toBool) @IsBoolean() includeArchived?: boolean;
+  /** `none` (backlog), `active` (the running sprint) or a sprint id. */
+  @IsOptional() @IsString() sprintId?: string;
+  /** `none` or a release id. */
+  @IsOptional() @IsString() releaseId?: string;
+  /** `none` or a milestone id. */
+  @IsOptional() @IsString() milestoneId?: string;
   /** Hide sub-tasks (boards do this by default). */
   @IsOptional() @Transform(toBool) @IsBoolean() excludeSubtasks?: boolean;
   /** Apply a saved view; explicit parameters override its filters. */
@@ -287,6 +351,17 @@ export class TaskLabelDto {
   color: string;
 }
 
+export class SprintRefDto {
+  id: string;
+  name: string;
+  state: SprintState;
+}
+
+export class NamedRefDto {
+  id: string;
+  name: string;
+}
+
 export class TaskDto {
   id: string;
   /** Human key, e.g. `SYN-12`. */
@@ -301,6 +376,9 @@ export class TaskDto {
   assignees: TaskUserDto[];
   labels: TaskLabelDto[];
   reporterId: string | null;
+  sprint: SprintRefDto | null;
+  release: NamedRefDto | null;
+  milestone: NamedRefDto | null;
   estimate: number | null;
   startDate: Date | null;
   dueDate: Date | null;
@@ -368,6 +446,7 @@ export class TaskCustomValueDto {
 
 export class TaskDetailDto extends TaskDto {
   description: string | null;
+  acceptanceCriteria: string | null;
   parent: TaskRefDto | null;
   subtasks: TaskDto[];
   relations: TaskRelationDto[];

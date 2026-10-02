@@ -3,7 +3,7 @@ import {
   ArrayMaxSize, IsArray, IsBoolean, IsEnum, IsHexColor, IsInt, IsOptional, IsString, IsUUID,
   Matches, Max, MaxLength, Min, MinLength, ValidateIf,
 } from 'class-validator';
-import { ProjectRole, ProjectTemplate, ProjectVisibility, StatusCategory } from '../../generated/prisma/enums.js';
+import { EstimationUnit, Methodology, ProjectRole, ProjectTemplate, ProjectVisibility, StatusCategory } from '../../generated/prisma/enums.js';
 
 export const PROJECT_KEY_PATTERN = /^[A-Z][A-Z0-9]{1,9}$/;
 
@@ -31,6 +31,15 @@ export class CreateProjectDto {
   @IsEnum(ProjectTemplate)
   template?: ProjectTemplate;
 
+  /** Defaults from the template: Scrum for the Scrum template, Kanban otherwise. */
+  @IsOptional()
+  @IsEnum(Methodology)
+  methodology?: Methodology;
+
+  @IsOptional()
+  @IsEnum(EstimationUnit)
+  estimationUnit?: EstimationUnit;
+
   @IsOptional()
   @IsString()
   leadId?: string;
@@ -57,6 +66,29 @@ export class UpdateProjectDto {
   @ValidateIf((_, v) => v !== null)
   @IsString()
   leadId?: string | null;
+
+  /** Switching away from Scrum requires that no sprint is active. */
+  @IsOptional()
+  @IsEnum(Methodology)
+  methodology?: Methodology;
+
+  @IsOptional()
+  @IsEnum(EstimationUnit)
+  estimationUnit?: EstimationUnit;
+
+  /** Default length of a new sprint, in days. */
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(60)
+  sprintDurationDays?: number;
+
+  /** Markdown checklist shown on every task. Pass `null` to clear. */
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  @MaxLength(10_000)
+  definitionOfDone?: string | null;
 }
 
 export class ListProjectsQueryDto {
@@ -187,6 +219,10 @@ export class ProjectDto {
   leadId: string | null;
   visibility: ProjectVisibility;
   template: ProjectTemplate;
+  methodology: Methodology;
+  estimationUnit: EstimationUnit;
+  sprintDurationDays: number;
+  definitionOfDone: string | null;
   archived: boolean;
   createdAt: Date;
   /** Whether the caller can change this project's settings. */

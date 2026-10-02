@@ -1,10 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import type { Label, Prisma, Project, ProjectStatus } from '../generated/prisma/client.js';
+import type { Label, Prisma, Project, ProjectStatus, Sprint } from '../generated/prisma/client.js';
 import type { StatusCategory, TaskType } from '../generated/prisma/enums.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { type FieldDef, normalizeCustomValue } from './custom-values.js';
 
 type Tx = Prisma.TransactionClient;
+
+/** Sizes allowed when a project estimates in T-shirt sizes (XS, S, M, L, XL, XXL). */
+export const TSHIRT_SIZES = [1, 2, 3, 5, 8, 13];
 
 /** Validation shared by creating, updating, moving and duplicating tasks. */
 @Injectable()
@@ -91,5 +94,56 @@ export class TaskSupportService {
       if (category === 'IN_PROGRESS' && !current.startedAt) data.startedAt = now;
     }
     return data;
+  }
+
+  /** T-shirt projects only accept the fixed size scale; other units take any non-negative number. */
+  assertEstimate(project: Pick<Project, 'estimationUnit'>, estimate: number | null | undefined) {
+    if (estimate === null || estimate === undefined) return;
+    if (project.estimationUnit === 'TSHIRT' && !TSHIRT_SIZES.includes(estimate)) {
+      throw new BadRequestException(`Estimates in T-shirt sizes must be one of: ${TSHIRT_SIZES.join(', ')}`);
+    }
+  }
+
+  /** A sprint of this project that can still take work (planned or active). */
+  async resolveSprint(tx: Tx, projectId: string, sprintId: string): Promise<Sprint> {
+    const sprint = await tx.sprint.findFirst({ where: { id: sprintId, projectId } });
+    if (!sprint) throw new BadRequestException('Unknown sprint for this project');
+    if (sprint.state === 'COMPLETED') throw new BadRequestException('That sprint is already completed');
+    return sprint;
+  }
+
+  async resolveRelease(tx: Tx, projectId: string, releaseId: string) {
+    const release = await tx.release.findFirst({ where: { id: releaseId, projectId } });
+    if (!release) throw new BadRequestException('Unknown release for this project');
+    return release;
+  }
+
+  async resolveMilestone(tx: Tx, projectId: string, milestoneId: string) {
+    const milestone = await tx.milestone.findFirst({ where: { id: milestoneId, projectId } });
+    if (!milestone) throw new BadRequestException('Unknown milestone for this project');
+    return milestone;
+  }
+
+  /**
+   * Records a task entering or leaving a sprint: closes its open history entry in `from`
+   * and opens one in `to`. Does not touch `Task.sprintId`.
+   */
+  async trackSprintChange(
+    tx: Tx,
+    task: { id: string; estimate: number | null },
+    from: { id: string } | null,
+    to: Pick<Sprint, 'id' | 'state'> | null,
+  ) {
+    if (from) {
+      await tx.sprintTask.updateMany({
+        where: { sprintId: from.id, taskId: task.id, removedAt: null },
+        data: { removedAt: new Date(), outcome: 'REMOVED' },
+      });
+    }
+    if (to) {
+      await tx.sprintTask.create({
+        data: { sprintId: to.id, taskId: task.id, estimateAtAdd: task.estimate, addedAfterStart: to.state === 'ACTIVE' },
+      });
+    }
   }
 }

@@ -8,6 +8,7 @@ import {
   BoardDto, BoardQueryDto, BulkResultDto, BulkUpdateTasksDto, CreateTaskDto, ListTasksQueryDto, MoveTaskDto,
   RankTaskDto, RecentTasksQueryDto, TaskDetailDto, TaskDto, TaskListDto, UpdateTaskDto,
 } from './dto/task.dto.js';
+import { BacklogRankDto } from '../agile/dto/agile.dto.js';
 import { TaskMoveService } from './task-move.service.js';
 import { RecentTasksService } from './recent-tasks.service.js';
 import { TaskRankService } from './task-rank.service.js';
@@ -98,6 +99,13 @@ export class TasksController {
   @ApiOkResponse({ type: TaskDto })
   rank(@CurrentMembership() m: Membership, @Param('taskId') ref: string, @Body() dto: RankTaskDto) {
     return this.ranks.rank(m, ref, dto);
+  }
+
+  /** Backlog planning: drop a task into a sprint (or the backlog) above/below another task of that list. */
+  @Post('tasks/:taskId/backlog-rank') @HttpCode(200) @RequirePermission('task.write')
+  @ApiOkResponse({ type: TaskDto })
+  backlogRank(@CurrentMembership() m: Membership, @Param('taskId') ref: string, @Body() dto: BacklogRankDto) {
+    return this.ranks.rankInBacklog(m, ref, dto);
   }
 
   @Post('tasks/:taskId/viewed') @HttpCode(204) @RequirePermission('task.read')

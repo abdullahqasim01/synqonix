@@ -37,6 +37,7 @@ export class TaskMoveService {
     if (target.archivedAt) throw new BadRequestException('The destination project is archived');
 
     const keysBefore = new Map<string, string>();
+    const sprintsLeft = new Set<string>();
     const moved = await this.prisma.$transaction(async (tx) => {
       await this.support.lockProject(tx, target.id);
       // The subtree, parents before children.
@@ -77,10 +78,20 @@ export class TaskMoveService {
             number: nextTaskNumber - 1,
             statusId: status.id,
             position,
+            // sprints, releases and milestones belong to a project
+            sprintId: null, releaseId: null, milestoneId: null,
             ...(t.id === root.id ? { parentId: null } : {}),
             ...this.support.lifecycle(status.category, t),
           },
         });
+
+        if (t.sprintId) {
+          await tx.sprintTask.updateMany({
+            where: { sprintId: t.sprintId, taskId: t.id, removedAt: null },
+            data: { removedAt: new Date(), outcome: 'REMOVED' },
+          });
+          sprintsLeft.add(t.sprintId);
+        }
 
         // labels by name
         const labels = await tx.taskLabel.findMany({ where: { taskId: t.id }, include: { label: true } });
@@ -117,7 +128,7 @@ export class TaskMoveService {
         workspaceId: m.workspaceId, projectId: target.id, taskId: t.id,
         taskKey: taskKey(target.key, row.number), actorId: m.userId,
       };
-      this.events.emit(TaskEvents.updated, { ...base, fields: ['project'] });
+      this.events.emit(TaskEvents.updated, { ...base, fields: ['project'], sprintIds: [...sprintsLeft] });
       this.events.emit(TaskEvents.moved, { ...base, fromProjectId: source.id });
     }
     return this.tasks.detail(m, root.id);

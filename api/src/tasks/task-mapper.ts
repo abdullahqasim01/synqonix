@@ -8,6 +8,9 @@ export const summaryInclude = {
   status: true,
   assignees: { include: { user: { select: { id: true, name: true } } } },
   labels: { include: { label: true } },
+  sprint: { select: { id: true, name: true, state: true } },
+  release: { select: { id: true, name: true } },
+  milestone: { select: { id: true, name: true } },
   _count: { select: { children: { where: { archivedAt: null } }, comments: true } },
 } satisfies Prisma.TaskInclude;
 
@@ -29,6 +32,9 @@ export function toTaskDto(t: TaskRow, doneSubtasks = 0): TaskDto {
     assignees: t.assignees.map((a) => ({ userId: a.userId, name: a.user.name })),
     labels: t.labels.map((l) => ({ id: l.label.id, name: l.label.name, color: l.label.color })),
     reporterId: t.reporterId,
+    sprint: t.sprint,
+    release: t.release,
+    milestone: t.milestone,
     estimate: t.estimate,
     startDate: t.startDate,
     dueDate: t.dueDate,

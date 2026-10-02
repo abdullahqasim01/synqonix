@@ -25,6 +25,8 @@ export class ProjectsService {
     return {
       id: p.id, workspaceId: p.workspaceId, key: p.key, name: p.name, description: p.description,
       leadId: p.leadId, visibility: p.visibility, template: p.template,
+      methodology: p.methodology, estimationUnit: p.estimationUnit,
+      sprintDurationDays: p.sprintDurationDays, definitionOfDone: p.definitionOfDone,
       archived: p.archivedAt !== null, createdAt: p.createdAt, canManage,
     };
   }
@@ -65,6 +67,8 @@ export class ProjectsService {
           workspaceId: m.workspaceId, key: dto.key, name: dto.name.trim(),
           description: dto.description?.trim() || null,
           visibility: dto.visibility ?? 'WORKSPACE', template, leadId,
+          methodology: dto.methodology ?? (template === 'SCRUM' ? 'SCRUM' : 'KANBAN'),
+          estimationUnit: dto.estimationUnit ?? 'POINTS',
           statuses: { create: seed.statuses.map((s, position) => ({ ...s, position })) },
           labels: { create: seed.labels },
           members: {
@@ -89,6 +93,10 @@ export class ProjectsService {
   async update(m: Membership, projectId: string, dto: UpdateProjectDto): Promise<ProjectDto> {
     const { project } = await this.access.load(m, projectId, { manage: true });
     if (dto.leadId) await this.assertWorkspaceMember(m.workspaceId, dto.leadId);
+    if (dto.methodology && dto.methodology !== project.methodology) {
+      const active = await this.prisma.sprint.count({ where: { projectId: project.id, state: 'ACTIVE' } });
+      if (active > 0) throw new BadRequestException('Complete the active sprint before changing the methodology');
+    }
     const updated = await this.prisma.project.update({
       where: { id: project.id },
       data: {
@@ -96,6 +104,10 @@ export class ProjectsService {
         ...(dto.description !== undefined && { description: dto.description.trim() || null }),
         ...(dto.visibility !== undefined && { visibility: dto.visibility }),
         ...(dto.leadId !== undefined && { leadId: dto.leadId }),
+        ...(dto.methodology !== undefined && { methodology: dto.methodology }),
+        ...(dto.estimationUnit !== undefined && { estimationUnit: dto.estimationUnit }),
+        ...(dto.sprintDurationDays !== undefined && { sprintDurationDays: dto.sprintDurationDays }),
+        ...(dto.definitionOfDone !== undefined && { definitionOfDone: dto.definitionOfDone?.trim() || null }),
       },
     });
     // A new lead of a private project needs to be able to see it.

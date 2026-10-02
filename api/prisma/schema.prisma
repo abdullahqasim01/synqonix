@@ -203,20 +203,28 @@ model TeamMember {
 }
 
 model Project {
-  id             String            @id @default(uuid(7))
-  workspaceId    String
+  id                 String            @id @default(uuid(7))
+  workspaceId        String
   /// Short uppercase key used in task ids, e.g. SYN-123.
-  key            String
-  name           String
-  description    String?
-  leadId         String?
-  visibility     ProjectVisibility @default(WORKSPACE)
-  template       ProjectTemplate   @default(BLANK)
+  key                String
+  name               String
+  description        String?
+  leadId             String?
+  visibility         ProjectVisibility @default(WORKSPACE)
+  template           ProjectTemplate   @default(BLANK)
   /// Counter used by phase 3 to allocate task numbers.
-  nextTaskNumber Int               @default(1)
-  archivedAt     DateTime?
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  nextTaskNumber     Int               @default(1)
+  methodology        Methodology       @default(KANBAN)
+  /// How estimates are entered; values are plain numbers either way.
+  estimationUnit     EstimationUnit    @default(POINTS)
+  /// Suggested length of a new sprint.
+  sprintDurationDays Int               @default(14)
+  nextSprintNumber   Int               @default(1)
+  /// Markdown checklist every task should satisfy before it is done.
+  definitionOfDone   String?
+  archivedAt         DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
 
   workspace    Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   members      ProjectMember[]
@@ -225,6 +233,9 @@ model Project {
   tasks        Task[]
   customFields CustomField[]
   views        View[]
+  sprints      Sprint[]
+  releases     Release[]
+  milestones   Milestone[]
 
   @@unique([workspaceId, key])
 }
@@ -322,34 +333,43 @@ enum CustomFieldType {
 }
 
 model Task {
-  id          String       @id @default(uuid(7))
-  projectId   String
+  id                 String       @id @default(uuid(7))
+  projectId          String
   /// Per-project sequence; the public key is `<project key>-<number>`.
-  number      Int
-  type        TaskType     @default(TASK)
-  title       String
+  number             Int
+  type               TaskType     @default(TASK)
+  title              String
   /// Markdown.
-  description String?
-  statusId    String
-  priority    TaskPriority @default(NONE)
-  reporterId  String?
-  estimate    Float?
+  description        String?
+  statusId           String
+  priority           TaskPriority @default(NONE)
+  reporterId         String?
+  estimate           Float?
+  /// Current sprint (null = backlog). Finished tasks keep pointing at the sprint that completed them.
+  sprintId           String?
+  releaseId          String?
+  milestoneId        String?
+  /// Markdown.
+  acceptanceCriteria String?
   /// Planned start, used by the timeline view.
-  startDate   DateTime?
-  dueDate     DateTime?
-  parentId    String?
+  startDate          DateTime?
+  dueDate            DateTime?
+  parentId           String?
   /// Sort order inside the project (boards rank within a status).
-  position    Float
-  startedAt   DateTime?
-  completedAt DateTime?
-  archivedAt  DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  position           Float
+  startedAt          DateTime?
+  completedAt        DateTime?
+  archivedAt         DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 
-  project  Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  status   ProjectStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
-  parent   Task?         @relation("TaskHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
-  children Task[]        @relation("TaskHierarchy")
+  project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  status    ProjectStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
+  sprint    Sprint?       @relation(fields: [sprintId], references: [id], onDelete: SetNull)
+  release   Release?      @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+  milestone Milestone?    @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+  parent    Task?         @relation("TaskHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Task[]        @relation("TaskHierarchy")
 
   assignees     TaskAssignee[]
   labels        TaskLabel[]
@@ -362,10 +382,14 @@ model Task {
   relationsFrom TaskRelation[]    @relation("RelationFrom")
   relationsTo   TaskRelation[]    @relation("RelationTo")
   recentTasks   RecentTask[]
+  sprintTasks   SprintTask[]
 
   @@unique([projectId, number])
   @@index([projectId, statusId, position])
   @@index([parentId])
+  @@index([sprintId])
+  @@index([releaseId])
+  @@index([milestoneId])
 }
 
 model TaskAssignee {
@@ -557,4 +581,140 @@ model RecentTask {
 
   @@id([userId, taskId])
   @@index([userId, viewedAt])
+}
+
+// ---------- Phase 5: agile ----------
+
+enum Methodology {
+  SCRUM
+  KANBAN
+}
+
+enum EstimationUnit {
+  POINTS
+  /// XS..XXL, stored as 1, 2, 3, 5, 8, 13.
+  TSHIRT
+  HOURS
+}
+
+enum SprintState {
+  PLANNED
+  ACTIVE
+  COMPLETED
+}
+
+enum SprintTaskOutcome {
+  COMPLETED
+  CARRIED_OVER
+  REMOVED
+}
+
+enum SnapshotReason {
+  START
+  DAILY
+  SCOPE_CHANGE
+  COMPLETE
+}
+
+enum ReleaseStatus {
+  UNRELEASED
+  RELEASED
+  ARCHIVED
+}
+
+model Sprint {
+  id          String      @id @default(uuid(7))
+  projectId   String
+  /// Per-project sequence ("Sprint 3").
+  number      Int
+  name        String
+  goal        String?
+  state       SprintState @default(PLANNED)
+  startDate   DateTime?
+  endDate     DateTime?
+  /// Planned capacity in the project's estimation unit.
+  capacity    Float?
+  startedAt   DateTime?
+  completedAt DateTime?
+  /// Final numbers, written when the sprint completes (and committed scope when it starts).
+  summary     Json?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  project   Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks     Task[]
+  entries   SprintTask[]
+  snapshots SprintSnapshot[]
+
+  @@unique([projectId, number])
+  @@index([projectId, state])
+}
+
+/// History of tasks entering and leaving a sprint.
+model SprintTask {
+  id              String             @id @default(uuid(7))
+  sprintId        String
+  taskId          String
+  estimateAtAdd   Float?
+  addedAt         DateTime           @default(now())
+  /// Added while the sprint was already running (scope creep).
+  addedAfterStart Boolean            @default(false)
+  removedAt       DateTime?
+  outcome         SprintTaskOutcome?
+
+  sprint Sprint @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([sprintId])
+  @@index([taskId])
+}
+
+/// Point-in-time scope/progress of an active sprint: the data behind burndown and burnup charts.
+model SprintSnapshot {
+  id          String         @id @default(uuid(7))
+  sprintId    String
+  at          DateTime       @default(now())
+  reason      SnapshotReason
+  scopePoints Float
+  donePoints  Float
+  scopeTasks  Int
+  doneTasks   Int
+
+  sprint Sprint @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+
+  @@index([sprintId, at])
+}
+
+model Release {
+  id          String        @id @default(uuid(7))
+  projectId   String
+  name        String
+  /// Release notes intro (markdown).
+  description String?
+  status      ReleaseStatus @default(UNRELEASED)
+  startDate   DateTime?
+  /// Planned date.
+  releaseDate DateTime?
+  releasedAt  DateTime?
+  createdAt   DateTime      @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks   Task[]
+
+  @@unique([projectId, name])
+}
+
+model Milestone {
+  id          String    @id @default(uuid(7))
+  projectId   String
+  name        String
+  description String?
+  dueDate     DateTime?
+  closedAt    DateTime?
+  createdAt   DateTime  @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks   Task[]
+
+  @@unique([projectId, name])
 }
