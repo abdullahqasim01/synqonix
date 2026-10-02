@@ -7,6 +7,8 @@ const schema = z.object({
   WEB_URL: z.string().url().default('http://localhost:3000'),
   JWT_ACCESS_SECRET: z.string().min(16).default('dev-access-secret-change-me'),
   JWT_REFRESH_SECRET: z.string().min(16).default('dev-refresh-secret-change-me'),
+  JWT_ACCESS_TTL_SECONDS: z.coerce.number().int().positive().default(900),
+  REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(30),
   RESEND_API_KEY: z.string().optional(),
   MAIL_FROM: z.string().default('Synqonix <no-reply@synqonix.local>'),
   SMTP_HOST: z.string().default('localhost'),

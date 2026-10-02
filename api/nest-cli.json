@@ -1,8 +1,9 @@
 {
-  "$schema": "https://json.schemastore.org/nest-cli",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "plugins": [{ "name": "@nestjs/swagger", "options": { "introspectComments": true } }]
   }
 }

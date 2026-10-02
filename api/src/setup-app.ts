@@ -1,10 +1,12 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
 export function setupApp(app: NestExpressApplication, webUrl: string) {
   app.use(helmet());
+  app.use(cookieParser());
   app.enableCors({ origin: [webUrl], credentials: true });
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
