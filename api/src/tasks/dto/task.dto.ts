@@ -241,7 +241,7 @@ export class RecentTasksQueryDto {
   @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(50) limit?: number;
 }
 
-export class BoardQueryDto extends OmitType(ListTasksQueryDto, ['statusId', 'statusCategory', 'sort', 'order', 'offset'] as const) {}
+export class BoardQueryDto extends OmitType(ListTasksQueryDto, ['projectId', 'statusId', 'statusCategory', 'sort', 'order', 'offset'] as const) {}
 
 export class BoardStatusDto {
   id: string;

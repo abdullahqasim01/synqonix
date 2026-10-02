@@ -1,14 +1,12 @@
 "use client";
 
 import { Suspense } from "react";
-import { useParams } from "next/navigation";
-import { TaskList } from "@/components/tasks/task-list";
+import { ProjectViews } from "@/components/views/project-views";
 
 export default function ProjectTasksPage() {
-  const { projectId } = useParams<{ projectId: string }>();
   return (
     <Suspense>
-      <TaskList projectId={projectId} />
+      <ProjectViews />
     </Suspense>
   );
 }

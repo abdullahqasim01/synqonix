@@ -32,6 +32,8 @@ export class ViewDisplayDto {
   @IsOptional() @IsArray() @ArrayMaxSize(20) @IsString({ each: true }) hiddenColumns?: string[];
   /** Fields shown on board cards: `key`, `priority`, `assignees`, `labels`, `due`, `estimate`. */
   @IsOptional() @IsArray() @ArrayMaxSize(20) @IsString({ each: true }) cardFields?: string[];
+  /** Hide finished tasks in the view. */
+  @IsOptional() @IsBoolean() hideDone?: boolean;
 }
 
 export class ViewQueryDto {

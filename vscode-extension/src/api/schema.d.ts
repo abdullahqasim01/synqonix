@@ -662,6 +662,38 @@ export interface paths {
         patch: operations["ProjectsController_updateLabel_v1"];
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ViewsController_list_v1"];
+        put?: never;
+        post: operations["ViewsController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/views/{viewId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ViewsController_get_v1"];
+        put?: never;
+        post?: never;
+        delete: operations["ViewsController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["ViewsController_update_v1"];
+        trace?: never;
+    };
     "/api/v1/workspaces/{workspaceId}/projects/{projectId}/tasks": {
         parameters: {
             query?: never;
@@ -687,6 +719,40 @@ export interface paths {
         };
         /** Lists tasks across the projects the caller can see; filter with `projectId`, `assignee=me`, etc. */
         get: operations["TasksController_list_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/board": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Kanban board of a project: columns in workflow order, cards in rank order. */
+        get: operations["TasksController_board_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/recent-tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tasks the caller opened recently, newest first. */
+        get: operations["TasksController_recentTasks_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -753,6 +819,39 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["TasksController_restore_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/rank": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Drop a card into a column at a position (above/below another card, or at the bottom). */
+        post: operations["TasksController_rank_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/viewed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TasksController_viewed_v1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1256,6 +1355,7 @@ export interface components {
             category: "TODO" | "IN_PROGRESS" | "DONE";
             color: string;
             position: number;
+            wipLimit: number | null;
         };
         LabelDto: {
             id: string;
@@ -1306,6 +1406,7 @@ export interface components {
             /** @enum {string} */
             category: "TODO" | "IN_PROGRESS" | "DONE";
             color?: string;
+            wipLimit?: number;
         };
         ReorderStatusesDto: {
             /** @description Every status id of the project, in the desired order. */
@@ -1316,6 +1417,8 @@ export interface components {
             /** @enum {string} */
             category?: "TODO" | "IN_PROGRESS" | "DONE";
             color?: string;
+            /** @description Kanban WIP limit; pass `null` to remove it. */
+            wipLimit?: number | null;
         };
         CreateLabelDto: {
             name: string;
@@ -1324,6 +1427,79 @@ export interface components {
         UpdateLabelDto: {
             name?: string;
             color?: string;
+        };
+        ViewFiltersDto: {
+            statusId?: string;
+            /** @enum {string} */
+            statusCategory?: "TODO" | "IN_PROGRESS" | "DONE";
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assignee?: string;
+            reporter?: string;
+            labelId?: string;
+            parent?: string;
+            q?: string;
+            dueBefore?: string;
+            dueAfter?: string;
+            includeArchived?: boolean;
+            excludeSubtasks?: boolean;
+        };
+        ViewDisplayDto: {
+            /** @description Board columns the user chose to hide. */
+            hiddenStatusIds?: string[];
+            /** @description List columns to hide, e.g. `priority`, `assignees`, `due`, `labels`. */
+            hiddenColumns?: string[];
+            /** @description Fields shown on board cards: `key`, `priority`, `assignees`, `labels`, `due`, `estimate`. */
+            cardFields?: string[];
+            /** @description Hide finished tasks in the view. */
+            hideDone?: boolean;
+        };
+        ViewQueryDto: {
+            filters?: components["schemas"]["ViewFiltersDto"];
+            /** @enum {string} */
+            sort?: "createdAt" | "updatedAt" | "dueDate" | "startDate" | "priority" | "number" | "position" | "title";
+            /** @enum {string} */
+            order?: "asc" | "desc";
+            /** @enum {string} */
+            swimlane?: "none" | "assignee" | "priority" | "epic";
+            display?: components["schemas"]["ViewDisplayDto"];
+        };
+        ViewDto: {
+            id: string;
+            name: string;
+            /** @enum {string} */
+            scope: "PERSONAL" | "SHARED";
+            /** @enum {string} */
+            layout: "LIST" | "BOARD" | "CALENDAR" | "TIMELINE";
+            projectId: string | null;
+            ownerId: string;
+            query: components["schemas"]["ViewQueryDto"];
+            /** @description Whether the caller may rename, change or delete it. */
+            canEdit: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CreateViewDto: {
+            name: string;
+            /** @enum {string} */
+            layout?: "LIST" | "BOARD" | "CALENDAR" | "TIMELINE";
+            /** @enum {string} */
+            scope?: "PERSONAL" | "SHARED";
+            /** @description Omit for a workspace-wide view that spans every project. */
+            projectId?: string;
+            query: components["schemas"]["ViewQueryDto"];
+        };
+        UpdateViewDto: {
+            name?: string;
+            /** @enum {string} */
+            layout?: "LIST" | "BOARD" | "CALENDAR" | "TIMELINE";
+            /** @enum {string} */
+            scope?: "PERSONAL" | "SHARED";
+            query?: components["schemas"]["ViewQueryDto"];
         };
         CreateTaskDto: {
             title: string;
@@ -1338,6 +1514,7 @@ export interface components {
             assigneeIds?: string[];
             labelIds?: string[];
             estimate?: number;
+            startDate?: string;
             dueDate?: string;
             parentId?: string;
             /** @description Map of custom field id to value. */
@@ -1386,6 +1563,8 @@ export interface components {
             labels: components["schemas"]["TaskLabelDto"][];
             reporterId: string | null;
             estimate: number | null;
+            /** Format: date-time */
+            startDate: string | null;
             /** Format: date-time */
             dueDate: string | null;
             parentId: string | null;
@@ -1465,6 +1644,8 @@ export interface components {
             reporterId: string | null;
             estimate: number | null;
             /** Format: date-time */
+            startDate: string | null;
+            /** Format: date-time */
             dueDate: string | null;
             parentId: string | null;
             position: number;
@@ -1484,6 +1665,30 @@ export interface components {
         TaskListDto: {
             items: components["schemas"]["TaskDto"][];
             total: number;
+        };
+        BoardStatusDto: {
+            id: string;
+            name: string;
+            /** @enum {string} */
+            category: "TODO" | "IN_PROGRESS" | "DONE";
+            color: string;
+            position: number;
+            /** @description Soft limit: the board warns when a column holds more tasks than this. */
+            wipLimit: number | null;
+        };
+        BoardColumnDto: {
+            status: components["schemas"]["BoardStatusDto"];
+            /** @description Matching tasks in this column, ignoring the per-column limit. */
+            total: number;
+            /** @description Ordered by rank; at most `limit` tasks. */
+            tasks: components["schemas"]["TaskDto"][];
+            hasMore: boolean;
+        };
+        BoardDto: {
+            projectId: string;
+            columns: components["schemas"]["BoardColumnDto"][];
+            /** @description Epics of the project, for epic swimlanes. */
+            epics: components["schemas"]["TaskRefDto"][];
         };
         BulkChangesDto: {
             statusId?: string;
@@ -1517,6 +1722,7 @@ export interface components {
             /** @description Replaces the label list. */
             labelIds?: string[];
             estimate?: number | null;
+            startDate?: string | null;
             dueDate?: string | null;
             /** @description Pass `null` to detach from the parent. */
             parentId?: string | null;
@@ -1524,6 +1730,14 @@ export interface components {
             customFields?: {
                 [key: string]: unknown;
             };
+        };
+        RankTaskDto: {
+            /** @description Column to drop the card into. Defaults to the card's current status. */
+            statusId?: string;
+            /** @description Place the card directly above this card (which must be in the target column). */
+            beforeId?: string;
+            /** @description Place the card directly below this card (which must be in the target column). */
+            afterId?: string;
         };
         MoveTaskDto: {
             /** @description Destination project in the same workspace. */
@@ -2929,6 +3143,123 @@ export interface operations {
             };
         };
     };
+    ViewsController_list_v1: {
+        parameters: {
+            query?: {
+                /** @description Views of this project; omit for workspace-wide views. */
+                projectId?: string;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ViewDto"][];
+                };
+            };
+        };
+    };
+    ViewsController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateViewDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ViewDto"];
+                };
+            };
+        };
+    };
+    ViewsController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                viewId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ViewDto"];
+                };
+            };
+        };
+    };
+    ViewsController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                viewId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ViewsController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                viewId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateViewDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ViewDto"];
+                };
+            };
+        };
+    };
     TasksController_create_v1: {
         parameters: {
             query?: never;
@@ -2974,10 +3305,78 @@ export interface operations {
                 dueBefore?: string;
                 dueAfter?: string;
                 includeArchived?: boolean;
-                sort?: "number" | "createdAt" | "updatedAt" | "position" | "title" | "priority" | "dueDate";
+                /** @description Hide sub-tasks (boards do this by default). */
+                excludeSubtasks?: boolean;
+                /** @description Apply a saved view; explicit parameters override its filters. */
+                view?: string;
+                sort?: "number" | "createdAt" | "updatedAt" | "position" | "title" | "priority" | "startDate" | "dueDate";
                 order?: "asc" | "desc";
                 limit?: number;
                 offset?: number;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskListDto"];
+                };
+            };
+        };
+    };
+    TasksController_board_v1: {
+        parameters: {
+            query?: {
+                type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+                priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+                /** @description `me`, `none` (unassigned) or a user id. */
+                assignee?: string;
+                reporter?: string;
+                labelId?: string;
+                /** @description `none` for top-level tasks, or a parent task id. */
+                parent?: string;
+                /** @description Matches the title, or the key / number (`SYN-12`, `12`). */
+                q?: string;
+                dueBefore?: string;
+                dueAfter?: string;
+                includeArchived?: boolean;
+                /** @description Hide sub-tasks (boards do this by default). */
+                excludeSubtasks?: boolean;
+                /** @description Apply a saved view; explicit parameters override its filters. */
+                view?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardDto"];
+                };
+            };
+        };
+    };
+    TasksController_recentTasks_v1: {
+        parameters: {
+            query?: {
+                limit?: number;
             };
             header?: never;
             path: {
@@ -3131,6 +3530,52 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TaskDetailDto"];
                 };
+            };
+        };
+    };
+    TasksController_rank_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RankTaskDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDto"];
+                };
+            };
+        };
+    };
+    TasksController_viewed_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

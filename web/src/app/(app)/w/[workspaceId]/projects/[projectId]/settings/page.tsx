@@ -69,9 +69,18 @@ function Statuses({ project, reload }: { project: Project; reload: () => void })
               <span className="h-3 w-3 rounded-full" style={{ background: s.color }} />
               {s.name}
               <Badge>{s.category.replace("_", " ").toLowerCase()}</Badge>
+              {!project.canManage && s.wipLimit !== null && <Badge>WIP {s.wipLimit}</Badge>}
             </span>
             {project.canManage && (
-              <span className="flex gap-1">
+              <span className="flex items-center gap-1">
+                <Input
+                  type="number" min={1} max={999} placeholder="WIP" aria-label={`WIP limit for ${s.name}`} title="Kanban work-in-progress limit"
+                  className="h-8 w-20" defaultValue={s.wipLimit ?? ""} key={`${s.id}-${s.wipLimit}`}
+                  onBlur={(e) => {
+                    const v = e.target.value === "" ? null : Number(e.target.value);
+                    if (v !== (s.wipLimit ?? null)) void run(api.PATCH("/api/v1/workspaces/{workspaceId}/projects/{projectId}/statuses/{statusId}", { params: { path: { ...path, statusId: s.id } }, body: { wipLimit: v } }));
+                  }}
+                />
                 <Button size="sm" variant="ghost" aria-label={`Move ${s.name} up`} disabled={i === 0} onClick={() => void move(i, -1)}>↑</Button>
                 <Button size="sm" variant="ghost" aria-label={`Move ${s.name} down`} disabled={i === project.statuses.length - 1} onClick={() => void move(i, 1)}>↓</Button>
                 <Button size="sm" variant="ghost" aria-label={`Delete ${s.name}`} onClick={() => void remove(s.id)}>✕</Button>

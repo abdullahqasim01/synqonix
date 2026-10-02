@@ -7,7 +7,7 @@ interface Option { id: string; label: string }
 
 /** Dropdown with checkboxes. Calls `onChange` with the new selection when an option is toggled. */
 export function MultiSelect({
-  options, value, onChange, placeholder, disabled, className,
+  options, value, onChange, placeholder, disabled, className, "aria-label": ariaLabel,
 }: {
   options: Option[];
   value: string[];
@@ -15,6 +15,7 @@ export function MultiSelect({
   placeholder: string;
   disabled?: boolean;
   className?: string;
+  "aria-label"?: string;
 }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
@@ -45,6 +46,7 @@ export function MultiSelect({
       <button
         type="button"
         disabled={disabled}
+        aria-label={ariaLabel}
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}

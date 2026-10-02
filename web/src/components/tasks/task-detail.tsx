@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, Badge, Input, Select } from "@/components/ui/form";
 import { MultiSelect } from "@/components/tasks/multi-select";
@@ -67,6 +67,12 @@ export function TaskDetailView({
     async () => (needsEpic && projectId ? api.GET("/api/v1/workspaces/{workspaceId}/tasks", { params: { path: { workspaceId: ws }, query: { projectId, type: "EPIC", limit: 100 } } }) : { data: undefined }),
     [ws, projectId, needsEpic],
   );
+
+  // Remember the visit for "Recently viewed" (once per task).
+  const taskId = task?.id;
+  useEffect(() => {
+    if (taskId) void api.POST("/api/v1/workspaces/{workspaceId}/tasks/{taskId}/viewed", { params: { path: { workspaceId: ws, taskId } } });
+  }, [ws, taskId]);
 
   const reload = () => { taskQuery.reload(); setVersion((v) => v + 1); onChanged?.(); };
 
@@ -222,6 +228,10 @@ export function TaskDetailView({
           <Row label="Estimate">
             <Input aria-label="Estimate" type="number" min={0} max={1000} step="0.5" disabled={!task.canEdit} defaultValue={task.estimate ?? ""} key={`est-${task.estimate}`}
               onBlur={(e) => { const v = e.target.value === "" ? null : Number(e.target.value); if (v !== task.estimate) void update({ estimate: v }); }} />
+          </Row>
+          <Row label="Start date">
+            <Input aria-label="Start date" type="date" disabled={!task.canEdit} defaultValue={toDateInput(task.startDate)} key={`start-${task.startDate}`}
+              onChange={(e) => void update({ startDate: e.target.value ? e.target.value : null })} />
           </Row>
           <Row label="Due date">
             <div className="flex items-center gap-2">

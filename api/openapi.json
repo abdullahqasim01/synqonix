@@ -2828,14 +2828,6 @@
             }
           },
           {
-            "name": "projectId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "type",
             "required": false,
             "in": "query",
@@ -5790,6 +5782,10 @@
             "items": {
               "type": "string"
             }
+          },
+          "hideDone": {
+            "type": "boolean",
+            "description": "Hide finished tasks in the view."
           }
         }
       },
