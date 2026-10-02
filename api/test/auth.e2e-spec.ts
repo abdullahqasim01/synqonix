@@ -15,7 +15,7 @@ describe('Auth (e2e)', () => {
   beforeAll(async () => ({ app, mail, prisma } = await createTestApp()));
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User" CASCADE`;
+    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
     mail.sent = [];
   });
 

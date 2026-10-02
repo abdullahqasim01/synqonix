@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Patch, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, Patch, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import * as argon2 from 'argon2';
 import { toUserDto } from '../auth/auth.service.js';
@@ -33,6 +33,19 @@ export class UsersController {
     const row = await this.prisma.user.findUniqueOrThrow({ where: { id: user.id } });
     if (!(await argon2.verify(row.passwordHash, dto.password))) {
       throw new UnauthorizedException('Password is incorrect');
+    }
+    // Don't orphan workspaces: sole owners must hand over or delete them first.
+    const owned = await this.prisma.membership.findMany({
+      where: { userId: user.id, role: 'OWNER' },
+      select: { workspaceId: true },
+    });
+    for (const { workspaceId } of owned) {
+      const otherOwners = await this.prisma.membership.count({
+        where: { workspaceId, role: 'OWNER', userId: { not: user.id } },
+      });
+      if (otherOwners === 0) {
+        throw new BadRequestException('Transfer ownership of, or delete, your workspaces before deleting your account');
+      }
     }
     await this.prisma.user.delete({ where: { id: user.id } });
   }

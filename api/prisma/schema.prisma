@@ -19,9 +19,12 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  sessions    Session[]
-  emailTokens EmailToken[]
-  apiTokens   ApiToken[]
+  sessions       Session[]
+  emailTokens    EmailToken[]
+  apiTokens      ApiToken[]
+  memberships    Membership[]
+  teamMembers    TeamMember[]
+  projectMembers ProjectMember[]
 }
 
 /// One login on one device. Refresh tokens rotate within a session.
@@ -87,4 +90,188 @@ model ApiToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// ---------- Phase 2: workspaces, teams, projects ----------
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum ProjectRole {
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum ProjectVisibility {
+  /// Every workspace member can see it.
+  WORKSPACE
+  /// Only project members, the lead and workspace admins.
+  PRIVATE
+}
+
+enum ProjectTemplate {
+  SCRUM
+  KANBAN
+  BUG_TRACKING
+  BLANK
+}
+
+enum StatusCategory {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+model Workspace {
+  id          String   @id @default(uuid(7))
+  name        String
+  slug        String   @unique
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  memberships Membership[]
+  invitations Invitation[]
+  teams       Team[]
+  projects    Project[]
+  auditLogs   AuditLog[]
+}
+
+model Membership {
+  id          String        @id @default(uuid(7))
+  workspaceId String
+  userId      String
+  role        WorkspaceRole
+  createdAt   DateTime      @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+}
+
+model Invitation {
+  id          String        @id @default(uuid(7))
+  workspaceId String
+  email       String
+  role        WorkspaceRole
+  tokenHash   String        @unique
+  invitedById String
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime      @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([email])
+}
+
+model Team {
+  id          String   @id @default(uuid(7))
+  workspaceId String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  workspace Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members   TeamMember[]
+
+  @@unique([workspaceId, name])
+}
+
+model TeamMember {
+  teamId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([teamId, userId])
+}
+
+model Project {
+  id             String            @id @default(uuid(7))
+  workspaceId    String
+  /// Short uppercase key used in task ids, e.g. SYN-123.
+  key            String
+  name           String
+  description    String?
+  leadId         String?
+  visibility     ProjectVisibility @default(WORKSPACE)
+  template       ProjectTemplate   @default(BLANK)
+  /// Counter used by phase 3 to allocate task numbers.
+  nextTaskNumber Int               @default(1)
+  archivedAt     DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  workspace Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members   ProjectMember[]
+  statuses  ProjectStatus[]
+  labels    Label[]
+
+  @@unique([workspaceId, key])
+}
+
+model ProjectMember {
+  projectId String
+  userId    String
+  role      ProjectRole @default(MEMBER)
+  createdAt DateTime    @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, userId])
+  @@index([userId])
+}
+
+/// A column of the project's workflow (e.g. To Do -> In Progress -> Done).
+model ProjectStatus {
+  id        String         @id @default(uuid(7))
+  projectId String
+  name      String
+  category  StatusCategory
+  color     String         @default("#6366f1")
+  position  Int
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, name])
+  @@index([projectId, position])
+}
+
+model Label {
+  id        String @id @default(uuid(7))
+  projectId String
+  name      String
+  color     String @default("#6366f1")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, name])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid(7))
+  workspaceId String
+  actorId     String?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, createdAt])
 }
