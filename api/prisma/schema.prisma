@@ -29,6 +29,7 @@ model User {
   taskWatchers   TaskWatcher[]
   views          View[]
   recentTasks    RecentTask[]
+  channelMembers ChannelMember[]
 }
 
 /// One login on one device. Refresh tokens rotate within a session.
@@ -144,6 +145,7 @@ model Workspace {
   teams       Team[]
   projects    Project[]
   auditLogs   AuditLog[]
+  channels    Channel[]
 }
 
 model Membership {
@@ -236,6 +238,7 @@ model Project {
   sprints      Sprint[]
   releases     Release[]
   milestones   Milestone[]
+  channel      Channel?
 
   @@unique([workspaceId, key])
 }
@@ -371,18 +374,19 @@ model Task {
   parent    Task?         @relation("TaskHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children  Task[]        @relation("TaskHierarchy")
 
-  assignees     TaskAssignee[]
-  labels        TaskLabel[]
-  watchers      TaskWatcher[]
-  comments      Comment[]
-  activities    Activity[]
-  checklists    Checklist[]
-  attachments   Attachment[]
-  customValues  TaskCustomValue[]
-  relationsFrom TaskRelation[]    @relation("RelationFrom")
-  relationsTo   TaskRelation[]    @relation("RelationTo")
-  recentTasks   RecentTask[]
-  sprintTasks   SprintTask[]
+  assignees        TaskAssignee[]
+  labels           TaskLabel[]
+  watchers         TaskWatcher[]
+  comments         Comment[]
+  activities       Activity[]
+  checklists       Checklist[]
+  attachments      Attachment[]
+  customValues     TaskCustomValue[]
+  relationsFrom    TaskRelation[]    @relation("RelationFrom")
+  relationsTo      TaskRelation[]    @relation("RelationTo")
+  recentTasks      RecentTask[]
+  sprintTasks      SprintTask[]
+  messageTaskLinks MessageTaskLink[]
 
   @@unique([projectId, number])
   @@index([projectId, statusId, position])
@@ -717,4 +721,151 @@ model Milestone {
   tasks   Task[]
 
   @@unique([projectId, name])
+}
+
+// ---------- Phase 6: channels ----------
+
+enum ChannelType {
+  PUBLIC
+  PRIVATE
+  DIRECT
+}
+
+enum ChannelRole {
+  ADMIN
+  MEMBER
+}
+
+enum TaskLinkSource {
+  /// A task key written in the message.
+  MENTION
+  /// Linked by hand.
+  LINKED
+  /// The task was created from the message.
+  CREATED
+}
+
+model Channel {
+  id            String      @id @default(uuid(7))
+  workspaceId   String
+  /// Set for the channel every project gets automatically; access then follows the project.
+  projectId     String?     @unique
+  type          ChannelType
+  /// Null for direct messages.
+  name          String?
+  slug          String?
+  topic         String?
+  /// Sorted participant ids of a direct conversation, so the same people always share one.
+  dmKey         String?
+  createdById   String?
+  archivedAt    DateTime?
+  /// Last sequence number handed out; messages of a channel are numbered 1, 2, 3 … in commit order.
+  lastSeq       Int         @default(0)
+  lastMessageAt DateTime?
+  createdAt     DateTime    @default(now())
+
+  workspace   Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project     Project?            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  members     ChannelMember[]
+  messages    Message[]
+  attachments MessageAttachment[]
+
+  @@unique([workspaceId, slug])
+  @@unique([workspaceId, dmKey])
+  @@index([workspaceId, type])
+}
+
+model ChannelMember {
+  channelId   String
+  userId      String
+  role        ChannelRole @default(MEMBER)
+  /// Highest message sequence the member has read.
+  lastReadSeq Int         @default(0)
+  joinedAt    DateTime    @default(now())
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([channelId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id          String    @id @default(uuid(7))
+  channelId   String
+  /// Position in the channel's stream (replies included); gap-free for clients that keep up.
+  seq         Int
+  authorId    String?
+  /// Markdown. Empty once deleted.
+  body        String
+  /// Set on replies: the top-level message that started the thread.
+  parentId    String?
+  replyCount  Int       @default(0)
+  lastReplyAt DateTime?
+  editedAt    DateTime?
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  channel     Channel             @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  parent      Message?            @relation("Thread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     Message[]           @relation("Thread")
+  mentions    MessageMention[]
+  reactions   Reaction[]
+  attachments MessageAttachment[]
+  taskLinks   MessageTaskLink[]
+
+  @@unique([channelId, seq])
+  @@index([channelId, parentId, seq])
+}
+
+model MessageMention {
+  messageId String
+  userId    String
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, userId])
+  @@index([userId])
+}
+
+model Reaction {
+  messageId String
+  userId    String
+  emoji     String
+  createdAt DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, userId, emoji])
+}
+
+/// Uploaded before the message is sent (messageId null); unattached files are purged after a day.
+model MessageAttachment {
+  id         String   @id @default(uuid(7))
+  channelId  String
+  messageId  String?
+  uploaderId String
+  filename   String
+  mimeType   String
+  size       Int
+  storageKey String   @unique
+  createdAt  DateTime @default(now())
+
+  channel Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  message Message? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+}
+
+model MessageTaskLink {
+  messageId String
+  taskId    String
+  source    TaskLinkSource
+  createdAt DateTime       @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, taskId])
+  @@index([taskId])
 }

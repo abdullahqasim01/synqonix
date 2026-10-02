@@ -26,6 +26,6 @@ import { WorkspacesModule } from '../workspaces/workspaces.module.js';
     TasksService, TaskMoveService, TaskRankService, RecentTasksService, TaskAccessService, TaskSupportService, ActivityService, CommentsService,
     ChecklistsService, RelationsService, WatchersService, AttachmentsService, CustomFieldsService, StorageService,
   ],
-  exports: [TasksService, TaskAccessService, ActivityService],
+  exports: [TasksService, TaskAccessService, ActivityService, StorageService],
 })
 export class TasksModule {}

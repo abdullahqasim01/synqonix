@@ -10,6 +10,7 @@ import { HealthController } from './health/health.controller.js';
 import { AgileModule } from './agile/agile.module.js';
 import { AuditModule } from './audit/audit.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { ChannelsModule } from './channels/channels.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { RealtimeModule } from './realtime/realtime.module.js';
@@ -35,6 +36,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module.js';
     ViewsModule,
     TasksModule,
     AgileModule,
+    ChannelsModule,
     RealtimeModule,
   ],
   controllers: [HealthController],

@@ -1,7 +1,9 @@
 import {
   BadRequestException, ForbiddenException, Injectable, NotFoundException,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuditService } from '../audit/audit.service.js';
+import { WorkspaceEvents } from '../channels/events.js';
 import { randomToken } from '../common/crypto.js';
 import { slugify } from '../common/slug.js';
 import type { Membership, Workspace } from '../generated/prisma/client.js';
@@ -19,6 +21,7 @@ export class WorkspacesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly events: EventEmitter2,
   ) {}
 
   private async uniqueSlug(name: string) {
@@ -148,6 +151,7 @@ export class WorkspacesService {
       workspaceId, actorId: actor.userId, action: leaving ? 'member.left' : 'member.removed',
       entityType: 'user', entityId: targetUserId,
     });
+    await this.events.emitAsync(WorkspaceEvents.memberRemoved, { workspaceId, userId: targetUserId });
   }
 
   // ---------- audit ----------

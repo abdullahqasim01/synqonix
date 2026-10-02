@@ -1,7 +1,9 @@
 import {
   BadRequestException, ConflictException, Injectable, NotFoundException,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuditService } from '../audit/audit.service.js';
+import { ProjectEvents } from '../channels/events.js';
 import type { Membership, Project } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ProjectAccessService } from './project-access.service.js';
@@ -19,6 +21,7 @@ export class ProjectsService {
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
     private readonly access: ProjectAccessService,
+    private readonly events: EventEmitter2,
   ) {}
 
   private toDto(p: Project, canManage: boolean): ProjectDto {
@@ -87,6 +90,10 @@ export class ProjectsService {
       workspaceId: m.workspaceId, actorId: m.userId, action: 'project.created',
       entityType: 'project', entityId: project.id, metadata: { key: project.key, template },
     });
+    await this.events.emitAsync(ProjectEvents.created, {
+      workspaceId: m.workspaceId, projectId: project.id, key: project.key, name: project.name,
+      visibility: project.visibility, memberIds: [...new Set([m.userId, leadId])],
+    });
     return this.get(m, project.id);
   }
 
@@ -122,6 +129,8 @@ export class ProjectsService {
       workspaceId: m.workspaceId, actorId: m.userId, action: 'project.updated',
       entityType: 'project', entityId: projectId,
     });
+    await this.events.emitAsync(ProjectEvents.updated, { workspaceId: m.workspaceId, projectId, name: updated.name, visibility: updated.visibility });
+    if (dto.leadId) await this.events.emitAsync(ProjectEvents.memberChanged, { workspaceId: m.workspaceId, projectId, userId: dto.leadId, role: 'ADMIN' });
     const pm = await this.access.projectRole(updated.id, m.userId);
     return this.toDto(updated, this.access.canManage(m, updated, pm));
   }
@@ -165,6 +174,7 @@ export class ProjectsService {
       create: { projectId, userId: dto.userId, role: dto.role },
       update: { role: dto.role },
     });
+    await this.events.emitAsync(ProjectEvents.memberChanged, { workspaceId: m.workspaceId, projectId, userId: dto.userId, role: dto.role });
     return this.listMembers(m, projectId);
   }
 
@@ -173,6 +183,7 @@ export class ProjectsService {
     if (project.leadId === userId) throw new BadRequestException('Change the project lead before removing them');
     const res = await this.prisma.projectMember.deleteMany({ where: { projectId, userId } });
     if (res.count === 0) throw new NotFoundException('Project member not found');
+    await this.events.emitAsync(ProjectEvents.memberChanged, { workspaceId: m.workspaceId, projectId, userId, role: null });
   }
 
   // ---------- statuses ----------
