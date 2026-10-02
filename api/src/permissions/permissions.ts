@@ -13,9 +13,11 @@ export type Permission =
   | 'project.create'
   | 'project.manage'
   | 'project.delete'
+  | 'task.read'
+  | 'task.write'
   | 'audit.read';
 
-const ALL_READ: Permission[] = ['workspace.read', 'member.read', 'team.read', 'project.read'];
+const ALL_READ: Permission[] = ['workspace.read', 'member.read', 'team.read', 'project.read', 'task.read'];
 const ADMIN: Permission[] = [
   ...ALL_READ,
   'workspace.update',
@@ -25,6 +27,7 @@ const ADMIN: Permission[] = [
   'project.create',
   'project.manage',
   'project.delete',
+  'task.write',
   'audit.read',
 ];
 
@@ -32,7 +35,7 @@ const ADMIN: Permission[] = [
 export const ROLE_PERMISSIONS: Record<WorkspaceRole, ReadonlySet<Permission>> = {
   OWNER: new Set<Permission>([...ADMIN, 'workspace.delete']),
   ADMIN: new Set<Permission>(ADMIN),
-  MEMBER: new Set<Permission>([...ALL_READ, 'project.create']),
+  MEMBER: new Set<Permission>([...ALL_READ, 'project.create', 'task.write']),
   VIEWER: new Set<Permission>(ALL_READ),
 };
 

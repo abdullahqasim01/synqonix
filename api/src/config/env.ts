@@ -9,6 +9,8 @@ const schema = z.object({
   JWT_REFRESH_SECRET: z.string().min(16).default('dev-refresh-secret-change-me'),
   JWT_ACCESS_TTL_SECONDS: z.coerce.number().int().positive().default(900),
   REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(30),
+  UPLOAD_DIR: z.string().default('./uploads'),
+  MAX_UPLOAD_MB: z.coerce.number().positive().default(10),
   RESEND_API_KEY: z.string().optional(),
   MAIL_FROM: z.string().default('Synqonix <no-reply@synqonix.local>'),
   SMTP_HOST: z.string().default('localhost'),

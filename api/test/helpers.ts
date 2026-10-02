@@ -55,3 +55,20 @@ export async function signUp(app: NestExpressApplication, name: string): Promise
   const token = res.body.accessToken as string;
   return { id: res.body.user.id, email, token, auth: { Authorization: `Bearer ${token}` } };
 }
+
+/** Creates a workspace owned by `owner` and adds the given users with the given roles. */
+export async function createWorkspace(
+  app: NestExpressApplication,
+  mail: FakeMailService,
+  owner: TestUser,
+  others: [TestUser, 'ADMIN' | 'MEMBER' | 'VIEWER'][] = [],
+  name = 'Acme',
+): Promise<string> {
+  const http = () => request(app.getHttpServer());
+  const ws = (await http().post('/api/v1/workspaces').set(owner.auth).send({ name }).expect(201)).body.id as string;
+  for (const [user, role] of others) {
+    await http().post(`/api/v1/workspaces/${ws}/invitations`).set(owner.auth).send({ email: user.email, role }).expect(201);
+    await http().post(`/api/v1/invitations/${mail.inviteTokenFor(user.email)}/accept`).set(user.auth).expect(201);
+  }
+  return ws;
+}

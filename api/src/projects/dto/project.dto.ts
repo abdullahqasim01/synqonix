@@ -104,6 +104,13 @@ export class UpdateStatusDto {
   color?: string;
 }
 
+export class DeleteStatusQueryDto {
+  /** Status that receives the tasks of the deleted one. Required when the status is in use. */
+  @IsOptional()
+  @IsString()
+  moveTo?: string;
+}
+
 export class ReorderStatusesDto {
   /** Every status id of the project, in the desired order. */
   @IsArray()

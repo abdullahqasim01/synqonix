@@ -14,6 +14,8 @@ const matrix: Record<Permission, [owner: boolean, admin: boolean, member: boolea
   'project.create': [true, true, true, false],
   'project.manage': [true, true, false, false],
   'project.delete': [true, true, false, false],
+  'task.read': [true, true, true, true],
+  'task.write': [true, true, true, false],
   'audit.read': [true, true, false, false],
 };
 

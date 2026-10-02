@@ -25,6 +25,8 @@ model User {
   memberships    Membership[]
   teamMembers    TeamMember[]
   projectMembers ProjectMember[]
+  taskAssignees  TaskAssignee[]
+  taskWatchers   TaskWatcher[]
 }
 
 /// One login on one device. Refresh tokens rotate within a session.
@@ -214,10 +216,12 @@ model Project {
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
-  workspace Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  members   ProjectMember[]
-  statuses  ProjectStatus[]
-  labels    Label[]
+  workspace    Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members      ProjectMember[]
+  statuses     ProjectStatus[]
+  labels       Label[]
+  tasks        Task[]
+  customFields CustomField[]
 
   @@unique([workspaceId, key])
 }
@@ -245,6 +249,7 @@ model ProjectStatus {
   position  Int
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks   Task[]
 
   @@unique([projectId, name])
   @@index([projectId, position])
@@ -256,7 +261,8 @@ model Label {
   name      String
   color     String @default("#6366f1")
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks   TaskLabel[]
 
   @@unique([projectId, name])
 }
@@ -274,4 +280,225 @@ model AuditLog {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, createdAt])
+}
+
+// ---------- Phase 3: tasks ----------
+
+enum TaskType {
+  STORY
+  BUG
+  TASK
+  EPIC
+  SUBTASK
+}
+
+enum TaskPriority {
+  URGENT
+  HIGH
+  MEDIUM
+  LOW
+  NONE
+}
+
+enum RelationType {
+  /// `from` blocks `to`.
+  BLOCKS
+  RELATES
+  /// `from` is a duplicate of `to`.
+  DUPLICATES
+}
+
+enum CustomFieldType {
+  TEXT
+  NUMBER
+  DATE
+  SELECT
+  CHECKBOX
+}
+
+model Task {
+  id          String       @id @default(uuid(7))
+  projectId   String
+  /// Per-project sequence; the public key is `<project key>-<number>`.
+  number      Int
+  type        TaskType     @default(TASK)
+  title       String
+  /// Markdown.
+  description String?
+  statusId    String
+  priority    TaskPriority @default(NONE)
+  reporterId  String?
+  estimate    Float?
+  dueDate     DateTime?
+  parentId    String?
+  /// Sort order inside the project (boards rank within a status).
+  position    Float
+  startedAt   DateTime?
+  completedAt DateTime?
+  archivedAt  DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  project  Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  status   ProjectStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
+  parent   Task?         @relation("TaskHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children Task[]        @relation("TaskHierarchy")
+
+  assignees     TaskAssignee[]
+  labels        TaskLabel[]
+  watchers      TaskWatcher[]
+  comments      Comment[]
+  activities    Activity[]
+  checklists    Checklist[]
+  attachments   Attachment[]
+  customValues  TaskCustomValue[]
+  relationsFrom TaskRelation[]    @relation("RelationFrom")
+  relationsTo   TaskRelation[]    @relation("RelationTo")
+
+  @@unique([projectId, number])
+  @@index([projectId, statusId, position])
+  @@index([parentId])
+}
+
+model TaskAssignee {
+  taskId String
+  userId String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, userId])
+  @@index([userId])
+}
+
+model TaskLabel {
+  taskId  String
+  labelId String
+
+  task  Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, labelId])
+}
+
+model TaskWatcher {
+  taskId String
+  userId String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, userId])
+  @@index([userId])
+}
+
+model TaskRelation {
+  id         String       @id @default(uuid(7))
+  fromTaskId String
+  toTaskId   String
+  type       RelationType
+  createdAt  DateTime     @default(now())
+
+  from Task @relation("RelationFrom", fields: [fromTaskId], references: [id], onDelete: Cascade)
+  to   Task @relation("RelationTo", fields: [toTaskId], references: [id], onDelete: Cascade)
+
+  @@unique([fromTaskId, toTaskId, type])
+  @@index([toTaskId])
+}
+
+model Comment {
+  id        String    @id @default(uuid(7))
+  taskId    String
+  authorId  String?
+  /// Markdown. Mentions use `[@Name](mention:<userId>)`.
+  body      String
+  editedAt  DateTime?
+  createdAt DateTime  @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+}
+
+model Checklist {
+  id       String @id @default(uuid(7))
+  taskId   String
+  title    String
+  position Int
+
+  task  Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  items ChecklistItem[]
+
+  @@index([taskId])
+}
+
+model ChecklistItem {
+  id          String  @id @default(uuid(7))
+  checklistId String
+  text        String
+  done        Boolean @default(false)
+  position    Int
+
+  checklist Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+
+  @@index([checklistId])
+}
+
+model Attachment {
+  id         String   @id @default(uuid(7))
+  taskId     String
+  uploaderId String?
+  filename   String
+  mimeType   String
+  size       Int
+  storageKey String   @unique
+  createdAt  DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+}
+
+/// Field-level history of a task. `field` is null for lifecycle events.
+model Activity {
+  id        String   @id @default(uuid(7))
+  taskId    String
+  actorId   String?
+  /// e.g. created, updated, commented, attachment_added, relation_added, moved
+  type      String
+  field     String?
+  from      Json?
+  to        Json?
+  createdAt DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+}
+
+model CustomField {
+  id        String          @id @default(uuid(7))
+  projectId String
+  name      String
+  type      CustomFieldType
+  /// For SELECT: array of allowed option strings.
+  options   Json?
+  position  Int
+  createdAt DateTime        @default(now())
+
+  project Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  values  TaskCustomValue[]
+
+  @@unique([projectId, name])
+}
+
+model TaskCustomValue {
+  taskId  String
+  fieldId String
+  value   Json
+
+  task  Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  field CustomField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, fieldId])
 }

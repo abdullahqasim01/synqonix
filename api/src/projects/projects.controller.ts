@@ -5,7 +5,7 @@ import { ApiBearerAuth, ApiParam, ApiCreatedResponse, ApiOkResponse, ApiTags } f
 import type { Membership } from '../generated/prisma/client.js';
 import { CurrentMembership, RequirePermission, WorkspaceGuard } from '../permissions/workspace.guard.js';
 import {
-  CreateLabelDto, CreateProjectDto, CreateStatusDto, LabelDto, ListProjectsQueryDto, ProjectDetailDto,
+  CreateLabelDto, CreateProjectDto, DeleteStatusQueryDto, CreateStatusDto, LabelDto, ListProjectsQueryDto, ProjectDetailDto,
   ProjectDto, ProjectMemberDto, ReorderStatusesDto, SetProjectMemberDto, StatusDto, UpdateLabelDto,
   UpdateProjectDto, UpdateStatusDto,
 } from './dto/project.dto.js';
@@ -113,8 +113,11 @@ export class ProjectsController {
   }
 
   @Delete(':projectId/statuses/:statusId') @HttpCode(204) @RequirePermission('project.read')
-  removeStatus(@CurrentMembership() m: Membership, @Param('projectId') id: string, @Param('statusId') statusId: string) {
-    return this.projects.removeStatus(m, id, statusId);
+  removeStatus(
+    @CurrentMembership() m: Membership, @Param('projectId') id: string, @Param('statusId') statusId: string,
+    @Query() q: DeleteStatusQueryDto,
+  ) {
+    return this.projects.removeStatus(m, id, statusId, q.moveTo);
   }
 
   // ----- labels -----
