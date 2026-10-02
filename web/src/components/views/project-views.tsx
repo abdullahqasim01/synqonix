@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, Badge, Input, Select } from "@/components/ui/form";
 import { MultiSelect } from "@/components/tasks/multi-select";
 import { TaskList } from "@/components/tasks/task-list";
+import { ActiveSprintBanner } from "@/components/agile/active-sprint-banner";
 import { TaskPanel, useTaskPanel } from "@/components/tasks/task-panel";
 import { BoardView } from "@/components/views/board";
 import { CalendarView } from "@/components/views/calendar";
@@ -53,7 +54,12 @@ export function ProjectViews() {
     router.replace(`${pathname}${next.size ? `?${next}` : ""}`, { scroll: false });
   };
 
-  const setLayout = (l: Layout) => { setUrl({ layout: l === "list" ? null : l }); };
+  const scrum = project.methodology === "SCRUM";
+  const setLayout = (l: Layout) => {
+    // A Scrum board shows the running sprint unless the user chose another scope.
+    if (l === "board" && scrum && filters.filters.sprintId === "") setFilters({ ...filters, filters: { ...filters.filters, sprintId: "active" } });
+    setUrl({ layout: l === "list" ? null : l });
+  };
   const update = (next: ViewState) => { setFilters(next); if (next.layout !== layout) setLayout(next.layout); };
 
   const applyView = (v: SavedView | null) => {
@@ -160,6 +166,8 @@ export function ProjectViews() {
         </form>
       )}
       {message && <Alert variant={message.ok ? "success" : "error"}>{message.text}</Alert>}
+
+      {scrum && layout === "board" && state.filters.sprintId === "active" && <ActiveSprintBanner />}
 
       <FilterBar state={state} onChange={update} statuses={statuses} labels={project.labels} />
 

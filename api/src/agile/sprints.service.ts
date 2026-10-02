@@ -64,8 +64,33 @@ export class SprintsService {
     };
   }
 
+  /**
+   * A running sprint's summary only holds its committed scope; add the scope changes made so far
+   * so reports can show them live.
+   */
+  private async withLiveSummary(dto: SprintDto): Promise<SprintDto> {
+    if (dto.state !== 'ACTIVE') return dto;
+    const entries = await this.prisma.sprintTask.findMany({ where: { sprintId: dto.id } });
+    const startedAt = dto.startedAt;
+    const sum = (list: { estimateAtAdd: number | null }[]) => list.reduce((a, e) => a + (e.estimateAtAdd ?? 0), 0);
+    const committed = dto.summary ?? { committedPoints: 0, committedTasks: 0 };
+    return {
+      ...dto,
+      summary: {
+        committedPoints: committed.committedPoints ?? 0,
+        committedTasks: committed.committedTasks ?? 0,
+        addedPoints: sum(entries.filter((e) => e.addedAfterStart)),
+        removedPoints: sum(entries.filter((e) => e.outcome === 'REMOVED' && e.removedAt && startedAt && e.removedAt >= startedAt)),
+        completedPoints: dto.stats.donePoints,
+        completedTasks: dto.stats.doneCount,
+        carriedOverPoints: 0,
+        carriedOverTasks: 0,
+      },
+    };
+  }
+
   private async dtoFor(s: Sprint) {
-    return this.toDto(s, (await this.stats([s.id])).get(s.id)!);
+    return this.withLiveSummary(this.toDto(s, (await this.stats([s.id])).get(s.id)!));
   }
 
   private async load(projectId: string, sprintId: string): Promise<Sprint> {
@@ -86,7 +111,7 @@ export class SprintsService {
     const order = { ACTIVE: 0, PLANNED: 1, COMPLETED: 2 } as const;
     rows.sort((a, b) => order[a.state] - order[b.state] || (a.state === 'COMPLETED' ? b.number - a.number : a.number - b.number));
     const stats = await this.stats(rows.map((r) => r.id));
-    return rows.map((r) => this.toDto(r, stats.get(r.id)!));
+    return Promise.all(rows.map((r) => this.withLiveSummary(this.toDto(r, stats.get(r.id)!))));
   }
 
   async get(m: Membership, projectId: string, sprintId: string): Promise<SprintDto> {

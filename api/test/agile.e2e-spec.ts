@@ -209,7 +209,8 @@ describe('Agile (e2e)', () => {
       const report = await burndown(s.id);
       expect(report.ideal.map((p) => p.date)).toEqual(['2026-03-02', '2026-03-03', '2026-03-04', '2026-03-05', '2026-03-06']);
       expect(report.ideal.map((p) => p.remaining)).toEqual([8, 6, 4, 2, 0]); // from the committed scope of 8
-      expect(report.sprint.summary).toMatchObject({ committedPoints: 8 });
+      // live view of the scope changes made so far: C (2 pts) was added after the start, then removed again
+      expect(report.sprint.summary).toMatchObject({ committedPoints: 8, addedPoints: 2, removedPoints: 2 });
     });
 
     it('adds a daily point when a new day begins, without duplicating it', async () => {

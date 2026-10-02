@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, Badge, Input, Select } from "@/components/ui/form";
 import { MultiSelect } from "@/components/tasks/multi-select";
-import { Attachments, Checklists, Description, Relations, Subtasks, type TaskDetail } from "@/components/tasks/task-sections";
+import { AcceptanceCriteria, Attachments, Checklists, Description, Relations, Subtasks, type TaskDetail } from "@/components/tasks/task-sections";
 import { Timeline } from "@/components/tasks/task-timeline";
 import { LabelChip, TypeIcon } from "@/components/tasks/badges";
 import { useWorkspace } from "@/components/workspace/workspace-context";
 import { api, errorMessage, type Schemas } from "@/lib/api/client";
+import { POINT_SUGGESTIONS, TSHIRT_SIZES, UNIT_LABEL } from "@/lib/estimation";
+import { useMilestones, useReleases, useSprints } from "@/lib/use-agile";
 import { PRIORITIES, TASK_TYPES, formatDate, isOverdue, toDateInput, type TaskPriority, type TaskType } from "@/lib/tasks";
 import { useQuery } from "@/lib/use-query";
 import { cn } from "@/lib/utils";
@@ -73,6 +75,11 @@ export function TaskDetailView({
   useEffect(() => {
     if (taskId) void api.POST("/api/v1/workspaces/{workspaceId}/tasks/{taskId}/viewed", { params: { path: { workspaceId: ws, taskId } } });
   }, [ws, taskId]);
+
+  const scrum = project.data?.methodology === "SCRUM";
+  const sprints = useSprints(ws, projectId, scrum);
+  const releases = useReleases(ws, projectId);
+  const milestones = useMilestones(ws, projectId);
 
   const reload = () => { taskQuery.reload(); setVersion((v) => v + 1); onChanged?.(); };
 
@@ -173,6 +180,7 @@ export function TaskDetailView({
       <div className={cn("grid gap-6", panel ? "" : "lg:grid-cols-[1fr_20rem]")}>
         <div className="grid min-w-0 content-start gap-6">
           <Description {...sectionProps} />
+          <AcceptanceCriteria {...sectionProps} definitionOfDone={project.data?.definitionOfDone} />
           <Subtasks {...sectionProps} />
           <Checklists {...sectionProps} />
           <Relations {...sectionProps} />
@@ -225,9 +233,44 @@ export function TaskDetailView({
               </Select>
             </Row>
           )}
-          <Row label="Estimate">
-            <Input aria-label="Estimate" type="number" min={0} max={1000} step="0.5" disabled={!task.canEdit} defaultValue={task.estimate ?? ""} key={`est-${task.estimate}`}
-              onBlur={(e) => { const v = e.target.value === "" ? null : Number(e.target.value); if (v !== task.estimate) void update({ estimate: v }); }} />
+          <Row label={UNIT_LABEL[project.data?.estimationUnit ?? "POINTS"]}>
+            {project.data?.estimationUnit === "TSHIRT" ? (
+              <Select aria-label="Estimate" className="w-full" disabled={!task.canEdit} value={task.estimate ?? ""}
+                onChange={(e) => void update({ estimate: e.target.value === "" ? null : Number(e.target.value) })}>
+                <option value="">—</option>
+                {TSHIRT_SIZES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+                {task.estimate !== null && !TSHIRT_SIZES.some((t) => t.value === task.estimate) && <option value={task.estimate}>{task.estimate}</option>}
+              </Select>
+            ) : (
+              <>
+                <Input aria-label="Estimate" type="number" min={0} max={1000} step="0.5" list="estimate-suggestions" disabled={!task.canEdit} defaultValue={task.estimate ?? ""} key={`est-${task.estimate}`}
+                  onBlur={(e) => { const v = e.target.value === "" ? null : Number(e.target.value); if (v !== task.estimate) void update({ estimate: v }); }} />
+                {project.data?.estimationUnit !== "HOURS" && <datalist id="estimate-suggestions">{POINT_SUGGESTIONS.map((n) => <option key={n} value={n} />)}</datalist>}
+              </>
+            )}
+          </Row>
+          {scrum && task.type !== "EPIC" && (
+            <Row label="Sprint">
+              <Select aria-label="Sprint" className="w-full" disabled={!task.canEdit || task.sprint?.state === "COMPLETED"} value={task.sprint?.id ?? ""}
+                onChange={(e) => void update({ sprintId: e.target.value || null })}>
+                <option value="">Backlog</option>
+                {sprints.data?.filter((sp) => sp.state !== "COMPLETED" || sp.id === task.sprint?.id).map((sp) => (
+                  <option key={sp.id} value={sp.id}>{sp.name}{sp.state === "ACTIVE" ? " (active)" : sp.state === "COMPLETED" ? " (completed)" : ""}</option>
+                ))}
+              </Select>
+            </Row>
+          )}
+          <Row label="Release">
+            <Select aria-label="Release" className="w-full" disabled={!task.canEdit} value={task.release?.id ?? ""} onChange={(e) => void update({ releaseId: e.target.value || null })}>
+              <option value="">None</option>
+              {releases.data?.filter((r) => r.status !== "ARCHIVED" || r.id === task.release?.id).map((r) => <option key={r.id} value={r.id}>{r.name}{r.status === "RELEASED" ? " (released)" : ""}</option>)}
+            </Select>
+          </Row>
+          <Row label="Milestone">
+            <Select aria-label="Milestone" className="w-full" disabled={!task.canEdit} value={task.milestone?.id ?? ""} onChange={(e) => void update({ milestoneId: e.target.value || null })}>
+              <option value="">None</option>
+              {milestones.data?.map((x) => <option key={x.id} value={x.id}>{x.name}{x.closedAt ? " (closed)" : ""}</option>)}
+            </Select>
           </Row>
           <Row label="Start date">
             <Input aria-label="Start date" type="date" disabled={!task.canEdit} defaultValue={toDateInput(task.startDate)} key={`start-${task.startDate}`}

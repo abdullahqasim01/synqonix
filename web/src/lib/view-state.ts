@@ -38,6 +38,8 @@ export interface ViewFilters {
   /** `me`, `none`, a user id, or empty for anyone. */
   assignee: string;
   labelId: string;
+  /** `active`, `none` (backlog), a sprint id, or empty for all. */
+  sprintId: string;
   includeArchived: boolean;
   /** Hide finished tasks (client-side). */
   hideDone: boolean;
@@ -55,7 +57,7 @@ export interface ViewState {
 }
 
 export const DEFAULT_FILTERS: ViewFilters = {
-  q: "", statusId: "", type: "", priority: "", assignee: "", labelId: "", includeArchived: false, hideDone: false,
+  q: "", statusId: "", type: "", priority: "", assignee: "", labelId: "", sprintId: "", includeArchived: false, hideDone: false,
 };
 
 export const defaultViewState = (overrides: Partial<ViewState> = {}): ViewState => ({
@@ -72,7 +74,7 @@ export const defaultViewState = (overrides: Partial<ViewState> = {}): ViewState 
 
 type ListQuery = {
   projectId?: string; statusId?: string; type?: TaskType; priority?: TaskPriority; assignee?: string; labelId?: string;
-  q?: string; includeArchived?: boolean; excludeSubtasks?: boolean;
+  q?: string; includeArchived?: boolean; excludeSubtasks?: boolean; sprintId?: string;
 };
 
 /** Task-list query parameters for the current filters (the same ones a saved view stores). */
@@ -84,6 +86,7 @@ export function filterParams(f: ViewFilters): ListQuery {
     ...(f.priority ? { priority: f.priority } : {}),
     ...(f.assignee ? { assignee: f.assignee } : {}),
     ...(f.labelId ? { labelId: f.labelId } : {}),
+    ...(f.sprintId ? { sprintId: f.sprintId } : {}),
     ...(f.includeArchived ? { includeArchived: true } : {}),
   };
 }
@@ -125,6 +128,7 @@ export function fromView(view: Pick<Schemas["ViewDto"], "layout" | "query">): Vi
       priority: (filters?.priority ?? "") as ViewFilters["priority"],
       assignee: filters?.assignee ?? "",
       labelId: filters?.labelId ?? "",
+      sprintId: filters?.sprintId ?? "",
       includeArchived: filters?.includeArchived ?? false,
       hideDone: d?.hideDone ?? false,
     },

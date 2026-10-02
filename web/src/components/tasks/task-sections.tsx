@@ -68,6 +68,55 @@ export function Description({ task, ws, reload }: SectionProps) {
   );
 }
 
+// ---------------------------------------------------------------- acceptance criteria
+
+export function AcceptanceCriteria({ task, ws, reload, definitionOfDone }: SectionProps & { definitionOfDone?: string | null }) {
+  const { members } = useWorkspace();
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  async function save() {
+    const { error } = await api.PATCH("/api/v1/workspaces/{workspaceId}/tasks/{taskId}", {
+      params: { path: { workspaceId: ws, taskId: task.id } }, body: { acceptanceCriteria: draft.trim() || null },
+    });
+    if (error) return setError(errorMessage(error));
+    setEditing(false);
+    reload();
+  }
+
+  if (!task.acceptanceCriteria && !task.canEdit && !definitionOfDone) return null;
+  return (
+    <Section
+      title="Acceptance criteria"
+      action={task.canEdit && !editing && (
+        <Button size="sm" variant="ghost" onClick={() => { setDraft(task.acceptanceCriteria ?? ""); setError(null); setEditing(true); }}>{task.acceptanceCriteria ? "Edit" : "Add"}</Button>
+      )}
+    >
+      {editing ? (
+        <div className="grid gap-2">
+          {error && <Alert>{error}</Alert>}
+          <MarkdownEditor value={draft} onChange={setDraft} people={members} rows={5} placeholder="- [ ] Given… when… then…" onSubmit={() => void save()} />
+          <div className="flex gap-2">
+            <Button size="sm" onClick={() => void save()}>Save</Button>
+            <Button size="sm" variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
+          </div>
+        </div>
+      ) : task.acceptanceCriteria ? (
+        <Markdown>{task.acceptanceCriteria}</Markdown>
+      ) : (
+        <p className="text-sm text-muted-foreground">None yet.</p>
+      )}
+      {definitionOfDone && (
+        <details className="rounded-md border border-border px-3 py-2 text-sm">
+          <summary className="cursor-pointer text-muted-foreground">Definition of done</summary>
+          <div className="mt-2"><Markdown>{definitionOfDone}</Markdown></div>
+        </details>
+      )}
+    </Section>
+  );
+}
+
 // ---------------------------------------------------------------- subtasks
 
 export function Subtasks({ task, ws, reload }: SectionProps) {

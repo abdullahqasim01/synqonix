@@ -35,7 +35,14 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
           {p.description && <p className="mt-1 text-muted-foreground">{p.description}</p>}
         </div>
         <nav className="flex gap-4 border-b border-border text-sm">
-          {[{ href: base, label: "Tasks" }, { href: `${base}/settings`, label: "Settings" }].map((t) => (
+          {[
+            { href: base, label: "Tasks" },
+            ...(p.methodology === "SCRUM" ? [{ href: `${base}/backlog`, label: "Backlog" }] : []),
+            { href: `${base}/epics`, label: "Epics" },
+            { href: `${base}/releases`, label: "Releases" },
+            { href: `${base}/reports`, label: "Reports" },
+            { href: `${base}/settings`, label: "Settings" },
+          ].map((t) => (
             <Link key={t.href} href={t.href} className={cn("pb-2 text-muted-foreground hover:text-foreground", pathname === t.href && "border-b-2 border-primary text-foreground")}>
               {t.label}
             </Link>

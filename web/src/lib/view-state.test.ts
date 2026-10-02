@@ -17,7 +17,7 @@ describe("view state <-> saved view", () => {
   it("round-trips through a saved view", () => {
     const s = defaultViewState({
       layout: "board", sort: "priority", swimlane: "epic", hiddenColumns: ["labels"], cardFields: ["key"],
-      filters: { ...defaultViewState().filters, type: "BUG", labelId: "l1", includeArchived: true, hideDone: true },
+      filters: { ...defaultViewState().filters, type: "BUG", labelId: "l1", sprintId: "active", includeArchived: true, hideDone: true },
     });
     const restored = fromView({ layout: "BOARD", query: toViewQuery(s) });
     expect(restored).toEqual(s);

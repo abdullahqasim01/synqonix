@@ -267,6 +267,59 @@ function Members({ project }: { project: Project }) {
   );
 }
 
+function AgileSettings({ project, reload }: { project: Project; reload: () => void }) {
+  const { path } = useIds();
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  async function save(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const { error } = await api.PATCH("/api/v1/workspaces/{workspaceId}/projects/{projectId}", {
+      params: { path },
+      body: {
+        methodology: f.get("methodology") as Schemas["UpdateProjectDto"]["methodology"],
+        estimationUnit: f.get("estimationUnit") as Schemas["UpdateProjectDto"]["estimationUnit"],
+        sprintDurationDays: Number(f.get("sprintDurationDays")),
+        definitionOfDone: String(f.get("definitionOfDone")).trim() || null,
+      },
+    });
+    setMsg(error ? { ok: false, text: errorMessage(error) } : { ok: true, text: "Saved." });
+    reload();
+  }
+
+  return (
+    <Card>
+      <h2 className="mb-1 font-medium">Agile</h2>
+      <p className="mb-4 text-sm text-muted-foreground">How this project plans and measures work.</p>
+      <form key={`${project.methodology}-${project.estimationUnit}-${project.sprintDurationDays}-${project.definitionOfDone}`} onSubmit={save} className="grid max-w-lg gap-4">
+        {msg && <Alert variant={msg.ok ? "success" : "error"}>{msg.text}</Alert>}
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Methodology" htmlFor="a-method">
+            <Select id="a-method" name="methodology" defaultValue={project.methodology} className="w-full">
+              <option value="SCRUM">Scrum (sprints and backlog)</option>
+              <option value="KANBAN">Kanban (continuous flow)</option>
+            </Select>
+          </Field>
+          <Field label="Estimates" htmlFor="a-unit">
+            <Select id="a-unit" name="estimationUnit" defaultValue={project.estimationUnit} className="w-full">
+              <option value="POINTS">Story points</option>
+              <option value="TSHIRT">T-shirt sizes</option>
+              <option value="HOURS">Hours</option>
+            </Select>
+          </Field>
+        </div>
+        <Field label="Default sprint length (days)" htmlFor="a-days">
+          <Input id="a-days" name="sprintDurationDays" type="number" min={1} max={60} defaultValue={project.sprintDurationDays} className="w-32" />
+        </Field>
+        <Field label="Definition of done" htmlFor="a-dod" hint="Shown on every task. Markdown checklist works well.">
+          <Textarea id="a-dod" name="definitionOfDone" defaultValue={project.definitionOfDone ?? ""} maxLength={10000} rows={4} />
+        </Field>
+        <Button type="submit" className="w-fit">Save agile settings</Button>
+      </form>
+    </Card>
+  );
+}
+
 function ProjectSettings({ project, reload }: { project: Project; reload: () => void }) {
   const { workspace, isAdmin } = useWorkspace();
   const { path } = useIds();
@@ -341,6 +394,7 @@ export default function ProjectSettingsPage() {
       <CustomFields project={project} />
       <Labels project={project} reload={reload} />
       <Members project={project} />
+      {project.canManage && <AgileSettings project={project} reload={reload} />}
       {project.canManage ? <ProjectSettings project={project} reload={reload} /> : <p className="text-sm text-muted-foreground">Only project admins can change these settings.</p>}
     </div>
   );

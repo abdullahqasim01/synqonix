@@ -1,7 +1,9 @@
 "use client";
 
 import { Input, Select } from "@/components/ui/form";
+import { useProjectOptional } from "@/components/workspace/project-context";
 import { useWorkspace } from "@/components/workspace/workspace-context";
+import { useSprints } from "@/lib/use-agile";
 import { PRIORITIES, TASK_TYPES } from "@/lib/tasks";
 import type { ViewState } from "@/lib/view-state";
 
@@ -28,7 +30,10 @@ export const LIST_SORTS = [
 
 /** Filters shared by every layout. Changes are applied immediately. */
 export function FilterBar({ state, onChange, statuses, labels, hideAssignee, sorts }: Props) {
-  const { members } = useWorkspace();
+  const { workspace, members } = useWorkspace();
+  const project = useProjectOptional()?.project;
+  const scrum = project?.methodology === "SCRUM";
+  const sprints = useSprints(workspace.id, project?.id, scrum);
   const set = (patch: Partial<ViewState["filters"]>) => onChange({ ...state, filters: { ...state.filters, ...patch } });
   const sortOptions = sorts ?? LIST_SORTS;
 
@@ -55,6 +60,14 @@ export function FilterBar({ state, onChange, statuses, labels, hideAssignee, sor
           <option value="me">Assigned to me</option>
           <option value="none">Unassigned</option>
           {members.map((m) => <option key={m.userId} value={m.userId}>{m.name}</option>)}
+        </Select>
+      )}
+      {scrum && (
+        <Select aria-label="Filter by sprint" value={state.filters.sprintId} onChange={(e) => set({ sprintId: e.target.value })}>
+          <option value="">All sprints</option>
+          <option value="active">Active sprint</option>
+          <option value="none">Backlog</option>
+          {sprints.data?.map((sp) => <option key={sp.id} value={sp.id}>{sp.name}{sp.state === "COMPLETED" ? " (done)" : ""}</option>)}
         </Select>
       )}
       {labels && labels.length > 0 && (

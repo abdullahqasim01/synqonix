@@ -842,6 +842,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/backlog-rank": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Backlog planning: drop a task into a sprint (or the backlog) above/below another task of that list. */
+        post: operations["TasksController_backlogRank_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/viewed": {
         parameters: {
             query?: never;
@@ -1131,6 +1148,278 @@ export interface paths {
         patch: operations["CustomFieldsController_update_v1"];
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_listSprints_v1"];
+        put?: never;
+        post: operations["AgileController_createSprint_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_getSprint_v1"];
+        put?: never;
+        post?: never;
+        delete: operations["AgileController_deleteSprint_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["AgileController_updateSprint_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AgileController_startSprint_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AgileController_completeSprint_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AgileController_addTasks_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/tasks/{taskRef}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["AgileController_removeTask_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/sprints/{sprintId}/burndown": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_burndown_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/backlog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_backlog_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/velocity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_velocity_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/flow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_flow_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/epics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_epics_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/releases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_listReleases_v1"];
+        put?: never;
+        post: operations["AgileController_createRelease_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/releases/{releaseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["AgileController_deleteRelease_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["AgileController_updateRelease_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/releases/{releaseId}/ship": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AgileController_ship_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/releases/{releaseId}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_notes_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/milestones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AgileController_listMilestones_v1"];
+        put?: never;
+        post: operations["AgileController_createMilestone_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/milestones/{milestoneId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["AgileController_deleteMilestone_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["AgileController_updateMilestone_v1"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1331,6 +1620,12 @@ export interface components {
             visibility: "WORKSPACE" | "PRIVATE";
             /** @enum {string} */
             template: "SCRUM" | "KANBAN" | "BUG_TRACKING" | "BLANK";
+            /** @enum {string} */
+            methodology: "SCRUM" | "KANBAN";
+            /** @enum {string} */
+            estimationUnit: "POINTS" | "TSHIRT" | "HOURS";
+            sprintDurationDays: number;
+            definitionOfDone: string | null;
             archived: boolean;
             /** Format: date-time */
             createdAt: string;
@@ -1346,6 +1641,13 @@ export interface components {
             visibility?: "WORKSPACE" | "PRIVATE";
             /** @enum {string} */
             template?: "SCRUM" | "KANBAN" | "BUG_TRACKING" | "BLANK";
+            /**
+             * @description Defaults from the template: Scrum for the Scrum template, Kanban otherwise.
+             * @enum {string}
+             */
+            methodology?: "SCRUM" | "KANBAN";
+            /** @enum {string} */
+            estimationUnit?: "POINTS" | "TSHIRT" | "HOURS";
             leadId?: string;
         };
         StatusDto: {
@@ -1373,6 +1675,12 @@ export interface components {
             visibility: "WORKSPACE" | "PRIVATE";
             /** @enum {string} */
             template: "SCRUM" | "KANBAN" | "BUG_TRACKING" | "BLANK";
+            /** @enum {string} */
+            methodology: "SCRUM" | "KANBAN";
+            /** @enum {string} */
+            estimationUnit: "POINTS" | "TSHIRT" | "HOURS";
+            sprintDurationDays: number;
+            definitionOfDone: string | null;
             archived: boolean;
             /** Format: date-time */
             createdAt: string;
@@ -1388,6 +1696,17 @@ export interface components {
             visibility?: "WORKSPACE" | "PRIVATE";
             /** @description Pass `null` to clear the lead. */
             leadId?: string | null;
+            /**
+             * @description Switching away from Scrum requires that no sprint is active.
+             * @enum {string}
+             */
+            methodology?: "SCRUM" | "KANBAN";
+            /** @enum {string} */
+            estimationUnit?: "POINTS" | "TSHIRT" | "HOURS";
+            /** @description Default length of a new sprint, in days. */
+            sprintDurationDays?: number;
+            /** @description Markdown checklist shown on every task. Pass `null` to clear. */
+            definitionOfDone?: string | null;
         };
         ProjectMemberDto: {
             userId: string;
@@ -1439,6 +1758,9 @@ export interface components {
             assignee?: string;
             reporter?: string;
             labelId?: string;
+            sprintId?: string;
+            releaseId?: string;
+            milestoneId?: string;
             parent?: string;
             q?: string;
             dueBefore?: string;
@@ -1517,6 +1839,13 @@ export interface components {
             startDate?: string;
             dueDate?: string;
             parentId?: string;
+            /** @description Plan the task into a (planned or active) sprint of this project. */
+            sprintId?: string;
+            /** @description Fix version. */
+            releaseId?: string;
+            milestoneId?: string;
+            /** @description Markdown. */
+            acceptanceCriteria?: string;
             /** @description Map of custom field id to value. */
             customFields?: {
                 [key: string]: unknown;
@@ -1546,6 +1875,16 @@ export interface components {
             name: string;
             color: string;
         };
+        SprintRefDto: {
+            id: string;
+            name: string;
+            /** @enum {string} */
+            state: "PLANNED" | "ACTIVE" | "COMPLETED";
+        };
+        NamedRefDto: {
+            id: string;
+            name: string;
+        };
         TaskDto: {
             id: string;
             /** @description Human key, e.g. `SYN-12`. */
@@ -1562,6 +1901,9 @@ export interface components {
             assignees: components["schemas"]["TaskUserDto"][];
             labels: components["schemas"]["TaskLabelDto"][];
             reporterId: string | null;
+            sprint: components["schemas"]["SprintRefDto"] | null;
+            release: components["schemas"]["NamedRefDto"] | null;
+            milestone: components["schemas"]["NamedRefDto"] | null;
             estimate: number | null;
             /** Format: date-time */
             startDate: string | null;
@@ -1617,6 +1959,7 @@ export interface components {
         };
         TaskDetailDto: {
             description: string | null;
+            acceptanceCriteria: string | null;
             parent: components["schemas"]["TaskRefDto"] | null;
             subtasks: components["schemas"]["TaskDto"][];
             relations: components["schemas"]["TaskRelationDto"][];
@@ -1642,6 +1985,9 @@ export interface components {
             assignees: components["schemas"]["TaskUserDto"][];
             labels: components["schemas"]["TaskLabelDto"][];
             reporterId: string | null;
+            sprint: components["schemas"]["SprintRefDto"] | null;
+            release: components["schemas"]["NamedRefDto"] | null;
+            milestone: components["schemas"]["NamedRefDto"] | null;
             estimate: number | null;
             /** Format: date-time */
             startDate: string | null;
@@ -1700,6 +2046,10 @@ export interface components {
             removeLabelIds?: string[];
             dueDate?: string | null;
             archived?: boolean;
+            /** @description Sprint to move every selected task into, or `null` for the backlog. */
+            sprintId?: string | null;
+            releaseId?: string | null;
+            milestoneId?: string | null;
         };
         BulkUpdateTasksDto: {
             taskIds: string[];
@@ -1726,6 +2076,11 @@ export interface components {
             dueDate?: string | null;
             /** @description Pass `null` to detach from the parent. */
             parentId?: string | null;
+            /** @description Move to a sprint, or `null` for the backlog. */
+            sprintId?: string | null;
+            releaseId?: string | null;
+            milestoneId?: string | null;
+            acceptanceCriteria?: string | null;
             /** @description Map of custom field id to value; `null` clears a value. */
             customFields?: {
                 [key: string]: unknown;
@@ -1737,6 +2092,13 @@ export interface components {
             /** @description Place the card directly above this card (which must be in the target column). */
             beforeId?: string;
             /** @description Place the card directly below this card (which must be in the target column). */
+            afterId?: string;
+        };
+        BacklogRankDto: {
+            /** @description Sprint to drop the task into, or `null` for the backlog. */
+            sprintId: string | null;
+            /** @description Place the task above this one (which must be in the same list). */
+            beforeId?: string;
             afterId?: string;
         };
         MoveTaskDto: {
@@ -1804,6 +2166,277 @@ export interface components {
         UpdateCustomFieldDto: {
             name?: string;
             options?: string[];
+        };
+        SprintSummaryDto: {
+            committedPoints: number;
+            committedTasks: number;
+            /** @description Scope added after the sprint started. */
+            addedPoints: number;
+            /** @description Scope removed after the sprint started. */
+            removedPoints: number;
+            completedPoints: number;
+            completedTasks: number;
+            carriedOverPoints: number;
+            carriedOverTasks: number;
+        };
+        SprintStatsDto: {
+            taskCount: number;
+            doneCount: number;
+            /** @description Sum of estimates (unit-agnostic). */
+            points: number;
+            donePoints: number;
+        };
+        SprintDto: {
+            id: string;
+            number: number;
+            name: string;
+            goal: string | null;
+            /** @enum {string} */
+            state: "PLANNED" | "ACTIVE" | "COMPLETED";
+            /** Format: date-time */
+            startDate: string | null;
+            /** Format: date-time */
+            endDate: string | null;
+            capacity: number | null;
+            /** Format: date-time */
+            startedAt: string | null;
+            /** Format: date-time */
+            completedAt: string | null;
+            /** @description Committed scope once started; full results once completed. */
+            summary: components["schemas"]["SprintSummaryDto"] | null;
+            stats: components["schemas"]["SprintStatsDto"];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CreateSprintDto: {
+            /** @description Defaults to "Sprint <number>". */
+            name?: string;
+            goal?: string;
+            startDate?: string;
+            endDate?: string;
+            /** @description Planned capacity in the project's estimation unit. */
+            capacity?: number;
+        };
+        UpdateSprintDto: {
+            name?: string;
+            goal?: string | null;
+            startDate?: string | null;
+            endDate?: string | null;
+            capacity?: number | null;
+        };
+        StartSprintDto: {
+            /** @description Defaults to the planned start, or now. */
+            startDate?: string;
+            /** @description Defaults to the planned end, or start + the project's sprint length. */
+            endDate?: string;
+            capacity?: number;
+        };
+        CompleteSprintDto: {
+            /**
+             * @description What happens to unfinished tasks.
+             * @enum {string}
+             */
+            carryOver: "BACKLOG" | "NEXT_SPRINT" | "SPRINT";
+            /** @description Required when `carryOver` is `SPRINT`: a planned sprint of the project. */
+            targetSprintId?: string;
+        };
+        CompleteSprintResultDto: {
+            sprint: components["schemas"]["SprintDto"];
+            /** @description The sprint unfinished tasks were moved to, if any. */
+            nextSprint: components["schemas"]["SprintDto"] | null;
+            carriedOverCount: number;
+        };
+        SprintTasksDto: {
+            taskIds: string[];
+        };
+        SnapshotDto: {
+            /** Format: date-time */
+            at: string;
+            /** @enum {string} */
+            reason: "START" | "DAILY" | "SCOPE_CHANGE" | "COMPLETE";
+            scopePoints: number;
+            donePoints: number;
+            remainingPoints: number;
+            scopeTasks: number;
+            doneTasks: number;
+            remainingTasks: number;
+        };
+        IdealPointDto: {
+            /** @description `YYYY-MM-DD` (UTC). */
+            date: string;
+            remaining: number;
+        };
+        BurndownDto: {
+            sprint: components["schemas"]["SprintDto"];
+            /** @description Every recorded point: at start, daily, on scope changes and at completion. */
+            points: components["schemas"]["SnapshotDto"][];
+            /** @description Straight line from the committed scope to zero at the sprint end. */
+            ideal: components["schemas"]["IdealPointDto"][];
+        };
+        BacklogSprintDto: {
+            sprint: components["schemas"]["SprintDto"];
+            tasks: components["schemas"]["TaskDto"][];
+        };
+        BacklogSectionDto: {
+            tasks: components["schemas"]["TaskDto"][];
+            total: number;
+            points: number;
+        };
+        BacklogDto: {
+            /** @description Planned and active sprints, active first, then by number. */
+            sprints: components["schemas"]["BacklogSprintDto"][];
+            backlog: components["schemas"]["BacklogSectionDto"];
+            epics: components["schemas"]["TaskRefDto"][];
+        };
+        VelocityEntryDto: {
+            sprintId: string;
+            number: number;
+            name: string;
+            /** Format: date-time */
+            completedAt: string;
+            committedPoints: number;
+            completedPoints: number;
+            addedPoints: number;
+            carriedOverPoints: number;
+            completedTasks: number;
+        };
+        VelocityDto: {
+            unit: string;
+            /** @description Oldest first. */
+            sprints: components["schemas"]["VelocityEntryDto"][];
+            /** @description Average completed points over the returned sprints. */
+            average: number;
+            /** @description Average over the three most recent sprints. */
+            recentAverage: number;
+        };
+        FlowStatsDto: {
+            count: number;
+            avgLeadDays: number | null;
+            medianLeadDays: number | null;
+            p85LeadDays: number | null;
+            avgCycleDays: number | null;
+            medianCycleDays: number | null;
+            p85CycleDays: number | null;
+        };
+        ThroughputDto: {
+            /** @description Monday of the week, `YYYY-MM-DD`. */
+            weekStart: string;
+            count: number;
+        };
+        FlowTaskDto: {
+            key: string;
+            title: string;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** Format: date-time */
+            completedAt: string;
+            /** @description From creation to completion. */
+            leadTimeDays: number;
+            /** @description From the first move into progress to completion. */
+            cycleTimeDays: number | null;
+        };
+        FlowDto: {
+            days: number;
+            stats: components["schemas"]["FlowStatsDto"];
+            throughput: components["schemas"]["ThroughputDto"][];
+            /** @description Tasks currently in progress. */
+            wip: number;
+            tasks: components["schemas"]["FlowTaskDto"][];
+        };
+        EpicProgressDto: {
+            id: string;
+            key: string;
+            title: string;
+            status: string;
+            /** Format: date-time */
+            startDate: string | null;
+            /** Format: date-time */
+            dueDate: string | null;
+            childCount: number;
+            doneCount: number;
+            points: number;
+            donePoints: number;
+            /** @description 0-100, by estimate when the children have estimates, otherwise by count. */
+            progress: number;
+        };
+        CountsDto: {
+            total: number;
+            done: number;
+        };
+        ReleaseDto: {
+            id: string;
+            name: string;
+            description: string | null;
+            /** @enum {string} */
+            status: "UNRELEASED" | "RELEASED" | "ARCHIVED";
+            /** Format: date-time */
+            startDate: string | null;
+            /** Format: date-time */
+            releaseDate: string | null;
+            /** Format: date-time */
+            releasedAt: string | null;
+            counts: components["schemas"]["CountsDto"];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CreateReleaseDto: {
+            name: string;
+            description?: string;
+            startDate?: string;
+            /** @description Planned release date. */
+            releaseDate?: string;
+        };
+        UpdateReleaseDto: {
+            name?: string;
+            description?: string | null;
+            startDate?: string | null;
+            releaseDate?: string | null;
+            /**
+             * @description Use `POST …/ship` to release; this only toggles archiving.
+             * @enum {string}
+             */
+            status?: "UNRELEASED" | "ARCHIVED";
+        };
+        ShipReleaseDto: {
+            /** @description Move unfinished tasks to this (unreleased) release instead of leaving them on the shipped one. */
+            moveUnfinishedTo?: string;
+        };
+        ReleaseNoteSectionDto: {
+            title: string;
+            tasks: {
+                key: string;
+                title: string;
+            }[];
+        };
+        ReleaseNotesDto: {
+            markdown: string;
+            sections: components["schemas"]["ReleaseNoteSectionDto"][];
+            /** @description Tasks on the release that are not done yet (not listed in the notes). */
+            unfinished: number;
+        };
+        MilestoneDto: {
+            id: string;
+            name: string;
+            description: string | null;
+            /** Format: date-time */
+            dueDate: string | null;
+            /** Format: date-time */
+            closedAt: string | null;
+            counts: components["schemas"]["CountsDto"];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CreateMilestoneDto: {
+            name: string;
+            description?: string;
+            dueDate?: string;
+        };
+        UpdateMilestoneDto: {
+            name?: string;
+            description?: string | null;
+            dueDate?: string | null;
+            /** @description Close or reopen. */
+            closed?: boolean;
         };
     };
     responses: never;
@@ -3305,6 +3938,12 @@ export interface operations {
                 dueBefore?: string;
                 dueAfter?: string;
                 includeArchived?: boolean;
+                /** @description `none` (backlog), `active` (the running sprint) or a sprint id. */
+                sprintId?: string;
+                /** @description `none` or a release id. */
+                releaseId?: string;
+                /** @description `none` or a milestone id. */
+                milestoneId?: string;
                 /** @description Hide sub-tasks (boards do this by default). */
                 excludeSubtasks?: boolean;
                 /** @description Apply a saved view; explicit parameters override its filters. */
@@ -3348,6 +3987,12 @@ export interface operations {
                 dueBefore?: string;
                 dueAfter?: string;
                 includeArchived?: boolean;
+                /** @description `none` (backlog), `active` (the running sprint) or a sprint id. */
+                sprintId?: string;
+                /** @description `none` or a release id. */
+                releaseId?: string;
+                /** @description `none` or a milestone id. */
+                milestoneId?: string;
                 /** @description Hide sub-tasks (boards do this by default). */
                 excludeSubtasks?: boolean;
                 /** @description Apply a saved view; explicit parameters override its filters. */
@@ -3546,6 +4191,32 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["RankTaskDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDto"];
+                };
+            };
+        };
+    };
+    TasksController_backlogRank_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BacklogRankDto"];
             };
         };
         responses: {
@@ -4150,6 +4821,611 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CustomFieldDto"];
+                };
+            };
+        };
+    };
+    AgileController_listSprints_v1: {
+        parameters: {
+            query?: {
+                state?: "PLANNED" | "ACTIVE" | "COMPLETED";
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SprintDto"][];
+                };
+            };
+        };
+    };
+    AgileController_createSprint_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSprintDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SprintDto"];
+                };
+            };
+        };
+    };
+    AgileController_getSprint_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                sprintId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SprintDto"];
+                };
+            };
+        };
+    };
+    AgileController_deleteSprint_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                sprintId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgileController_updateSprint_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                sprintId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSprintDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SprintDto"];
+                };
+            };
+        };
+    };
+    AgileController_startSprint_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                sprintId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartSprintDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SprintDto"];
+                };
+            };
+        };
+    };
+    AgileController_completeSprint_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                sprintId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompleteSprintDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompleteSprintResultDto"];
+                };
+            };
+        };
+    };
+    AgileController_addTasks_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                sprintId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SprintTasksDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResultDto"];
+                };
+            };
+        };
+    };
+    AgileController_removeTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                sprintId: string;
+                taskRef: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    AgileController_burndown_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                sprintId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BurndownDto"];
+                };
+            };
+        };
+    };
+    AgileController_backlog_v1: {
+        parameters: {
+            query?: {
+                type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+                priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+                /** @description `me`, `none` (unassigned) or a user id. */
+                assignee?: string;
+                reporter?: string;
+                labelId?: string;
+                /** @description `none` for top-level tasks, or a parent task id. */
+                parent?: string;
+                /** @description Matches the title, or the key / number (`SYN-12`, `12`). */
+                q?: string;
+                dueBefore?: string;
+                dueAfter?: string;
+                /** @description `none` or a release id. */
+                releaseId?: string;
+                /** @description `none` or a milestone id. */
+                milestoneId?: string;
+                /** @description Apply a saved view; explicit parameters override its filters. */
+                view?: string;
+                limit?: number;
+                /** @description Also list finished tasks that are not in a sprint. */
+                includeDone?: boolean;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacklogDto"];
+                };
+            };
+        };
+    };
+    AgileController_velocity_v1: {
+        parameters: {
+            query?: {
+                limit?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VelocityDto"];
+                };
+            };
+        };
+    };
+    AgileController_flow_v1: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FlowDto"];
+                };
+            };
+        };
+    };
+    AgileController_epics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpicProgressDto"][];
+                };
+            };
+        };
+    };
+    AgileController_listReleases_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleaseDto"][];
+                };
+            };
+        };
+    };
+    AgileController_createRelease_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReleaseDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleaseDto"];
+                };
+            };
+        };
+    };
+    AgileController_deleteRelease_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                releaseId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgileController_updateRelease_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                releaseId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateReleaseDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleaseDto"];
+                };
+            };
+        };
+    };
+    AgileController_ship_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                releaseId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShipReleaseDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleaseDto"];
+                };
+            };
+        };
+    };
+    AgileController_notes_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                releaseId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleaseNotesDto"];
+                };
+            };
+        };
+    };
+    AgileController_listMilestones_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneDto"][];
+                };
+            };
+        };
+    };
+    AgileController_createMilestone_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMilestoneDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneDto"];
+                };
+            };
+        };
+    };
+    AgileController_deleteMilestone_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                milestoneId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgileController_updateMilestone_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                milestoneId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMilestoneDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneDto"];
                 };
             };
         };
