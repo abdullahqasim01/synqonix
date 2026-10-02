@@ -13,14 +13,334 @@
     "Other"
   ],
   "main": "./dist/extension.js",
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
-    "commands": [
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "synqonix",
+          "title": "Synqonix",
+          "icon": "media/synqonix.svg"
+        }
+      ]
+    },
+    "views": {
+      "synqonix": [
+        {
+          "id": "synqonix.myTasks",
+          "name": "My tasks",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "id": "synqonix.sprint",
+          "name": "Active sprint",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "id": "synqonix.backlog",
+          "name": "Backlog",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "id": "synqonix.recent",
+          "name": "Recent",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "id": "synqonix.welcome",
+          "name": "Synqonix",
+          "when": "!synqonix.signedIn"
+        }
+      ]
+    },
+    "viewsWelcome": [
       {
-        "command": "synqonix.hello",
-        "title": "Synqonix: Hello"
+        "view": "synqonix.welcome",
+        "contents": "Sign in to see your tasks, start work on a branch and track time without leaving the editor.\n[Sign in with browser](command:synqonix.signIn)\n[Use an API token](command:synqonix.signInWithToken)"
       }
     ],
+    "commands": [
+      {
+        "command": "synqonix.signIn",
+        "title": "Sign in (browser)",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.signInWithToken",
+        "title": "Sign in with an API token",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.signOut",
+        "title": "Sign out",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.selectWorkspace",
+        "title": "Choose workspace",
+        "category": "Synqonix",
+        "icon": "$(organization)"
+      },
+      {
+        "command": "synqonix.selectProject",
+        "title": "Choose project",
+        "category": "Synqonix",
+        "icon": "$(project)"
+      },
+      {
+        "command": "synqonix.refresh",
+        "title": "Refresh",
+        "category": "Synqonix",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "synqonix.createTask",
+        "title": "Create task",
+        "category": "Synqonix",
+        "icon": "$(add)"
+      },
+      {
+        "command": "synqonix.searchTasks",
+        "title": "Search tasks",
+        "category": "Synqonix",
+        "icon": "$(search)"
+      },
+      {
+        "command": "synqonix.openTask",
+        "title": "Open task",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.openInBrowser",
+        "title": "Open task in browser",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.startTask",
+        "title": "Start task (create branch)",
+        "category": "Synqonix",
+        "icon": "$(play)"
+      },
+      {
+        "command": "synqonix.transitionTask",
+        "title": "Move task to status",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.assignToMe",
+        "title": "Assign task to me",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.setPriority",
+        "title": "Set task priority",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.commentOnTask",
+        "title": "Comment on task",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.toggleTimer",
+        "title": "Start or stop timer",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.stopTimer",
+        "title": "Stop timer",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.setCurrentTask",
+        "title": "Set current task",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.clearCurrentTask",
+        "title": "Clear current task",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.insertCommitTemplate",
+        "title": "Insert commit message for current task",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.currentTaskMenu",
+        "title": "Current task actions",
+        "category": "Synqonix"
+      },
+      {
+        "command": "synqonix.showOutput",
+        "title": "Show log",
+        "category": "Synqonix"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "synqonix.createTask",
+          "when": "view =~ /^synqonix\\.(myTasks|sprint|backlog)$/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "synqonix.searchTasks",
+          "when": "view == synqonix.myTasks",
+          "group": "navigation@2"
+        },
+        {
+          "command": "synqonix.refresh",
+          "when": "view =~ /^synqonix\\./",
+          "group": "navigation@3"
+        },
+        {
+          "command": "synqonix.selectProject",
+          "when": "view == synqonix.sprint || view == synqonix.backlog",
+          "group": "navigation@0"
+        },
+        {
+          "command": "synqonix.selectWorkspace",
+          "when": "view == synqonix.myTasks",
+          "group": "1_context"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "synqonix.startTask",
+          "when": "viewItem == task",
+          "group": "1_work"
+        },
+        {
+          "command": "synqonix.transitionTask",
+          "when": "viewItem == task",
+          "group": "1_work"
+        },
+        {
+          "command": "synqonix.assignToMe",
+          "when": "viewItem == task",
+          "group": "2_edit"
+        },
+        {
+          "command": "synqonix.setPriority",
+          "when": "viewItem == task",
+          "group": "2_edit"
+        },
+        {
+          "command": "synqonix.commentOnTask",
+          "when": "viewItem == task",
+          "group": "2_edit"
+        },
+        {
+          "command": "synqonix.toggleTimer",
+          "when": "viewItem == task",
+          "group": "3_time"
+        },
+        {
+          "command": "synqonix.openInBrowser",
+          "when": "viewItem == task",
+          "group": "4_open"
+        },
+        {
+          "command": "synqonix.setCurrentTask",
+          "when": "viewItem == task",
+          "group": "4_open"
+        },
+        {
+          "command": "synqonix.startTask",
+          "when": "viewItem == task",
+          "group": "inline"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "synqonix.openTask",
+          "when": "false"
+        },
+        {
+          "command": "synqonix.currentTaskMenu",
+          "when": "false"
+        },
+        {
+          "command": "synqonix.signIn",
+          "when": "!synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.signInWithToken",
+          "when": "!synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.signOut",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.selectWorkspace",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.selectProject",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.refresh",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.createTask",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.searchTasks",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.openInBrowser",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.startTask",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.transitionTask",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.assignToMe",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.setPriority",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.commentOnTask",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.toggleTimer",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.stopTimer",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.setCurrentTask",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.clearCurrentTask",
+          "when": "synqonix.signedIn"
+        },
+        {
+          "command": "synqonix.insertCommitTemplate",
+          "when": "synqonix.signedIn"
+        }
+      ]
+    },
     "configuration": {
       "title": "Synqonix",
       "properties": {
@@ -28,6 +348,52 @@
           "type": "string",
           "default": "http://localhost:4000",
           "description": "Base URL of the Synqonix API"
+        },
+        "synqonix.webUrl": {
+          "type": "string",
+          "default": "http://localhost:3000",
+          "description": "Base URL of the Synqonix web app (used for browser sign-in and \u201cOpen in browser\u201d)"
+        },
+        "synqonix.notifications.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a notification when you are assigned, mentioned or a task is due"
+        },
+        "synqonix.notifications.intervalSeconds": {
+          "type": "number",
+          "default": 60,
+          "minimum": 30,
+          "description": "How often to check for new notifications"
+        },
+        "synqonix.startTask.moveToInProgress": {
+          "type": "boolean",
+          "default": true,
+          "description": "\u201cStart task\u201d moves the task to the first In Progress status"
+        },
+        "synqonix.startTask.assignToMe": {
+          "type": "boolean",
+          "default": true,
+          "description": "\u201cStart task\u201d assigns the task to you"
+        },
+        "synqonix.startTask.startTimer": {
+          "type": "boolean",
+          "default": false,
+          "description": "\u201cStart task\u201d also starts the time tracker"
+        },
+        "synqonix.startTask.baseBranch": {
+          "type": "string",
+          "default": "",
+          "description": "Branch new task branches start from (empty: the current HEAD)"
+        },
+        "synqonix.git.commitTemplate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Prefill the commit message box with the task key"
+        },
+        "synqonix.telemetry.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Reserved. The extension does not send any usage data."
         }
       }
     }
@@ -35,17 +401,20 @@
   "scripts": {
     "build": "node esbuild.mjs",
     "watch": "node esbuild.mjs --watch",
-    "lint": "eslint src",
+    "lint": "eslint src test",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "generate:api": "openapi-typescript ../api/openapi.json -o src/api/schema.d.ts",
     "package": "vsce package --no-dependencies",
-    "vscode:prepublish": "npm run build"
+    "vscode:prepublish": "npm run build",
+    "test:e2e": "vitest run --config vitest.e2e.config.mts",
+    "test:vscode": "tsc -p test/integration/tsconfig.json && node out/test/integration/run.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "@types/node": "^22.20.5",
     "@types/vscode": "1.90.0",
+    "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
@@ -54,5 +423,8 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.71.0",
     "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.17.0"
   }
 }

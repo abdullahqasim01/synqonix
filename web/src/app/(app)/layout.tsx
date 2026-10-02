@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { Button } from "@/components/ui/button";
@@ -11,10 +11,14 @@ import { useAuth } from "@/lib/auth/auth-context";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, status, logout, retry } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (status === "anonymous") router.replace("/login");
-  }, [status, router]);
+    if (status !== "anonymous") return;
+    // Come back to where they were headed (e.g. the editor's sign-in handshake) after logging in.
+    const here = window.location.pathname + window.location.search;
+    router.replace(here === "/dashboard" || here === "/" ? "/login" : `/login?next=${encodeURIComponent(here)}`);
+  }, [status, router, pathname]);
 
   if (status === "error") {
     return (

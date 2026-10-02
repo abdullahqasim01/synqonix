@@ -3,3 +3,9 @@ src/**
 node_modules/**
 *.config.*
 tsconfig.json
+test/**
+out/**
+vitest.*
+eslint.config.mjs
+esbuild.mjs
+**/*.map

@@ -1420,6 +1420,1071 @@ export interface paths {
         patch: operations["AgileController_updateMilestone_v1"];
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ChannelsController_list_v1"];
+        put?: never;
+        post: operations["ChannelsController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/direct": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Finds or starts the direct conversation with these people. */
+        post: operations["ChannelsController_direct_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ChannelsController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ChannelsController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ChannelsController_join_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ChannelsController_leave_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ChannelsController_members_v1"];
+        put?: never;
+        post: operations["ChannelsController_addMember_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/members/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["ChannelsController_removeMember_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/task-refs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_taskRefs_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/discussions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_discussions_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_list_v1"];
+        put?: never;
+        post: operations["MessagesController_post_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MessagesController_markRead_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MessagesController_upload_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/{attachmentId}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Always served as a download so uploaded files cannot run scripts on our origin. */
+        get: operations["MessagesController_download_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_get_v1"];
+        put?: never;
+        post?: never;
+        delete: operations["MessagesController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["MessagesController_edit_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/replies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_replies_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/reactions/{emoji}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["MessagesController_react_v1"];
+        post?: never;
+        delete: operations["MessagesController_unreact_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MessagesController_link_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/tasks/{taskRef}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["MessagesController_unlink_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/create-task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Turns a message into a task in the given project and links the two. */
+        post: operations["MessagesController_createTask_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubController_status_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github/install-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Where to send the browser to install the GitHub App on an account. Workspace admins only. */
+        get: operations["GithubController_installUrl_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github/installations/{installationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["GithubController_removeInstallation_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github/contributors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubController_contributors_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/github/contributors/{login}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["GithubController_setContributor_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/repos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubProjectController_list_v1"];
+        put?: never;
+        post: operations["GithubProjectController_link_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubProjectController_available_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/github/repos/{linkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["GithubProjectController_unlink_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["GithubProjectController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/github": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GithubTaskController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/github/branches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GithubTaskController_createBranch_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["NotificationsController_list_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["NotificationsController_unread_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["NotificationsController_preferences_v1"];
+        put: operations["NotificationsController_updatePreferences_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["NotificationsController_readAll_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["NotificationsController_read_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}/unread": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["NotificationsController_unreadOne_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}/snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["NotificationsController_snooze_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["NotificationsController_dismiss_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tasks, comments, projects, channels, messages and people the caller may see. */
+        get: operations["SearchController_run_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TimeController_forTask_v1"];
+        put?: never;
+        post: operations["TimeController_log_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/time/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TimeController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TimeController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/time/timer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TimeController_timer_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/time/timer/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TimeController_start_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/time/timer/stop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stops the running timer; `entry` is the finished entry, or null when there was none (or it ran under a minute). */
+        post: operations["TimeController_stop_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/time/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TimeController_mine_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/insights/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dashboard numbers across every project the caller can see. */
+        get: operations["InsightsController_overview_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/created-resolved": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_createdResolved_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/cumulative-flow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_cumulativeFlow_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/workload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_workload_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/overdue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_overdue_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_time_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Downloads the project's tasks as CSV (default) or JSON. Cells that could run as spreadsheet formulas are neutralised. */
+        get: operations["DataIoController_export_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Imports a CSV (ours, Jira's or GitHub's columns) or our JSON export. Importing the same file again creates nothing new. */
+        post: operations["DataIoController_import_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TemplatesController_list_v1"];
+        put?: never;
+        post: operations["TemplatesController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates/from-task/{taskRef}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TemplatesController_fromTask_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates/{templateId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TemplatesController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TemplatesController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates/{templateId}/create-task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TemplatesController_createTask_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/recurring": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TemplatesController_listRecurring_v1"];
+        put?: never;
+        post: operations["TemplatesController_createRecurring_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/recurring/{recurringId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TemplatesController_removeRecurring_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TemplatesController_updateRecurring_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["WebhooksController_list_v1"];
+        put?: never;
+        post: operations["WebhooksController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["WebhooksController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["WebhooksController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/rotate-secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["WebhooksController_rotate_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["WebhooksController_test_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["WebhooksController_deliveries_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["WebhooksController_redeliver_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/automations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AutomationController_list_v1"];
+        put?: never;
+        post: operations["AutomationController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/automations/{ruleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["AutomationController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["AutomationController_update_v1"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1836,6 +2901,8 @@ export interface components {
             assigneeIds?: string[];
             labelIds?: string[];
             estimate?: number;
+            /** @description Planned effort in minutes. */
+            timeEstimateMinutes?: number;
             startDate?: string;
             dueDate?: string;
             parentId?: string;
@@ -1905,6 +2972,10 @@ export interface components {
             release: components["schemas"]["NamedRefDto"] | null;
             milestone: components["schemas"]["NamedRefDto"] | null;
             estimate: number | null;
+            /** @description Planned effort in minutes. */
+            timeEstimateMinutes: number | null;
+            /** @description Minutes logged so far (finished entries and running timers up to now). */
+            timeSpentMinutes: number;
             /** Format: date-time */
             startDate: string | null;
             /** Format: date-time */
@@ -1989,6 +3060,10 @@ export interface components {
             release: components["schemas"]["NamedRefDto"] | null;
             milestone: components["schemas"]["NamedRefDto"] | null;
             estimate: number | null;
+            /** @description Planned effort in minutes. */
+            timeEstimateMinutes: number | null;
+            /** @description Minutes logged so far (finished entries and running timers up to now). */
+            timeSpentMinutes: number;
             /** Format: date-time */
             startDate: string | null;
             /** Format: date-time */
@@ -2072,6 +3147,8 @@ export interface components {
             /** @description Replaces the label list. */
             labelIds?: string[];
             estimate?: number | null;
+            /** @description Planned effort in minutes; `null` clears it. */
+            timeEstimateMinutes?: number | null;
             startDate?: string | null;
             dueDate?: string | null;
             /** @description Pass `null` to detach from the parent. */
@@ -2437,6 +3514,802 @@ export interface components {
             dueDate?: string | null;
             /** @description Close or reopen. */
             closed?: boolean;
+        };
+        ParticipantDto: {
+            userId: string;
+            name: string;
+        };
+        ChannelDto: {
+            id: string;
+            /** @enum {string} */
+            type: "PRIVATE" | "PUBLIC" | "DIRECT";
+            /** @description Null for direct messages; use `participants`. */
+            name: string | null;
+            topic: string | null;
+            /** @description Set for a project's own channel. */
+            projectId: string | null;
+            archived: boolean;
+            memberCount: number;
+            isMember: boolean;
+            /** @description May rename, archive and manage members. */
+            isAdmin: boolean;
+            canPost: boolean;
+            /** @description Top-level messages from others since the caller last read the channel. */
+            unreadCount: number;
+            /** @description Messages mentioning the caller since they last read the channel. */
+            mentionCount: number;
+            lastSeq: number;
+            lastReadSeq: number;
+            /** Format: date-time */
+            lastMessageAt: string | null;
+            /** @description The people in a direct conversation (other than the caller when there are several). */
+            participants: components["schemas"]["ParticipantDto"][];
+        };
+        CreateChannelDto: {
+            name: string;
+            /** @enum {string} */
+            type: "PUBLIC" | "PRIVATE";
+            topic?: string;
+            /** @description Extra people to add (private channels). The creator is always a member and admin. */
+            memberIds?: string[];
+        };
+        DirectChannelDto: {
+            /** @description The other participants (1 to 7). The same set of people always shares one conversation. */
+            userIds: string[];
+        };
+        UpdateChannelDto: {
+            name?: string;
+            topic?: string | null;
+            /** @description Archived channels are read-only. */
+            archived?: boolean;
+        };
+        ChannelMemberDto: {
+            userId: string;
+            name: string;
+            email: string;
+            /** @enum {string} */
+            role: "ADMIN" | "MEMBER";
+        };
+        ChannelMemberInputDto: {
+            userId: string;
+        };
+        MessageAuthorDto: {
+            userId: string;
+            name: string;
+        };
+        ReactionDto: {
+            emoji: string;
+            count: number;
+            userIds: string[];
+            /** @description Whether the caller reacted. */
+            reacted: boolean;
+        };
+        MessageAttachmentDto: {
+            id: string;
+            filename: string;
+            mimeType: string;
+            size: number;
+        };
+        MessageDto: {
+            id: string;
+            channelId: string;
+            seq: number;
+            parentId: string | null;
+            author: components["schemas"]["MessageAuthorDto"] | null;
+            /** @description Empty when deleted. */
+            body: string;
+            deleted: boolean;
+            edited: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            editedAt: string | null;
+            replyCount: number;
+            /** Format: date-time */
+            lastReplyAt: string | null;
+            reactions: components["schemas"]["ReactionDto"][];
+            attachments: components["schemas"]["MessageAttachmentDto"][];
+            /** @description Task keys written in the message. */
+            taskKeys: string[];
+            /** @description Cards for linked tasks the caller can see (written, linked by hand or created from the message). */
+            tasks: components["schemas"]["TaskRefDto"][];
+        };
+        DiscussionChannelDto: {
+            id: string;
+            name: string | null;
+            /** @enum {string} */
+            type: "PRIVATE" | "PUBLIC" | "DIRECT";
+        };
+        DiscussionDto: {
+            message: components["schemas"]["MessageDto"];
+            channel: components["schemas"]["DiscussionChannelDto"];
+            /** @enum {string} */
+            source: "MENTION" | "LINKED" | "CREATED";
+        };
+        MessageListDto: {
+            /** @description Oldest first. */
+            messages: components["schemas"]["MessageDto"][];
+            /** @description Whether older (or, with `after`, newer) messages exist beyond this page. */
+            hasMore: boolean;
+        };
+        PostMessageDto: {
+            /** @description Markdown. Mention a teammate with `[@Name](mention:<userId>)`; task keys like `SYN-12` become links. */
+            body: string;
+            /** @description Reply in the thread of this top-level message. */
+            parentId?: string;
+            /** @description Files uploaded earlier through the attachments endpoint. */
+            attachmentIds?: string[];
+        };
+        MarkReadDto: {
+            /** @description Read up to this sequence number; defaults to the latest. */
+            seq?: number;
+        };
+        EditMessageDto: {
+            body: string;
+        };
+        LinkTaskDto: {
+            /** @description Key (`SYN-12`) or id. */
+            taskRef: string;
+        };
+        CreateTaskFromMessageDto: {
+            projectId: string;
+            /** @description Defaults to the first line of the message. */
+            title?: string;
+        };
+        GithubInstallationDto: {
+            id: string;
+            accountLogin: string;
+            accountType: string;
+            suspended: boolean;
+            repositoryCount: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        GithubStatusDto: {
+            /** @description False until the server has GitHub App credentials; the rest of the integration is inert. */
+            configured: boolean;
+            installations: components["schemas"]["GithubInstallationDto"][];
+        };
+        GithubInstallUrlDto: {
+            url: string;
+        };
+        ContributorDto: {
+            login: string;
+            userId: string | null;
+        };
+        SetContributorDto: {
+            userId: string | null;
+        };
+        LinkedRepoDto: {
+            id: string;
+            projectId: string;
+            installationId: string;
+            githubRepoId: string;
+            fullName: string;
+            htmlUrl: string;
+            defaultBranch: string;
+            autoTransition: boolean;
+            prOpenedStatusId: string | null;
+            prMergedStatusId: string | null;
+            /** @description The status actually used for "opened" (the configured one, or the default), or null if there is none. */
+            effectiveOpenedStatusId: string | null;
+            effectiveMergedStatusId: string | null;
+            importIssues: boolean;
+            syncIssues: boolean;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AvailableRepoDto: {
+            installationId: string;
+            githubRepoId: string;
+            fullName: string;
+            htmlUrl: string;
+            defaultBranch: string;
+            private: boolean;
+            /** @description Whether this project already has it. */
+            linked: boolean;
+        };
+        LinkRepoDto: {
+            installationId: string;
+            githubRepoId: string;
+        };
+        UpdateLinkedRepoDto: {
+            autoTransition?: boolean;
+            /** @description Status to move tasks to when a pull request opens; null restores the default. */
+            prOpenedStatusId?: string | null;
+            prMergedStatusId?: string | null;
+            importIssues?: boolean;
+            syncIssues?: boolean;
+        };
+        TaskRepoDto: {
+            id: string;
+            fullName: string;
+            defaultBranch: string;
+        };
+        GithubBranchDto: {
+            id: string;
+            repo: string;
+            name: string;
+            url: string;
+            deleted: boolean;
+        };
+        GithubCommitDto: {
+            sha: string;
+            repo: string;
+            /** @description First line of the message. */
+            message: string;
+            url: string;
+            authorLogin: string | null;
+            /** @description The workspace member this GitHub login is mapped to, if any. */
+            authorName: string | null;
+            /** Format: date-time */
+            committedAt: string;
+        };
+        GithubPullRequestDto: {
+            id: string;
+            repo: string;
+            number: number;
+            title: string;
+            /** @enum {string} */
+            state: "OPEN" | "CLOSED" | "MERGED";
+            draft: boolean;
+            url: string;
+            authorLogin: string;
+            authorName: string | null;
+            headBranch: string;
+            baseBranch: string;
+            /** @enum {string|null} */
+            reviewState: "COMMENTED" | "APPROVED" | "CHANGES_REQUESTED" | null;
+            /** @enum {string|null} */
+            ci: "PENDING" | "SUCCESS" | "FAILURE" | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        GithubIssueDto: {
+            id: string;
+            repo: string;
+            number: number;
+            title: string;
+            /** @enum {string} */
+            state: "OPEN" | "CLOSED";
+            url: string;
+        };
+        TaskGithubDto: {
+            /** @description Repositories linked to the task's project, for creating branches. */
+            repos: components["schemas"]["TaskRepoDto"][];
+            /** @description Name suggested for a new branch. */
+            suggestedBranch: string;
+            branches: components["schemas"]["GithubBranchDto"][];
+            commits: components["schemas"]["GithubCommitDto"][];
+            pullRequests: components["schemas"]["GithubPullRequestDto"][];
+            issues: components["schemas"]["GithubIssueDto"][];
+        };
+        CreateBranchDto: {
+            repoId: string;
+            name?: string;
+            /** @description Branch to start from; defaults to the repository's default branch. */
+            from?: string;
+        };
+        NotificationDto: {
+            id: string;
+            /** @enum {string} */
+            type: "ASSIGNED" | "MENTIONED" | "COMMENTED" | "STATUS_CHANGED" | "DUE_SOON" | "OVERDUE" | "SPRINT_STARTED" | "SPRINT_COMPLETED" | "PR_OPENED" | "PR_MERGED" | "CI_FAILED" | "CHAT_MENTION";
+            workspaceId: string;
+            projectId: string | null;
+            actorId: string | null;
+            title: string;
+            body: string | null;
+            taskKey: string | null;
+            channelId: string | null;
+            /** @description App path to open. */
+            url: string;
+            read: boolean;
+            /**
+             * Format: date-time
+             * @description When it (re)appeared in the inbox.
+             */
+            surfacedAt: string;
+        };
+        NotificationListDto: {
+            items: components["schemas"]["NotificationDto"][];
+            hasMore: boolean;
+        };
+        WorkspaceUnreadDto: {
+            workspaceId: string;
+            count: number;
+        };
+        UnreadCountDto: {
+            count: number;
+            workspaces: components["schemas"]["WorkspaceUnreadDto"][];
+        };
+        QuietHoursDto: {
+            enabled: boolean;
+            /** @description `HH:MM` in `timezone`. */
+            start: string;
+            end: string;
+            /** @description IANA name such as `Europe/Berlin`. */
+            timezone: string;
+        };
+        TypePreferenceDto: {
+            /** @enum {string} */
+            type: "ASSIGNED" | "MENTIONED" | "COMMENTED" | "STATUS_CHANGED" | "DUE_SOON" | "OVERDUE" | "SPRINT_STARTED" | "SPRINT_COMPLETED" | "PR_OPENED" | "PR_MERGED" | "CI_FAILED" | "CHAT_MENTION";
+            inApp: boolean;
+            email: boolean;
+        };
+        PreferencesDto: {
+            /** @enum {string} */
+            emailMode: "INSTANT" | "DIGEST" | "OFF";
+            quietHours: components["schemas"]["QuietHoursDto"];
+            types: components["schemas"]["TypePreferenceDto"][];
+            mutedProjectIds: string[];
+        };
+        UpdatePreferencesDto: {
+            /** @enum {string} */
+            emailMode?: "INSTANT" | "DIGEST" | "OFF";
+            quietHours?: components["schemas"]["QuietHoursDto"];
+            types?: components["schemas"]["TypePreferenceDto"][];
+            mutedProjectIds?: string[];
+        };
+        ReadAllDto: {
+            workspaceId?: string;
+        };
+        SnoozeDto: {
+            /** @description When it should come back, at most 30 days away. */
+            until: string;
+        };
+        ParsedFiltersDto: {
+            text: string;
+            /** @description Filters understood in the query, e.g. `{ "assignee": ["me"] }`. */
+            filters: {
+                [key: string]: string[];
+            };
+        };
+        TaskHitDto: {
+            id: string;
+            key: string;
+            title: string;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            status: components["schemas"]["TaskStatusDto"];
+            projectId: string;
+            /** @description Excerpt of the description when the match is there. */
+            snippet: string | null;
+        };
+        CommentHitDto: {
+            id: string;
+            taskKey: string;
+            taskTitle: string;
+            authorName: string | null;
+            snippet: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ProjectHitDto: {
+            id: string;
+            key: string;
+            name: string;
+        };
+        ChannelHitDto: {
+            id: string;
+            /** @enum {string} */
+            type: "PRIVATE" | "PUBLIC" | "DIRECT";
+            /** @description Names of the other people for a direct message. */
+            name: string;
+            projectId: string | null;
+        };
+        MessageHitDto: {
+            id: string;
+            channelId: string;
+            channelName: string;
+            authorName: string | null;
+            snippet: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        PersonHitDto: {
+            userId: string;
+            name: string;
+            email: string;
+        };
+        SearchResultDto: {
+            query: components["schemas"]["ParsedFiltersDto"];
+            tasks: components["schemas"]["TaskHitDto"][];
+            comments: components["schemas"]["CommentHitDto"][];
+            projects: components["schemas"]["ProjectHitDto"][];
+            channels: components["schemas"]["ChannelHitDto"][];
+            messages: components["schemas"]["MessageHitDto"][];
+            people: components["schemas"]["PersonHitDto"][];
+        };
+        TimeEntryDto: {
+            id: string;
+            taskId: string;
+            taskKey: string;
+            taskTitle: string;
+            userId: string;
+            userName: string;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            endedAt: string | null;
+            /** @description For a running timer, the minutes so far. */
+            minutes: number;
+            running: boolean;
+            note: string | null;
+        };
+        TaskTimeDto: {
+            estimateMinutes: number | null;
+            spentMinutes: number;
+            entries: components["schemas"]["TimeEntryDto"][];
+        };
+        LogTimeDto: {
+            /** @description Minutes spent (1 to 24 hours per entry). */
+            minutes: number;
+            /** @description When the work started; defaults to `minutes` ago. */
+            startedAt?: string;
+            note?: string;
+        };
+        UpdateTimeEntryDto: {
+            minutes?: number;
+            startedAt?: string;
+            note?: string | null;
+        };
+        TimerDto: {
+            /** @description The caller's running timer in this workspace, if any. */
+            entry: components["schemas"]["TimeEntryDto"] | null;
+        };
+        StartTimerDto: {
+            /** @description Task key (`SYN-12`) or id. */
+            taskRef: string;
+        };
+        ProjectOverviewDto: {
+            projectId: string;
+            key: string;
+            name: string;
+            open: number;
+            done: number;
+            overdue: number;
+            createdLast14Days: number;
+            resolvedLast14Days: number;
+        };
+        WorkloadRowDto: {
+            /** @description Null for work nobody is assigned to. */
+            userId: string | null;
+            name: string;
+            openTasks: number;
+            openPoints: number;
+            overdueTasks: number;
+            doneLast30Days: number;
+        };
+        WorkspaceOverviewDto: {
+            projects: components["schemas"]["ProjectOverviewDto"][];
+            workload: components["schemas"]["WorkloadRowDto"][];
+            totalOpen: number;
+            totalOverdue: number;
+        };
+        CreatedResolvedPointDto: {
+            /** @description Start of the day, or of the week for weekly buckets (UTC, `YYYY-MM-DD`). */
+            date: string;
+            created: number;
+            resolved: number;
+        };
+        CreatedResolvedDto: {
+            /** @enum {string} */
+            bucket: "week" | "day";
+            points: components["schemas"]["CreatedResolvedPointDto"][];
+            totalCreated: number;
+            totalResolved: number;
+            /** @description Tasks open right now. */
+            openNow: number;
+        };
+        StatusCountDto: {
+            name: string;
+            count: number;
+        };
+        FlowPointDto: {
+            date: string;
+            total: number;
+            todo: number;
+            inProgress: number;
+            done: number;
+            byStatus: components["schemas"]["StatusCountDto"][];
+        };
+        CumulativeFlowDto: {
+            /** @description Status names, workflow order. */
+            statuses: string[];
+            points: components["schemas"]["FlowPointDto"][];
+        };
+        WorkloadDto: {
+            rows: components["schemas"]["WorkloadRowDto"][];
+        };
+        OverdueTaskDto: {
+            id: string;
+            key: string;
+            title: string;
+            /** Format: date-time */
+            dueDate: string;
+            daysOverdue: number;
+            assignees: string[];
+            statusName: string;
+        };
+        TimeByUserDto: {
+            userId: string;
+            name: string;
+            minutes: number;
+        };
+        TimeByTaskDto: {
+            key: string;
+            title: string;
+            estimateMinutes: number | null;
+            spentMinutes: number;
+        };
+        TimeReportDto: {
+            /** Format: date-time */
+            from: string;
+            /** Format: date-time */
+            to: string;
+            totalMinutes: number;
+            byUser: components["schemas"]["TimeByUserDto"][];
+            /** @description Tasks with the most time logged in the period. */
+            byTask: components["schemas"]["TimeByTaskDto"][];
+            /** @description Over every task that has an estimate: planned vs logged (all time). */
+            estimatedMinutes: number;
+            actualMinutesOnEstimated: number;
+        };
+        ImportColumnDto: {
+            column: string;
+            /** @description The field it feeds, or `ignore`. */
+            field: string;
+        };
+        ImportMessageDto: {
+            /** @enum {string} */
+            level: "error" | "warning";
+            text: string;
+        };
+        ImportRowDto: {
+            /** @description Line in the file (1 is the header). */
+            row: number;
+            /** @enum {string} */
+            status: "error" | "created" | "skipped";
+            /** @description Key of the created task, or of the one imported earlier. */
+            key: string | null;
+            messages: components["schemas"]["ImportMessageDto"][];
+        };
+        ImportResultDto: {
+            dryRun: boolean;
+            source: string;
+            total: number;
+            /** @description With `dryRun`: how many would be created. */
+            created: number;
+            /** @description Rows that were imported before. */
+            skipped: number;
+            failed: number;
+            warnings: number;
+            columns: components["schemas"]["ImportColumnDto"][];
+            /** @description Rows with something to say (errors, warnings, skips), at most 500. */
+            rows: components["schemas"]["ImportRowDto"][];
+            truncated: boolean;
+        };
+        TemplateChecklistDto: {
+            title: string;
+            items: string[];
+        };
+        TemplateDto: {
+            id: string;
+            name: string;
+            title: string;
+            description: string | null;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            labelIds: string[];
+            checklists: components["schemas"]["TemplateChecklistDto"][];
+            estimate: number | null;
+            timeEstimateMinutes: number | null;
+        };
+        CreateTemplateDto: {
+            name: string;
+            title: string;
+            description?: string;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            labelIds?: string[];
+            checklists?: components["schemas"]["TemplateChecklistDto"][];
+            estimate?: number;
+            timeEstimateMinutes?: number;
+        };
+        SaveAsTemplateDto: {
+            name: string;
+        };
+        UpdateTemplateDto: {
+            name?: string;
+            title?: string;
+            description?: string | null;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            labelIds?: string[];
+            checklists?: components["schemas"]["TemplateChecklistDto"][];
+            estimate?: number | null;
+            timeEstimateMinutes?: number | null;
+        };
+        CreateFromTemplateDto: {
+            /** @description Replaces the template's title. */
+            title?: string;
+            description?: string;
+            assigneeIds?: string[];
+            statusId?: string;
+            dueDate?: string;
+        };
+        RecurringDto: {
+            id: string;
+            name: string;
+            title: string;
+            description: string | null;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assigneeIds: string[];
+            labelIds: string[];
+            /** @enum {string} */
+            frequency: "DAILY" | "WEEKLY" | "MONTHLY";
+            interval: number;
+            /** Format: date-time */
+            startsAt: string;
+            /** Format: date-time */
+            nextRunAt: string;
+            /** Format: date-time */
+            lastRunAt: string | null;
+            /** @description Key of the task created by the last run. */
+            lastTaskKey: string | null;
+            active: boolean;
+        };
+        CreateRecurringDto: {
+            name: string;
+            /** @description May contain `{date}`, replaced by the day the task is created. */
+            title: string;
+            description?: string;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assigneeIds?: string[];
+            labelIds?: string[];
+            /** @enum {string} */
+            frequency: "DAILY" | "WEEKLY" | "MONTHLY";
+            /** @description Every N days, weeks or months. */
+            interval: number;
+            /** @description First run; later runs follow from it. */
+            startsAt: string;
+        };
+        UpdateRecurringDto: {
+            name?: string;
+            title?: string;
+            description?: string | null;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assigneeIds?: string[];
+            labelIds?: string[];
+            /** @enum {string} */
+            frequency?: "DAILY" | "WEEKLY" | "MONTHLY";
+            interval?: number;
+            startsAt?: string;
+            active?: boolean;
+        };
+        WebhookDto: {
+            id: string;
+            name: string;
+            url: string;
+            events: string[];
+            projectId: string | null;
+            active: boolean;
+            failureCount: number;
+            disabledReason: string | null;
+            /** Format: date-time */
+            lastSuccessAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CreateWebhookDto: {
+            name: string;
+            /** @description Public https URL that accepts POSTs of JSON. */
+            url: string;
+            events: ("task.created" | "task.updated" | "task.status_changed" | "task.commented" | "task.deleted")[];
+            /** @description Only events of this project; every project when omitted. */
+            projectId?: string;
+        };
+        CreatedWebhookDto: {
+            id: string;
+            name: string;
+            url: string;
+            events: string[];
+            projectId: string | null;
+            active: boolean;
+            failureCount: number;
+            disabledReason: string | null;
+            /** Format: date-time */
+            lastSuccessAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** @description The signing secret. Shown only now; store it. */
+            secret: string;
+        };
+        UpdateWebhookDto: {
+            name?: string;
+            url?: string;
+            events?: ("task.created" | "task.updated" | "task.status_changed" | "task.commented" | "task.deleted")[];
+            projectId?: string | null;
+            /** @description Turning it back on also clears the failure counter. */
+            active?: boolean;
+        };
+        TestResultDto: {
+            ok: boolean;
+            responseStatus: number | null;
+            error: string | null;
+        };
+        DeliveryDto: {
+            id: string;
+            event: string;
+            /** @enum {string} */
+            status: "PENDING" | "SUCCESS" | "FAILED";
+            attempts: number;
+            responseStatus: number | null;
+            error: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            deliveredAt: string | null;
+            /** Format: date-time */
+            nextAttemptAt: string;
+        };
+        AutomationConditionsDto: {
+            types?: ("STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK")[];
+            priorities?: ("URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE")[];
+            labelIds?: string[];
+        };
+        AutomationActionDto: {
+            /** @enum {string} */
+            type: "SET_PRIORITY" | "ASSIGN" | "ADD_LABEL" | "MOVE_TO_STATUS" | "COMMENT";
+            /** @description SET_PRIORITY: a priority; ASSIGN: a user id; ADD_LABEL: a label id; MOVE_TO_STATUS: a status id; COMMENT: the text. */
+            value: string;
+        };
+        AutomationDto: {
+            id: string;
+            name: string;
+            enabled: boolean;
+            /** @enum {string} */
+            trigger: "STATUS_CHANGED" | "TASK_CREATED";
+            triggerStatusId: string | null;
+            conditions: components["schemas"]["AutomationConditionsDto"];
+            actions: components["schemas"]["AutomationActionDto"][];
+            runCount: number;
+            /** Format: date-time */
+            lastRunAt: string | null;
+            lastError: string | null;
+        };
+        CreateAutomationDto: {
+            name: string;
+            /** @enum {string} */
+            trigger: "STATUS_CHANGED" | "TASK_CREATED";
+            /** @description For `STATUS_CHANGED`: only when a task moves to this status (any status when omitted). */
+            triggerStatusId?: string;
+            conditions?: components["schemas"]["AutomationConditionsDto"];
+            actions: components["schemas"]["AutomationActionDto"][];
+        };
+        UpdateAutomationDto: {
+            name?: string;
+            enabled?: boolean;
+            /** @enum {string} */
+            trigger?: "STATUS_CHANGED" | "TASK_CREATED";
+            triggerStatusId?: string | null;
+            conditions?: components["schemas"]["AutomationConditionsDto"];
+            actions?: components["schemas"]["AutomationActionDto"][];
         };
     };
     responses: never;
@@ -5426,6 +7299,2042 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MilestoneDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_list_v1: {
+        parameters: {
+            query?: {
+                includeArchived?: boolean;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"][];
+                };
+            };
+        };
+    };
+    ChannelsController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateChannelDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_direct_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DirectChannelDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateChannelDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_join_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_leave_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChannelsController_members_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelMemberDto"][];
+                };
+            };
+        };
+    };
+    ChannelsController_addMember_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChannelMemberInputDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelMemberDto"][];
+                };
+            };
+        };
+    };
+    ChannelsController_removeMember_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                userId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MessagesController_taskRefs_v1: {
+        parameters: {
+            query: {
+                /** @description Comma separated task keys, up to 50. */
+                keys: string;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskRefDto"][];
+                };
+            };
+        };
+    };
+    MessagesController_discussions_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiscussionDto"][];
+                };
+            };
+        };
+    };
+    MessagesController_list_v1: {
+        parameters: {
+            query?: {
+                /** @description Messages older than this sequence number (scrolling back). */
+                before?: number;
+                /** @description Messages newer than this sequence number, oldest first (catching up after a disconnect). */
+                after?: number;
+                limit?: number;
+                /** @description Include thread replies in the stream (needed to catch up completely). */
+                threads?: boolean;
+            };
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageListDto"];
+                };
+            };
+        };
+    };
+    MessagesController_post_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostMessageDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_markRead_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkReadDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MessagesController_upload_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageAttachmentDto"];
+                };
+            };
+        };
+    };
+    MessagesController_download_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                attachmentId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The file contents */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MessagesController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MessagesController_edit_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditMessageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_replies_v1: {
+        parameters: {
+            query?: {
+                after?: number;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageListDto"];
+                };
+            };
+        };
+    };
+    MessagesController_react_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                emoji: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_unreact_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                emoji: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_link_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkTaskDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_unlink_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                taskRef: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_createTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTaskFromMessageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    GithubController_status_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GithubStatusDto"];
+                };
+            };
+        };
+    };
+    GithubController_installUrl_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GithubInstallUrlDto"];
+                };
+            };
+        };
+    };
+    GithubController_removeInstallation_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                installationId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GithubController_contributors_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributorDto"][];
+                };
+            };
+        };
+    };
+    GithubController_setContributor_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                login: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetContributorDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributorDto"];
+                };
+            };
+        };
+    };
+    GithubProjectController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedRepoDto"][];
+                };
+            };
+        };
+    };
+    GithubProjectController_link_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkRepoDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedRepoDto"];
+                };
+            };
+        };
+    };
+    GithubProjectController_available_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AvailableRepoDto"][];
+                };
+            };
+        };
+    };
+    GithubProjectController_unlink_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                linkId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GithubProjectController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                linkId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLinkedRepoDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedRepoDto"];
+                };
+            };
+        };
+    };
+    GithubTaskController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskGithubDto"];
+                };
+            };
+        };
+    };
+    GithubTaskController_createBranch_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBranchDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskGithubDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_list_v1: {
+        parameters: {
+            query?: {
+                workspaceId?: string;
+                /** @description Only unread ones. */
+                unread?: boolean;
+                limit?: number;
+                /** @description Cursor: `surfacedAt` of the last item of the previous page. */
+                before?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationListDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_unread_v1: {
+        parameters: {
+            query?: {
+                workspaceId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadCountDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_preferences_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreferencesDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_updatePreferences_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePreferencesDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreferencesDto"];
+                };
+            };
+        };
+    };
+    NotificationsController_readAll_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReadAllDto"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_read_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_unreadOne_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_snooze_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SnoozeDto"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_dismiss_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SearchController_run_v1: {
+        parameters: {
+            query: {
+                /**
+                 * @description Words to find, plus optional filters for tasks: `assignee:me`, `reporter:me`, `status:open|done|<name>`,
+                 *     `label:<name>`, `type:bug`, `priority:high`, `project:<KEY>`, `is:open|done|overdue|archived`.
+                 */
+                q: string;
+                /** @description Comma separated: tasks, comments, projects, channels, messages, people. Everything by default. */
+                types?: string;
+                /** @description Results per kind (default 8). */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResultDto"];
+                };
+            };
+        };
+    };
+    TimeController_forTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskTimeDto"];
+                };
+            };
+        };
+    };
+    TimeController_log_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LogTimeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeEntryDto"];
+                };
+            };
+        };
+    };
+    TimeController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                entryId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimeController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                entryId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTimeEntryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeEntryDto"];
+                };
+            };
+        };
+    };
+    TimeController_timer_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimerDto"];
+                };
+            };
+        };
+    };
+    TimeController_start_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartTimerDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimerDto"];
+                };
+            };
+        };
+    };
+    TimeController_stop_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimerDto"];
+                };
+            };
+        };
+    };
+    TimeController_mine_v1: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeEntryDto"][];
+                };
+            };
+        };
+    };
+    InsightsController_overview_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkspaceOverviewDto"];
+                };
+            };
+        };
+    };
+    InsightsController_createdResolved_v1: {
+        parameters: {
+            query?: {
+                /** @description How many days back to look (default 30). */
+                days?: number;
+                /** @description Group by day or by week (Monday start). */
+                bucket?: "day" | "week";
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedResolvedDto"];
+                };
+            };
+        };
+    };
+    InsightsController_cumulativeFlow_v1: {
+        parameters: {
+            query?: {
+                /** @description How many days back to look (default 30). */
+                days?: number;
+                /** @description Group by day or by week (Monday start). */
+                bucket?: "day" | "week";
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CumulativeFlowDto"];
+                };
+            };
+        };
+    };
+    InsightsController_workload_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkloadDto"];
+                };
+            };
+        };
+    };
+    InsightsController_overdue_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverdueTaskDto"][];
+                };
+            };
+        };
+    };
+    InsightsController_time_v1: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeReportDto"];
+                };
+            };
+        };
+    };
+    DataIoController_export_v1: {
+        parameters: {
+            query?: {
+                format?: "csv" | "json";
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The file contents */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataIoController_import_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                    /** @enum {string} */
+                    source?: "csv" | "jira" | "github" | "synqonix";
+                    dryRun?: boolean;
+                    mapping?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportResultDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateDto"][];
+                };
+            };
+        };
+    };
+    TemplatesController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTemplateDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_fromTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                taskRef: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveAsTemplateDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                templateId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TemplatesController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                templateId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTemplateDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_createTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                templateId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFromTemplateDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_listRecurring_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurringDto"][];
+                };
+            };
+        };
+    };
+    TemplatesController_createRecurring_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRecurringDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurringDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_removeRecurring_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                recurringId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TemplatesController_updateRecurring_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                recurringId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRecurringDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurringDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDto"][];
+                };
+            };
+        };
+    };
+    WebhooksController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWebhookDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedWebhookDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WebhooksController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateWebhookDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_rotate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedWebhookDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_test_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestResultDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_deliveries_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeliveryDto"][];
+                };
+            };
+        };
+    };
+    WebhooksController_redeliver_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                deliveryId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AutomationController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationDto"][];
+                };
+            };
+        };
+    };
+    AutomationController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAutomationDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationDto"];
+                };
+            };
+        };
+    };
+    AutomationController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                ruleId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AutomationController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                ruleId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAutomationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationDto"];
                 };
             };
         };
