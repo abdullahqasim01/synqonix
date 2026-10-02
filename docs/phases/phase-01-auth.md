@@ -25,3 +25,14 @@
 - Full register → verify → login → refresh → logout flow covered by e2e tests.
 - Refresh token reuse revokes the session family.
 - Extension can authenticate with a personal API token.
+
+## Status: done (GitHub OAuth sign-in deferred to phase 7)
+
+Implementation notes:
+- **Tokens:** access JWT (15 min, in memory on the web) + refresh JWT (30 days) stored hashed per session. Refresh rotates on every use; presenting a used token revokes the whole session. Browsers get the refresh token as an httpOnly `sx_refresh` cookie scoped to `/api/v1/auth` (web and API must share a registrable domain, e.g. `app.example.com` / `api.example.com`); other clients may send it in the body.
+- **Sessions:** every login is a `Session`; the access-token guard checks it is not revoked, so logout, password reset/change and session revocation take effect immediately.
+- **API tokens:** `sqx_…` bearer tokens, hashed at rest, shown once, revocable. They authenticate normal routes but cannot manage sessions, tokens, passwords or delete the account (`@RequiresSession()`).
+- **Email:** `MailService` sends via Resend when `RESEND_API_KEY` is set, otherwise SMTP (Mailpit in dev). Delivery failures are logged, never fail the request. Verification links last 24 h, reset links 1 h; newest link of each type wins.
+- **Hardening:** argon2id, equalised login timing, no email enumeration on forgot-password, per-route rate limits on auth endpoints (429).
+- Email verification is not yet enforced for login; later phases can gate actions on `emailVerified`.
+- **Tests:** 14 API e2e tests (flows, rotation/reuse, reset, sessions, API tokens, throttling) plus unit tests; web unit tests; verified in a real browser (register → reload → token → sign out → login).

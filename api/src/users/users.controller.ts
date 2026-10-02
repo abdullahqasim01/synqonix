@@ -1,25 +1,12 @@
 import { Body, Controller, Delete, Get, HttpCode, Patch, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { IsString, MaxLength, MinLength } from 'class-validator';
 import * as argon2 from 'argon2';
 import { toUserDto } from '../auth/auth.service.js';
 import { UserDto } from '../auth/dto/auth.dto.js';
 import { CurrentUser, RequiresSession } from '../common/decorators.js';
 import type { AuthUser } from '../common/decorators.js';
+import { DeleteAccountDto, UpdateProfileDto } from './dto/users.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-
-export class UpdateProfileDto {
-  @IsString()
-  @MinLength(1)
-  @MaxLength(100)
-  name: string;
-}
-
-export class DeleteAccountDto {
-  @IsString()
-  @MaxLength(128)
-  password: string;
-}
 
 @ApiTags('users')
 @ApiBearerAuth()
