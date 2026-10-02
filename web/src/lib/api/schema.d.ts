@@ -662,6 +662,376 @@ export interface paths {
         patch: operations["ProjectsController_updateLabel_v1"];
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TasksController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists tasks across the projects the caller can see; filter with `projectId`, `assignee=me`, etc. */
+        get: operations["TasksController_list_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["TasksController_bulk_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TasksController_get_v1"];
+        put?: never;
+        post?: never;
+        delete: operations["TasksController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TasksController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TasksController_archive_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TasksController_restore_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TasksController_duplicate_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TasksController_move_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TaskDetailsController_history_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TaskDetailsController_listComments_v1"];
+        put?: never;
+        post: operations["TaskDetailsController_addComment_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/comments/{commentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TaskDetailsController_deleteComment_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TaskDetailsController_editComment_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/checklists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TaskDetailsController_addChecklist_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/checklists/{checklistId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TaskDetailsController_deleteChecklist_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TaskDetailsController_renameChecklist_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/checklists/{checklistId}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TaskDetailsController_addItem_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/checklists/{checklistId}/items/{itemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TaskDetailsController_deleteItem_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TaskDetailsController_updateItem_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/relations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TaskDetailsController_addRelation_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/relations/{relationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TaskDetailsController_removeRelation_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/watch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["TaskDetailsController_watch_v1"];
+        post?: never;
+        delete: operations["TaskDetailsController_unwatch_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TaskDetailsController_upload_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/{attachmentId}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Always served as a download, never inline, so uploaded files cannot run scripts on our origin. */
+        get: operations["TaskDetailsController_download_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/{attachmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TaskDetailsController_deleteAttachment_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/custom-fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomFieldsController_list_v1"];
+        put?: never;
+        post: operations["CustomFieldsController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/custom-fields/{fieldId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["CustomFieldsController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["CustomFieldsController_update_v1"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -954,6 +1324,272 @@ export interface components {
         UpdateLabelDto: {
             name?: string;
             color?: string;
+        };
+        CreateTaskDto: {
+            title: string;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @description Markdown, up to 50,000 characters. */
+            description?: string;
+            /** @description Defaults to the project's first "to do" status. */
+            statusId?: string;
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assigneeIds?: string[];
+            labelIds?: string[];
+            estimate?: number;
+            dueDate?: string;
+            parentId?: string;
+            /** @description Map of custom field id to value. */
+            customFields?: {
+                [key: string]: unknown;
+            };
+        };
+        TaskStatusDto: {
+            id: string;
+            name: string;
+            /** @enum {string} */
+            category: "TODO" | "IN_PROGRESS" | "DONE";
+            color: string;
+        };
+        TaskRefDto: {
+            id: string;
+            key: string;
+            title: string;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            status: components["schemas"]["TaskStatusDto"];
+        };
+        TaskUserDto: {
+            userId: string;
+            name: string;
+        };
+        TaskLabelDto: {
+            id: string;
+            name: string;
+            color: string;
+        };
+        TaskDto: {
+            id: string;
+            /** @description Human key, e.g. `SYN-12`. */
+            key: string;
+            number: number;
+            projectId: string;
+            projectKey: string;
+            title: string;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            status: components["schemas"]["TaskStatusDto"];
+            /** @enum {string} */
+            priority: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assignees: components["schemas"]["TaskUserDto"][];
+            labels: components["schemas"]["TaskLabelDto"][];
+            reporterId: string | null;
+            estimate: number | null;
+            /** Format: date-time */
+            dueDate: string | null;
+            parentId: string | null;
+            position: number;
+            archived: boolean;
+            /** Format: date-time */
+            startedAt: string | null;
+            /** Format: date-time */
+            completedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            subtaskCount: number;
+            subtaskDoneCount: number;
+            commentCount: number;
+        };
+        TaskRelationDto: {
+            id: string;
+            /** @description `blocks`, `blocked_by`, `relates_to`, `duplicates` or `duplicated_by`. */
+            kind: string;
+            task: components["schemas"]["TaskRefDto"];
+        };
+        ChecklistItemDto: {
+            id: string;
+            text: string;
+            done: boolean;
+            position: number;
+        };
+        ChecklistDto: {
+            id: string;
+            title: string;
+            position: number;
+            items: components["schemas"]["ChecklistItemDto"][];
+        };
+        AttachmentDto: {
+            id: string;
+            filename: string;
+            mimeType: string;
+            size: number;
+            uploaderId: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        TaskCustomValueDto: {
+            fieldId: string;
+            name: string;
+            type: string;
+            value: Record<string, never>;
+        };
+        TaskDetailDto: {
+            description: string | null;
+            parent: components["schemas"]["TaskRefDto"] | null;
+            subtasks: components["schemas"]["TaskDto"][];
+            relations: components["schemas"]["TaskRelationDto"][];
+            checklists: components["schemas"]["ChecklistDto"][];
+            attachments: components["schemas"]["AttachmentDto"][];
+            customFields: components["schemas"]["TaskCustomValueDto"][];
+            watchers: components["schemas"]["TaskUserDto"][];
+            isWatching: boolean;
+            /** @description Whether the caller may edit this task. */
+            canEdit: boolean;
+            id: string;
+            /** @description Human key, e.g. `SYN-12`. */
+            key: string;
+            number: number;
+            projectId: string;
+            projectKey: string;
+            title: string;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            status: components["schemas"]["TaskStatusDto"];
+            /** @enum {string} */
+            priority: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assignees: components["schemas"]["TaskUserDto"][];
+            labels: components["schemas"]["TaskLabelDto"][];
+            reporterId: string | null;
+            estimate: number | null;
+            /** Format: date-time */
+            dueDate: string | null;
+            parentId: string | null;
+            position: number;
+            archived: boolean;
+            /** Format: date-time */
+            startedAt: string | null;
+            /** Format: date-time */
+            completedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            subtaskCount: number;
+            subtaskDoneCount: number;
+            commentCount: number;
+        };
+        TaskListDto: {
+            items: components["schemas"]["TaskDto"][];
+            total: number;
+        };
+        BulkChangesDto: {
+            statusId?: string;
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            /** @description Replaces the assignee list of every selected task. */
+            assigneeIds?: string[];
+            addLabelIds?: string[];
+            removeLabelIds?: string[];
+            dueDate?: string | null;
+            archived?: boolean;
+        };
+        BulkUpdateTasksDto: {
+            taskIds: string[];
+            changes: components["schemas"]["BulkChangesDto"];
+        };
+        BulkResultDto: {
+            updated: number;
+        };
+        UpdateTaskDto: {
+            title?: string;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @description Pass `null` to clear. */
+            description?: string | null;
+            statusId?: string;
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            /** @description Replaces the assignee list. */
+            assigneeIds?: string[];
+            /** @description Replaces the label list. */
+            labelIds?: string[];
+            estimate?: number | null;
+            dueDate?: string | null;
+            /** @description Pass `null` to detach from the parent. */
+            parentId?: string | null;
+            /** @description Map of custom field id to value; `null` clears a value. */
+            customFields?: {
+                [key: string]: unknown;
+            };
+        };
+        MoveTaskDto: {
+            /** @description Destination project in the same workspace. */
+            projectId: string;
+        };
+        ActivityDto: {
+            id: string;
+            actorId: string | null;
+            type: string;
+            field: string | null;
+            from: Record<string, never>;
+            to: Record<string, never>;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CommentDto: {
+            id: string;
+            authorId: string | null;
+            body: string;
+            edited: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            editedAt: string | null;
+        };
+        CommentBodyDto: {
+            /** @description Markdown. Mention a teammate with `[@Name](mention:<userId>)`. */
+            body: string;
+        };
+        CreateChecklistDto: {
+            title: string;
+        };
+        UpdateChecklistDto: {
+            title: string;
+        };
+        CreateChecklistItemDto: {
+            text: string;
+        };
+        UpdateChecklistItemDto: {
+            text?: string;
+            done?: boolean;
+        };
+        CreateRelationDto: {
+            /** @enum {string} */
+            type: "BLOCKS" | "RELATES" | "DUPLICATES";
+            /** @description Key (`SYN-12`) or id of the other task. */
+            targetTask: string;
+        };
+        CustomFieldDto: {
+            id: string;
+            name: string;
+            /** @enum {string} */
+            type: "TEXT" | "NUMBER" | "DATE" | "SELECT" | "CHECKBOX";
+            options: string[] | null;
+            position: number;
+        };
+        CreateCustomFieldDto: {
+            name: string;
+            /** @enum {string} */
+            type: "TEXT" | "NUMBER" | "DATE" | "SELECT" | "CHECKBOX";
+            /** @description Required for SELECT fields. */
+            options?: string[];
+        };
+        UpdateCustomFieldDto: {
+            name?: string;
+            options?: string[];
         };
     };
     responses: never;
@@ -2148,7 +2784,10 @@ export interface operations {
     };
     ProjectsController_removeStatus_v1: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Status that receives the tasks of the deleted one. Required when the status is in use. */
+                moveTo?: string;
+            };
             header?: never;
             path: {
                 projectId: string;
@@ -2286,6 +2925,786 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LabelDto"];
+                };
+            };
+        };
+    };
+    TasksController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTaskDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TasksController_list_v1: {
+        parameters: {
+            query?: {
+                projectId?: string;
+                statusId?: string;
+                statusCategory?: "TODO" | "IN_PROGRESS" | "DONE";
+                type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+                priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+                /** @description `me`, `none` (unassigned) or a user id. */
+                assignee?: string;
+                reporter?: string;
+                labelId?: string;
+                /** @description `none` for top-level tasks, or a parent task id. */
+                parent?: string;
+                /** @description Matches the title, or the key / number (`SYN-12`, `12`). */
+                q?: string;
+                dueBefore?: string;
+                dueAfter?: string;
+                includeArchived?: boolean;
+                sort?: "number" | "createdAt" | "updatedAt" | "position" | "title" | "priority" | "dueDate";
+                order?: "asc" | "desc";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskListDto"];
+                };
+            };
+        };
+    };
+    TasksController_bulk_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkUpdateTasksDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResultDto"];
+                };
+            };
+        };
+    };
+    TasksController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TasksController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TasksController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTaskDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TasksController_archive_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TasksController_restore_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TasksController_duplicate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TasksController_move_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MoveTaskDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_history_v1: {
+        parameters: {
+            query?: {
+                limit?: number;
+                before?: string;
+            };
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivityDto"][];
+                };
+            };
+        };
+    };
+    TaskDetailsController_listComments_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentDto"][];
+                };
+            };
+        };
+    };
+    TaskDetailsController_addComment_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommentBodyDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_deleteComment_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                commentId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskDetailsController_editComment_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                commentId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommentBodyDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_addChecklist_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateChecklistDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_deleteChecklist_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                checklistId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskDetailsController_renameChecklist_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                checklistId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateChecklistDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_addItem_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                checklistId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateChecklistItemDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_deleteItem_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                checklistId: string;
+                itemId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_updateItem_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                checklistId: string;
+                itemId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateChecklistItemDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_addRelation_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRelationDto"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskDetailsController_removeRelation_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                relationId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskDetailsController_watch_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskDetailsController_unwatch_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskDetailsController_upload_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttachmentDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_download_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                attachmentId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The file contents */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskDetailsController_deleteAttachment_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                attachmentId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomFieldsController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFieldDto"][];
+                };
+            };
+        };
+    };
+    CustomFieldsController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomFieldDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFieldDto"];
+                };
+            };
+        };
+    };
+    CustomFieldsController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                fieldId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomFieldsController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                fieldId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCustomFieldDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFieldDto"];
                 };
             };
         };

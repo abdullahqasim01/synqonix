@@ -8,14 +8,19 @@ interface WorkspaceContextValue {
   workspace: Schemas["WorkspaceDto"];
   isAdmin: boolean;
   reload(): void;
+  members: Schemas["MemberDto"][];
+  /** Display name for a user id (falls back to "Someone"). */
+  memberName(userId: string | null | undefined): string;
 }
 
 const Ctx = createContext<WorkspaceContextValue | null>(null);
 
 export function WorkspaceProvider({
-  workspace, reload, children,
-}: { workspace: Schemas["WorkspaceDto"]; reload: () => void; children: React.ReactNode }) {
-  return <Ctx.Provider value={{ workspace, isAdmin: isAdminRole(workspace.role), reload }}>{children}</Ctx.Provider>;
+  workspace, reload, members, children,
+}: { workspace: Schemas["WorkspaceDto"]; reload: () => void; members: Schemas["MemberDto"][]; children: React.ReactNode }) {
+  const names = new Map(members.map((m) => [m.userId, m.name]));
+  const memberName = (id: string | null | undefined) => (id && names.get(id)) || "Someone";
+  return <Ctx.Provider value={{ workspace, isAdmin: isAdminRole(workspace.role), reload, members, memberName }}>{children}</Ctx.Provider>;
 }
 
 export function useWorkspace() {

@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { QuickCreate } from "@/components/tasks/quick-create";
 import { WorkspaceProvider } from "@/components/workspace/workspace-context";
 import { Alert, Select } from "@/components/ui/form";
 import { api } from "@/lib/api/client";
@@ -18,6 +21,24 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
     [workspaceId],
   );
   const all = useQuery(() => api.GET("/api/v1/workspaces"), []);
+  const members = useQuery(
+    () => api.GET("/api/v1/workspaces/{workspaceId}/members", { params: { path: { workspaceId } } }),
+    [workspaceId],
+  );
+
+  const [creating, setCreating] = useState(false);
+
+  // `c` opens the quick-create dialog from anywhere in the workspace (unless typing).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "c" || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test((e.target as HTMLElement).tagName) || (e.target as HTMLElement).isContentEditable) return;
+      e.preventDefault();
+      setCreating(true);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
 
   if (current.loading) return <p className="text-sm text-muted-foreground">Loading workspace…</p>;
   if (!current.data) return <Alert>{current.error ?? "Workspace not found"}</Alert>;
@@ -25,13 +46,14 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
   const base = `/w/${workspaceId}`;
   const tabs = [
     { href: base, label: "Projects" },
+    { href: `${base}/my-tasks`, label: "My tasks" },
     { href: `${base}/members`, label: "Members" },
     { href: `${base}/teams`, label: "Teams" },
     { href: `${base}/settings`, label: "Settings" },
   ];
 
   return (
-    <WorkspaceProvider workspace={current.data} reload={current.reload}>
+    <WorkspaceProvider workspace={current.data} reload={current.reload} members={members.data ?? []}>
       <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-3">
         <Select
           aria-label="Switch workspace"
@@ -58,8 +80,10 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             </Link>
           ))}
         </nav>
+        <Button size="sm" className="ml-auto" onClick={() => setCreating(true)} title="Press C">New task</Button>
       </div>
       {children}
+      <QuickCreate open={creating} onClose={() => setCreating(false)} />
     </WorkspaceProvider>
   );
 }
