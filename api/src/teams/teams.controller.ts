@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators.js';
 import type { AuthUser } from '../common/decorators.js';
 import { RequirePermission, WorkspaceGuard } from '../permissions/workspace.guard.js';
@@ -9,6 +9,7 @@ import { TeamsService } from './teams.service.js';
 @ApiTags('teams')
 @ApiBearerAuth()
 @UseGuards(WorkspaceGuard)
+@ApiParam({ name: 'workspaceId', type: String })
 @Controller('workspaces/:workspaceId/teams')
 export class TeamsController {
   constructor(private readonly teams: TeamsService) {}

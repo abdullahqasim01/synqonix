@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, Public } from '../common/decorators.js';
 import type { AuthUser } from '../common/decorators.js';
 import type { Membership } from '../generated/prisma/client.js';
@@ -14,6 +14,7 @@ import { InvitationsService } from './invitations.service.js';
 export class InvitationsController {
   constructor(private readonly invitations: InvitationsService) {}
 
+  @ApiParam({ name: 'workspaceId', type: String })
   @Post('workspaces/:workspaceId/invitations')
   @UseGuards(WorkspaceGuard) @RequirePermission('invitation.manage')
   @ApiCreatedResponse({ type: InvitationDto })
@@ -28,6 +29,7 @@ export class InvitationsController {
     return this.invitations.listPending(id);
   }
 
+  @ApiParam({ name: 'workspaceId', type: String })
   @Post('workspaces/:workspaceId/invitations/:invitationId/resend')
   @UseGuards(WorkspaceGuard) @RequirePermission('invitation.manage')
   @ApiCreatedResponse({ type: InvitationDto })
@@ -35,6 +37,7 @@ export class InvitationsController {
     return this.invitations.resend(m, id);
   }
 
+  @ApiParam({ name: 'workspaceId', type: String })
   @Delete('workspaces/:workspaceId/invitations/:invitationId') @HttpCode(204)
   @UseGuards(WorkspaceGuard) @RequirePermission('invitation.manage')
   revoke(@CurrentMembership() m: Membership, @Param('invitationId') id: string) {

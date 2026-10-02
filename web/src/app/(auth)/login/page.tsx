@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, Field, Input } from "@/components/ui/form";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useRedirectIfAuthenticated } from "@/lib/auth/use-redirect-if-authenticated";
 
-export default function LoginPage() {
-  useRedirectIfAuthenticated();
+function LoginForm() {
+  const next = useRedirectIfAuthenticated();
+  const nextParam = useSearchParams().get("next");
   const { login } = useAuth();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +23,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await login(String(form.get("email")), String(form.get("password")));
-      router.replace("/dashboard");
+      router.replace(next);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
       setBusy(false);
@@ -47,8 +48,16 @@ export default function LoginPage() {
       </form>
       <div className="flex justify-between text-sm text-muted-foreground">
         <Link href="/forgot-password" className="hover:text-foreground">Forgot password?</Link>
-        <Link href="/register" className="hover:text-foreground">Create account</Link>
+        <Link href={nextParam ? `/register?next=${encodeURIComponent(next)}` : "/register"} className="hover:text-foreground">Create account</Link>
       </div>
     </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

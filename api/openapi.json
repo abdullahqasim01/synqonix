@@ -553,7 +553,16 @@
     "/api/v1/workspaces/{workspaceId}": {
       "get": {
         "operationId": "WorkspacesController_get_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -577,7 +586,16 @@
       },
       "patch": {
         "operationId": "WorkspacesController_update_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -685,6 +703,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -723,6 +749,14 @@
         "parameters": [
           {
             "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -806,7 +840,16 @@
     "/api/v1/workspaces/{workspaceId}/invitations": {
       "post": {
         "operationId": "InvitationsController_create_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -886,6 +929,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -916,6 +967,14 @@
         "parameters": [
           {
             "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1354,6 +1413,14 @@
             "schema": {
               "type": "boolean"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1382,7 +1449,16 @@
       },
       "post": {
         "operationId": "ProjectsController_create_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1426,6 +1502,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1454,6 +1538,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1502,6 +1594,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1525,6 +1625,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1565,6 +1673,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1595,6 +1711,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1631,6 +1755,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1692,6 +1824,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1715,6 +1855,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1751,6 +1899,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1796,6 +1952,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1857,6 +2021,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1908,6 +2080,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1931,6 +2111,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1967,6 +2155,14 @@
         "parameters": [
           {
             "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -2025,6 +2221,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -2071,6 +2275,14 @@
           },
           {
             "name": "labelId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
             "required": true,
             "in": "path",
             "schema": {

@@ -1,7 +1,7 @@
 import {
   Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators.js';
 import type { AuthUser } from '../common/decorators.js';
 import type { Membership } from '../generated/prisma/client.js';
@@ -30,6 +30,7 @@ export class WorkspacesController {
     return this.workspaces.listMine(user.id);
   }
 
+  @ApiParam({ name: 'workspaceId', type: String })
   @Get(':workspaceId')
   @UseGuards(WorkspaceGuard) @RequirePermission('workspace.read')
   @ApiOkResponse({ type: WorkspaceDto })
@@ -37,6 +38,7 @@ export class WorkspacesController {
     return this.workspaces.get(m);
   }
 
+  @ApiParam({ name: 'workspaceId', type: String })
   @Patch(':workspaceId')
   @UseGuards(WorkspaceGuard) @RequirePermission('workspace.update')
   @ApiOkResponse({ type: WorkspaceDto })
@@ -57,6 +59,7 @@ export class WorkspacesController {
     return this.workspaces.listMembers(id);
   }
 
+  @ApiParam({ name: 'workspaceId', type: String })
   @Patch(':workspaceId/members/:userId')
   @UseGuards(WorkspaceGuard) @RequirePermission('member.manage')
   @ApiOkResponse({ type: MemberDto })
@@ -69,6 +72,7 @@ export class WorkspacesController {
   }
 
   /** Remove a member, or leave the workspace by passing your own user id. */
+  @ApiParam({ name: 'workspaceId', type: String })
   @Delete(':workspaceId/members/:userId') @HttpCode(204)
   @UseGuards(WorkspaceGuard) @RequirePermission('member.read')
   removeMember(@CurrentMembership() m: Membership, @Param('userId') userId: string) {

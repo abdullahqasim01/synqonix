@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, Field, Input } from "@/components/ui/form";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useRedirectIfAuthenticated } from "@/lib/auth/use-redirect-if-authenticated";
 
-export default function RegisterPage() {
-  useRedirectIfAuthenticated();
+function RegisterForm() {
+  const next = useRedirectIfAuthenticated();
+  const params = useSearchParams();
+  const nextParam = params.get("next");
   const { register } = useAuth();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export default function RegisterPage() {
         email: String(form.get("email")),
         password: String(form.get("password")),
       });
-      router.replace("/dashboard");
+      router.replace(next);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
       setBusy(false);
@@ -45,7 +47,7 @@ export default function RegisterPage() {
           <Input id="name" name="name" autoComplete="name" required maxLength={100} />
         </Field>
         <Field label="Email" htmlFor="email">
-          <Input id="email" name="email" type="email" autoComplete="email" required />
+          <Input id="email" name="email" type="email" autoComplete="email" required defaultValue={params.get("email") ?? ""} />
         </Field>
         <Field label="Password" htmlFor="password" hint="At least 8 characters.">
           <Input id="password" name="password" type="password" autoComplete="new-password" required minLength={8} maxLength={128} />
@@ -53,8 +55,16 @@ export default function RegisterPage() {
         <Button type="submit" disabled={busy}>{busy ? "Creating…" : "Create account"}</Button>
       </form>
       <p className="text-sm text-muted-foreground">
-        Already have an account? <Link href="/login" className="text-foreground underline">Sign in</Link>
+        Already have an account? <Link href={nextParam ? `/login?next=${encodeURIComponent(next)}` : "/login"} className="text-foreground underline">Sign in</Link>
       </p>
     </>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   );
 }

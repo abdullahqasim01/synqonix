@@ -1,7 +1,7 @@
 import {
   Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Query, UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import type { Membership } from '../generated/prisma/client.js';
 import { CurrentMembership, RequirePermission, WorkspaceGuard } from '../permissions/workspace.guard.js';
 import {
@@ -18,6 +18,7 @@ import { ProjectsService } from './projects.service.js';
 @ApiTags('projects')
 @ApiBearerAuth()
 @UseGuards(WorkspaceGuard)
+@ApiParam({ name: 'workspaceId', type: String })
 @Controller('workspaces/:workspaceId/projects')
 export class ProjectsController {
   constructor(private readonly projects: ProjectsService) {}
