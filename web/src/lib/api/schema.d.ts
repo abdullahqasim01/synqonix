@@ -1420,6 +1420,313 @@ export interface paths {
         patch: operations["AgileController_updateMilestone_v1"];
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ChannelsController_list_v1"];
+        put?: never;
+        post: operations["ChannelsController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/direct": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Finds or starts the direct conversation with these people. */
+        post: operations["ChannelsController_direct_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ChannelsController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ChannelsController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ChannelsController_join_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ChannelsController_leave_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ChannelsController_members_v1"];
+        put?: never;
+        post: operations["ChannelsController_addMember_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/members/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["ChannelsController_removeMember_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/task-refs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_taskRefs_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/discussions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_discussions_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_list_v1"];
+        put?: never;
+        post: operations["MessagesController_post_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MessagesController_markRead_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MessagesController_upload_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/{attachmentId}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Always served as a download so uploaded files cannot run scripts on our origin. */
+        get: operations["MessagesController_download_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_get_v1"];
+        put?: never;
+        post?: never;
+        delete: operations["MessagesController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["MessagesController_edit_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/replies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MessagesController_replies_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/reactions/{emoji}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["MessagesController_react_v1"];
+        post?: never;
+        delete: operations["MessagesController_unreact_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MessagesController_link_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/tasks/{taskRef}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["MessagesController_unlink_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/messages/{messageId}/create-task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Turns a message into a task in the given project and links the two. */
+        post: operations["MessagesController_createTask_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2437,6 +2744,147 @@ export interface components {
             dueDate?: string | null;
             /** @description Close or reopen. */
             closed?: boolean;
+        };
+        ParticipantDto: {
+            userId: string;
+            name: string;
+        };
+        ChannelDto: {
+            id: string;
+            /** @enum {string} */
+            type: "PRIVATE" | "PUBLIC" | "DIRECT";
+            /** @description Null for direct messages; use `participants`. */
+            name: string | null;
+            topic: string | null;
+            /** @description Set for a project's own channel. */
+            projectId: string | null;
+            archived: boolean;
+            memberCount: number;
+            isMember: boolean;
+            /** @description May rename, archive and manage members. */
+            isAdmin: boolean;
+            canPost: boolean;
+            /** @description Top-level messages from others since the caller last read the channel. */
+            unreadCount: number;
+            /** @description Messages mentioning the caller since they last read the channel. */
+            mentionCount: number;
+            lastSeq: number;
+            lastReadSeq: number;
+            /** Format: date-time */
+            lastMessageAt: string | null;
+            /** @description The people in a direct conversation (other than the caller when there are several). */
+            participants: components["schemas"]["ParticipantDto"][];
+        };
+        CreateChannelDto: {
+            name: string;
+            /** @enum {string} */
+            type: "PUBLIC" | "PRIVATE";
+            topic?: string;
+            /** @description Extra people to add (private channels). The creator is always a member and admin. */
+            memberIds?: string[];
+        };
+        DirectChannelDto: {
+            /** @description The other participants (1 to 7). The same set of people always shares one conversation. */
+            userIds: string[];
+        };
+        UpdateChannelDto: {
+            name?: string;
+            topic?: string | null;
+            /** @description Archived channels are read-only. */
+            archived?: boolean;
+        };
+        ChannelMemberDto: {
+            userId: string;
+            name: string;
+            email: string;
+            /** @enum {string} */
+            role: "ADMIN" | "MEMBER";
+        };
+        ChannelMemberInputDto: {
+            userId: string;
+        };
+        MessageAuthorDto: {
+            userId: string;
+            name: string;
+        };
+        ReactionDto: {
+            emoji: string;
+            count: number;
+            userIds: string[];
+            /** @description Whether the caller reacted. */
+            reacted: boolean;
+        };
+        MessageAttachmentDto: {
+            id: string;
+            filename: string;
+            mimeType: string;
+            size: number;
+        };
+        MessageDto: {
+            id: string;
+            channelId: string;
+            seq: number;
+            parentId: string | null;
+            author: components["schemas"]["MessageAuthorDto"] | null;
+            /** @description Empty when deleted. */
+            body: string;
+            deleted: boolean;
+            edited: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            editedAt: string | null;
+            replyCount: number;
+            /** Format: date-time */
+            lastReplyAt: string | null;
+            reactions: components["schemas"]["ReactionDto"][];
+            attachments: components["schemas"]["MessageAttachmentDto"][];
+            /** @description Task keys written in the message. */
+            taskKeys: string[];
+            /** @description Cards for linked tasks the caller can see (written, linked by hand or created from the message). */
+            tasks: components["schemas"]["TaskRefDto"][];
+        };
+        DiscussionChannelDto: {
+            id: string;
+            name: string | null;
+            /** @enum {string} */
+            type: "PRIVATE" | "PUBLIC" | "DIRECT";
+        };
+        DiscussionDto: {
+            message: components["schemas"]["MessageDto"];
+            channel: components["schemas"]["DiscussionChannelDto"];
+            /** @enum {string} */
+            source: "MENTION" | "LINKED" | "CREATED";
+        };
+        MessageListDto: {
+            /** @description Oldest first. */
+            messages: components["schemas"]["MessageDto"][];
+            /** @description Whether older (or, with `after`, newer) messages exist beyond this page. */
+            hasMore: boolean;
+        };
+        PostMessageDto: {
+            /** @description Markdown. Mention a teammate with `[@Name](mention:<userId>)`; task keys like `SYN-12` become links. */
+            body: string;
+            /** @description Reply in the thread of this top-level message. */
+            parentId?: string;
+            /** @description Files uploaded earlier through the attachments endpoint. */
+            attachmentIds?: string[];
+        };
+        MarkReadDto: {
+            /** @description Read up to this sequence number; defaults to the latest. */
+            seq?: number;
+        };
+        EditMessageDto: {
+            body: string;
+        };
+        LinkTaskDto: {
+            /** @description Key (`SYN-12`) or id. */
+            taskRef: string;
+        };
+        CreateTaskFromMessageDto: {
+            projectId: string;
+            /** @description Defaults to the first line of the message. */
+            title?: string;
         };
     };
     responses: never;
@@ -5426,6 +5874,638 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MilestoneDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_list_v1: {
+        parameters: {
+            query?: {
+                includeArchived?: boolean;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"][];
+                };
+            };
+        };
+    };
+    ChannelsController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateChannelDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_direct_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DirectChannelDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateChannelDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_join_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDto"];
+                };
+            };
+        };
+    };
+    ChannelsController_leave_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChannelsController_members_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelMemberDto"][];
+                };
+            };
+        };
+    };
+    ChannelsController_addMember_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChannelMemberInputDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelMemberDto"][];
+                };
+            };
+        };
+    };
+    ChannelsController_removeMember_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                userId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MessagesController_taskRefs_v1: {
+        parameters: {
+            query: {
+                /** @description Comma separated task keys, up to 50. */
+                keys: string;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskRefDto"][];
+                };
+            };
+        };
+    };
+    MessagesController_discussions_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiscussionDto"][];
+                };
+            };
+        };
+    };
+    MessagesController_list_v1: {
+        parameters: {
+            query?: {
+                /** @description Messages older than this sequence number (scrolling back). */
+                before?: number;
+                /** @description Messages newer than this sequence number, oldest first (catching up after a disconnect). */
+                after?: number;
+                limit?: number;
+                /** @description Include thread replies in the stream (needed to catch up completely). */
+                threads?: boolean;
+            };
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageListDto"];
+                };
+            };
+        };
+    };
+    MessagesController_post_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostMessageDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_markRead_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkReadDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MessagesController_upload_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageAttachmentDto"];
+                };
+            };
+        };
+    };
+    MessagesController_download_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                attachmentId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The file contents */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MessagesController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MessagesController_edit_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditMessageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_replies_v1: {
+        parameters: {
+            query?: {
+                after?: number;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageListDto"];
+                };
+            };
+        };
+    };
+    MessagesController_react_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                emoji: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_unreact_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                emoji: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_link_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkTaskDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_unlink_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                taskRef: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
+                };
+            };
+        };
+    };
+    MessagesController_createTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                messageId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTaskFromMessageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageDto"];
                 };
             };
         };

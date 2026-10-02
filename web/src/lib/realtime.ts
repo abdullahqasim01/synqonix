@@ -15,6 +15,7 @@ export interface TaskEvent {
 type Handler = (e: TaskEvent) => void;
 
 let socket: Socket | null = null;
+let refs = 0;
 const handlers = new Map<string, Set<Handler>>();
 
 /** Milliseconds until a JWT expires (0 if unreadable or already expired). */
@@ -53,9 +54,31 @@ function connection(): Socket {
   return s;
 }
 
+/**
+ * Shares one connection between everything that wants live updates (boards, chat). The socket
+ * closes when the last holder releases it.
+ */
+export function acquireSocket(): { socket: Socket; release(): void } {
+  const s = connection();
+  refs++;
+  let released = false;
+  return {
+    socket: s,
+    release() {
+      if (released) return;
+      released = true;
+      if (--refs <= 0) {
+        s.close();
+        if (socket === s) socket = null;
+        refs = 0;
+      }
+    },
+  };
+}
+
 /** Listens to live task changes of a project. Returns an unsubscribe function. */
 export function subscribeToProject(projectId: string, handler: Handler): () => void {
-  const s = connection();
+  const { socket: s, release } = acquireSocket();
   let set = handlers.get(projectId);
   if (!set) {
     set = new Set();
@@ -68,11 +91,8 @@ export function subscribeToProject(projectId: string, handler: Handler): () => v
     current?.delete(handler);
     if (current && current.size === 0) {
       handlers.delete(projectId);
-      socket?.emit("unsubscribe", { projectId });
-      if (handlers.size === 0) {
-        socket?.close();
-        socket = null;
-      }
+      s.emit("unsubscribe", { projectId });
     }
+    release();
   };
 }

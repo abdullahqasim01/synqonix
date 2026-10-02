@@ -27,3 +27,10 @@ it("renders mentions as highlighted text, not links", () => {
   expect(screen.getByText("@Ann")).toBeInTheDocument();
   expect(container.querySelector('a[href^="mention:"]')).toBeNull();
 });
+
+it("keeps links inside the app in the same tab", () => {
+  const { container } = render(<Markdown>{"[SYN-1](/w/abc/tasks/SYN-1)"}</Markdown>);
+  const a = container.querySelector("a")!;
+  expect(a.getAttribute("href")).toBe("/w/abc/tasks/SYN-1");
+  expect(a.getAttribute("target")).toBeNull();
+});

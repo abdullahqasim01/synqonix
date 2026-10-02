@@ -10,6 +10,7 @@ import { useWorkspace } from "@/components/workspace/workspace-context";
 import { StatusBadge, TypeIcon } from "@/components/tasks/badges";
 import { api, errorMessage, type Schemas } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@/lib/use-query";
 
 export type TaskDetail = Schemas["TaskDetailDto"];
 interface SectionProps { task: TaskDetail; reload(): void; ws: string }
@@ -377,3 +378,32 @@ export function Attachments({ task, ws, reload }: SectionProps) {
   );
 }
 
+
+// ---------------------------------------------------------------- discussions
+
+/** Chat messages that mention, were linked to, or created this task. Only conversations the viewer can read appear. */
+export function Discussions({ task, ws }: Pick<SectionProps, "task" | "ws">) {
+  const { data } = useQuery(
+    () => api.GET("/api/v1/workspaces/{workspaceId}/tasks/{taskId}/discussions", { params: { path: { workspaceId: ws, taskId: task.id } } }),
+    [ws, task.id],
+  );
+  if (!data || data.length === 0) return null;
+  const how = { MENTION: "mentioned", LINKED: "linked", CREATED: "created from" } as const;
+  return (
+    <Section title={`Discussions (${data.length})`}>
+      <ul className="divide-y divide-border rounded-md border border-border">
+        {data.map((d) => (
+          <li key={d.message.id} className="grid gap-0.5 px-3 py-2 text-sm">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Link href={`/w/${ws}/chat?c=${d.channel.id}`} className="font-medium text-primary hover:underline">
+                {d.channel.type === "DIRECT" ? "Direct message" : `#${d.channel.name}`}
+              </Link>
+              · {d.message.author?.name ?? "Someone"} {how[d.source]} this task · {new Date(d.message.createdAt).toLocaleDateString()}
+            </div>
+            <p className="line-clamp-3 whitespace-pre-wrap">{d.message.body}</p>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+}

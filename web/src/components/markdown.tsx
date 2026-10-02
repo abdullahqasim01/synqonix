@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import ReactMarkdown, { defaultUrlTransform } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,8 @@ export function Markdown({ children, className }: { children: string; className?
             if (href?.startsWith("mention:")) {
               return <span className="rounded bg-primary/10 px-1 font-medium text-primary">{children}</span>;
             }
+            // Links inside the app (task keys in chat) stay in the same tab.
+            if (href?.startsWith("/") && !href.startsWith("//")) return <Link href={href} className="text-primary underline">{children}</Link>;
             return <a href={href} target="_blank" rel="noopener noreferrer nofollow" className="text-primary underline">{children}</a>;
           },
           code({ className, children }) {

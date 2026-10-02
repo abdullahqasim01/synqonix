@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ChatProvider, useChat } from "@/components/chat/chat-provider";
 import { Button } from "@/components/ui/button";
 import { QuickCreate } from "@/components/tasks/quick-create";
 import { WorkspaceProvider } from "@/components/workspace/workspace-context";
@@ -47,6 +48,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
   const tabs = [
     { href: base, label: "Projects" },
     { href: `${base}/my-tasks`, label: "My tasks" },
+    { href: `${base}/chat`, label: "Chat" },
     { href: `${base}/members`, label: "Members" },
     { href: `${base}/teams`, label: "Teams" },
     { href: `${base}/settings`, label: "Settings" },
@@ -54,6 +56,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
   return (
     <WorkspaceProvider workspace={current.data} reload={current.reload} members={members.data ?? []}>
+      <ChatProvider workspaceId={workspaceId}>
       <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-3">
         <Select
           aria-label="Switch workspace"
@@ -77,6 +80,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
               )}
             >
               {t.label}
+              {t.label === "Chat" && <UnreadBadge />}
             </Link>
           ))}
         </nav>
@@ -84,6 +88,13 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
       </div>
       {children}
       <QuickCreate open={creating} onClose={() => setCreating(false)} />
+      </ChatProvider>
     </WorkspaceProvider>
   );
+}
+
+function UnreadBadge() {
+  const { totalUnread } = useChat();
+  if (totalUnread === 0) return null;
+  return <span aria-label={`${totalUnread} unread messages`} className="ml-1.5 rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">{totalUnread}</span>;
 }
