@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module.js';
 import { GithubClient, type GithubInstallationInfo, type GithubRepoInfo } from '../src/github/github.client.js';
+import { WebhookSender } from '../src/webhooks/webhook-sender.js';
 import { MailService } from '../src/mail/mail.service.js';
 import { PrismaService } from '../src/prisma/prisma.service.js';
 import { setupApp } from '../src/setup-app.js';
@@ -55,19 +56,33 @@ export class FakeGithubClient extends GithubClient {
   async setIssueState(_installation: string, repo: string, number: number, state: 'open' | 'closed') { this.issueStates.push({ repo, number, state }); }
 }
 
+/** Records webhook requests instead of sending them; answers with a configurable status. */
+export class FakeWebhookSender extends WebhookSender {
+  requests: { url: string; headers: Record<string, string>; body: string }[] = [];
+  status = 200;
+  fail: string | null = null;
+  async send(req: { url: string; headers: Record<string, string>; body: string }) {
+    this.requests.push(req);
+    if (this.fail) throw new Error(this.fail);
+    return { status: this.status };
+  }
+}
+
 export async function createTestApp({ throttle = false } = {}) {
   const mail = new FakeMailService();
   const github = new FakeGithubClient();
+  const webhookSender = new FakeWebhookSender();
   const builder = Test.createTestingModule({ imports: [AppModule] })
     .overrideProvider(MailService).useValue(mail)
-    .overrideProvider(GithubClient).useValue(github);
+    .overrideProvider(GithubClient).useValue(github)
+    .overrideProvider(WebhookSender).useValue(webhookSender);
   process.env.THROTTLE_DISABLED = throttle ? '0' : '1';
   const mod = await builder.compile();
   const app = mod.createNestApplication<NestExpressApplication>({ rawBody: true });
   setupApp(app, 'http://localhost:3000');
   await app.init();
   const prisma = app.get(PrismaService);
-  return { app, mail, prisma, github };
+  return { app, mail, prisma, github, webhookSender };
 }
 
 import request from 'supertest';

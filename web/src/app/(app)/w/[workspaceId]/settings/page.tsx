@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
+import { WebhooksCard } from "@/components/automation/webhooks-card";
 import { WorkspaceGithub } from "@/components/github/workspace-github";
 import { useWorkspace } from "@/components/workspace/workspace-context";
 import { Button } from "@/components/ui/button";
@@ -69,6 +70,7 @@ export default function WorkspaceSettingsPage() {
         </form>
       </Card>
       <Suspense><WorkspaceGithub /></Suspense>
+      <WebhooksCard />
       {isAdmin && <AuditLog workspaceId={workspace.id} />}
       <Card>
         <h2 className="mb-3 font-medium">Danger zone</h2>

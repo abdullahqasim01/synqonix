@@ -2357,6 +2357,134 @@ export interface paths {
         patch: operations["TemplatesController_updateRecurring_v1"];
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["WebhooksController_list_v1"];
+        put?: never;
+        post: operations["WebhooksController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["WebhooksController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["WebhooksController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/rotate-secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["WebhooksController_rotate_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["WebhooksController_test_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["WebhooksController_deliveries_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["WebhooksController_redeliver_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/automations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AutomationController_list_v1"];
+        put?: never;
+        post: operations["AutomationController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/automations/{ruleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["AutomationController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["AutomationController_update_v1"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4073,6 +4201,115 @@ export interface components {
             interval?: number;
             startsAt?: string;
             active?: boolean;
+        };
+        WebhookDto: {
+            id: string;
+            name: string;
+            url: string;
+            events: string[];
+            projectId: string | null;
+            active: boolean;
+            failureCount: number;
+            disabledReason: string | null;
+            /** Format: date-time */
+            lastSuccessAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CreateWebhookDto: {
+            name: string;
+            /** @description Public https URL that accepts POSTs of JSON. */
+            url: string;
+            events: ("task.created" | "task.updated" | "task.status_changed" | "task.commented" | "task.deleted")[];
+            /** @description Only events of this project; every project when omitted. */
+            projectId?: string;
+        };
+        CreatedWebhookDto: {
+            id: string;
+            name: string;
+            url: string;
+            events: string[];
+            projectId: string | null;
+            active: boolean;
+            failureCount: number;
+            disabledReason: string | null;
+            /** Format: date-time */
+            lastSuccessAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** @description The signing secret. Shown only now; store it. */
+            secret: string;
+        };
+        UpdateWebhookDto: {
+            name?: string;
+            url?: string;
+            events?: ("task.created" | "task.updated" | "task.status_changed" | "task.commented" | "task.deleted")[];
+            projectId?: string | null;
+            /** @description Turning it back on also clears the failure counter. */
+            active?: boolean;
+        };
+        TestResultDto: {
+            ok: boolean;
+            responseStatus: number | null;
+            error: string | null;
+        };
+        DeliveryDto: {
+            id: string;
+            event: string;
+            /** @enum {string} */
+            status: "PENDING" | "SUCCESS" | "FAILED";
+            attempts: number;
+            responseStatus: number | null;
+            error: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            deliveredAt: string | null;
+            /** Format: date-time */
+            nextAttemptAt: string;
+        };
+        AutomationConditionsDto: {
+            types?: ("STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK")[];
+            priorities?: ("URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE")[];
+            labelIds?: string[];
+        };
+        AutomationActionDto: {
+            /** @enum {string} */
+            type: "SET_PRIORITY" | "ASSIGN" | "ADD_LABEL" | "MOVE_TO_STATUS" | "COMMENT";
+            /** @description SET_PRIORITY: a priority; ASSIGN: a user id; ADD_LABEL: a label id; MOVE_TO_STATUS: a status id; COMMENT: the text. */
+            value: string;
+        };
+        AutomationDto: {
+            id: string;
+            name: string;
+            enabled: boolean;
+            /** @enum {string} */
+            trigger: "STATUS_CHANGED" | "TASK_CREATED";
+            triggerStatusId: string | null;
+            conditions: components["schemas"]["AutomationConditionsDto"];
+            actions: components["schemas"]["AutomationActionDto"][];
+            runCount: number;
+            /** Format: date-time */
+            lastRunAt: string | null;
+            lastError: string | null;
+        };
+        CreateAutomationDto: {
+            name: string;
+            /** @enum {string} */
+            trigger: "STATUS_CHANGED" | "TASK_CREATED";
+            /** @description For `STATUS_CHANGED`: only when a task moves to this status (any status when omitted). */
+            triggerStatusId?: string;
+            conditions?: components["schemas"]["AutomationConditionsDto"];
+            actions: components["schemas"]["AutomationActionDto"][];
+        };
+        UpdateAutomationDto: {
+            name?: string;
+            enabled?: boolean;
+            /** @enum {string} */
+            trigger?: "STATUS_CHANGED" | "TASK_CREATED";
+            triggerStatusId?: string | null;
+            conditions?: components["schemas"]["AutomationConditionsDto"];
+            actions?: components["schemas"]["AutomationActionDto"][];
         };
     };
     responses: never;
@@ -8823,6 +9060,281 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RecurringDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDto"][];
+                };
+            };
+        };
+    };
+    WebhooksController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWebhookDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedWebhookDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WebhooksController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateWebhookDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_rotate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedWebhookDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_test_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestResultDto"];
+                };
+            };
+        };
+    };
+    WebhooksController_deliveries_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeliveryDto"][];
+                };
+            };
+        };
+    };
+    WebhooksController_redeliver_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                webhookId: string;
+                deliveryId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AutomationController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationDto"][];
+                };
+            };
+        };
+    };
+    AutomationController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAutomationDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationDto"];
+                };
+            };
+        };
+    };
+    AutomationController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                ruleId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AutomationController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                ruleId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAutomationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationDto"];
                 };
             };
         };

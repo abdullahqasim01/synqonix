@@ -21,6 +21,12 @@ const schema = z.object({
   /** PEM private key; `\n` escapes are accepted so it fits on one line. */
   GITHUB_APP_PRIVATE_KEY: z.string().optional(),
   GITHUB_WEBHOOK_SECRET: z.string().optional(),
+  /** Let webhooks target private/loopback addresses and plain http (for local development only). */
+  WEBHOOKS_ALLOW_PRIVATE_TARGETS: z.enum(['0', '1']).default('0'),
+  /** Days to keep records before the nightly cleanup deletes them; 0 keeps them forever. */
+  AUDIT_RETENTION_DAYS: z.coerce.number().int().min(0).default(365),
+  NOTIFICATION_RETENTION_DAYS: z.coerce.number().int().min(0).default(90),
+  DELIVERY_RETENTION_DAYS: z.coerce.number().int().min(0).default(30),
   GITHUB_API_URL: z.string().url().default('https://api.github.com'),
 });
 

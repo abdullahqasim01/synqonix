@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, Card, Field, Input } from "@/components/ui/form";
-import { api, errorMessage, type Schemas } from "@/lib/api/client";
+import { api, API_URL, errorMessage, type Schemas } from "@/lib/api/client";
 
 type Msg = { ok: boolean; text: string } | null;
 
@@ -102,7 +102,7 @@ function ApiTokens() {
   return (
     <Card>
       <h2 className="mb-1 font-medium">Personal API tokens</h2>
-      <p className="mb-4 text-sm text-muted-foreground">Use a token to sign in to the VS Code extension.</p>
+      <p className="mb-4 text-sm text-muted-foreground">Use a token to sign in to the VS Code extension or to call the API (<a href={`${API_URL}/docs`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">API reference</a>).</p>
       {error && <Alert>{error}</Alert>}
       {created && (
         <div className="mb-4">

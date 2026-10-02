@@ -22,6 +22,9 @@ import { SearchModule } from './search/search.module.js';
 import { TasksModule } from './tasks/tasks.module.js';
 import { TemplatesModule } from './templates/templates.module.js';
 import { TimeModule } from './time/time.module.js';
+import { AutomationModule } from './automation/automation.module.js';
+import { RetentionModule } from './retention/retention.module.js';
+import { WebhooksModule } from './webhooks/webhooks.module.js';
 import { ViewsModule } from './views/views.module.js';
 import { WorkspacesModule } from './workspaces/workspaces.module.js';
 
@@ -51,6 +54,9 @@ import { WorkspacesModule } from './workspaces/workspaces.module.js';
     InsightsModule,
     DataIoModule,
     TemplatesModule,
+    WebhooksModule,
+    AutomationModule,
+    RetentionModule,
     RealtimeModule,
   ],
   controllers: [HealthController],

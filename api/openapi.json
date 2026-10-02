@@ -9699,6 +9699,550 @@
           "templates"
         ]
       }
+    },
+    "/api/v1/workspaces/{workspaceId}/webhooks": {
+      "get": {
+        "operationId": "WebhooksController_list_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WebhookDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "webhooks"
+        ]
+      },
+      "post": {
+        "operationId": "WebhooksController_create_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedWebhookDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}": {
+      "patch": {
+        "operationId": "WebhooksController_update_v1",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "webhooks"
+        ]
+      },
+      "delete": {
+        "operationId": "WebhooksController_remove_v1",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/rotate-secret": {
+      "post": {
+        "operationId": "WebhooksController_rotate_v1",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedWebhookDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/test": {
+      "post": {
+        "operationId": "WebhooksController_test_v1",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/deliveries": {
+      "get": {
+        "operationId": "WebhooksController_deliveries_v1",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver": {
+      "post": {
+        "operationId": "WebhooksController_redeliver_v1",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deliveryId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/automations": {
+      "get": {
+        "operationId": "AutomationController_list_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AutomationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "automation"
+        ]
+      },
+      "post": {
+        "operationId": "AutomationController_create_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAutomationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutomationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "automation"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/automations/{ruleId}": {
+      "patch": {
+        "operationId": "AutomationController_update_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ruleId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAutomationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutomationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "automation"
+        ]
+      },
+      "delete": {
+        "operationId": "AutomationController_remove_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ruleId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "automation"
+        ]
+      }
     }
   },
   "info": {
@@ -16243,6 +16787,465 @@
           },
           "active": {
             "type": "boolean"
+          }
+        }
+      },
+      "WebhookDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "failureCount": {
+            "type": "number"
+          },
+          "disabledReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastSuccessAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "events",
+          "projectId",
+          "active",
+          "failureCount",
+          "disabledReason",
+          "lastSuccessAt",
+          "createdAt"
+        ]
+      },
+      "CreateWebhookDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "url": {
+            "type": "string",
+            "description": "Public https URL that accepts POSTs of JSON.",
+            "maxLength": 2000
+          },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "task.created",
+                "task.updated",
+                "task.status_changed",
+                "task.commented",
+                "task.deleted"
+              ]
+            }
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Only events of this project; every project when omitted."
+          }
+        },
+        "required": [
+          "name",
+          "url",
+          "events"
+        ]
+      },
+      "CreatedWebhookDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "failureCount": {
+            "type": "number"
+          },
+          "disabledReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastSuccessAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "secret": {
+            "type": "string",
+            "description": "The signing secret. Shown only now; store it."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "events",
+          "projectId",
+          "active",
+          "failureCount",
+          "disabledReason",
+          "lastSuccessAt",
+          "createdAt",
+          "secret"
+        ]
+      },
+      "UpdateWebhookDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "task.created",
+                "task.updated",
+                "task.status_changed",
+                "task.commented",
+                "task.deleted"
+              ]
+            }
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Turning it back on also clears the failure counter."
+          }
+        }
+      },
+      "TestResultDto": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "responseStatus": {
+            "type": "number",
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "ok",
+          "responseStatus",
+          "error"
+        ]
+      },
+      "DeliveryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "SUCCESS",
+              "FAILED"
+            ]
+          },
+          "attempts": {
+            "type": "number"
+          },
+          "responseStatus": {
+            "type": "number",
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deliveredAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "nextAttemptAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event",
+          "status",
+          "attempts",
+          "responseStatus",
+          "error",
+          "createdAt",
+          "deliveredAt",
+          "nextAttemptAt"
+        ]
+      },
+      "AutomationConditionsDto": {
+        "type": "object",
+        "properties": {
+          "types": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "string",
+              "enum": [
+                "STORY",
+                "BUG",
+                "TASK",
+                "EPIC",
+                "SUBTASK"
+              ]
+            }
+          },
+          "priorities": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "string",
+              "enum": [
+                "URGENT",
+                "HIGH",
+                "MEDIUM",
+                "LOW",
+                "NONE"
+              ]
+            }
+          },
+          "labelIds": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AutomationActionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "SET_PRIORITY",
+              "ASSIGN",
+              "ADD_LABEL",
+              "MOVE_TO_STATUS",
+              "COMMENT"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "SET_PRIORITY: a priority; ASSIGN: a user id; ADD_LABEL: a label id; MOVE_TO_STATUS: a status id; COMMENT: the text.",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      },
+      "AutomationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "trigger": {
+            "enum": [
+              "STATUS_CHANGED",
+              "TASK_CREATED"
+            ],
+            "type": "string"
+          },
+          "triggerStatusId": {
+            "type": "string",
+            "nullable": true
+          },
+          "conditions": {
+            "$ref": "#/components/schemas/AutomationConditionsDto"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AutomationActionDto"
+            }
+          },
+          "runCount": {
+            "type": "number"
+          },
+          "lastRunAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "lastError": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "enabled",
+          "trigger",
+          "triggerStatusId",
+          "conditions",
+          "actions",
+          "runCount",
+          "lastRunAt",
+          "lastError"
+        ]
+      },
+      "CreateAutomationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "trigger": {
+            "type": "string",
+            "enum": [
+              "STATUS_CHANGED",
+              "TASK_CREATED"
+            ]
+          },
+          "triggerStatusId": {
+            "type": "string",
+            "description": "For `STATUS_CHANGED`: only when a task moves to this status (any status when omitted)."
+          },
+          "conditions": {
+            "$ref": "#/components/schemas/AutomationConditionsDto"
+          },
+          "actions": {
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AutomationActionDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "trigger",
+          "actions"
+        ]
+      },
+      "UpdateAutomationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "trigger": {
+            "type": "string",
+            "enum": [
+              "STATUS_CHANGED",
+              "TASK_CREATED"
+            ]
+          },
+          "triggerStatusId": {
+            "type": "string",
+            "nullable": true
+          },
+          "conditions": {
+            "$ref": "#/components/schemas/AutomationConditionsDto"
+          },
+          "actions": {
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AutomationActionDto"
+            }
           }
         }
       }

@@ -151,6 +151,7 @@ model Workspace {
   auditLogs           AuditLog[]
   channels            Channel[]
   githubInstallations GithubInstallation[]
+  outboundWebhooks    OutboundWebhook[]
   notifications       Notification[]
   githubContributors  GithubContributor[]
 }
@@ -252,6 +253,8 @@ model Project {
   taskImports       TaskImport[]
   taskTemplates     TaskTemplate[]
   recurringTasks    RecurringTask[]
+  outboundWebhooks  OutboundWebhook[]
+  automationRules   AutomationRule[]
 
   @@unique([workspaceId, key])
 }
@@ -1280,4 +1283,90 @@ model RecurringTask {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([active, nextRunAt])
+}
+
+// ---------------------------------------------------------------- outbound webhooks
+
+enum WebhookDeliveryStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+/// An endpoint that receives signed JSON when things happen in the workspace.
+model OutboundWebhook {
+  id             String    @id @default(uuid(7))
+  workspaceId    String
+  /// Restrict to one project; null means every project.
+  projectId      String?
+  name           String
+  url            String
+  /// Encrypted signing secret (AES-GCM); shown to the admin once.
+  secret         String
+  /// task.created, task.updated, task.status_changed, task.commented, task.deleted
+  events         String[]
+  active         Boolean   @default(true)
+  /// Consecutive failed deliveries; the webhook switches itself off after too many.
+  failureCount   Int       @default(0)
+  disabledReason String?
+  lastSuccessAt  DateTime?
+  createdById    String?
+  createdAt      DateTime  @default(now())
+
+  workspace  Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project    Project?           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  deliveries OutboundDelivery[]
+
+  @@index([workspaceId, active])
+}
+
+model OutboundDelivery {
+  id             String                @id @default(uuid(7))
+  webhookId      String
+  event          String
+  payload        Json
+  status         WebhookDeliveryStatus @default(PENDING)
+  attempts       Int                   @default(0)
+  nextAttemptAt  DateTime              @default(now())
+  responseStatus Int?
+  error          String?
+  createdAt      DateTime              @default(now())
+  deliveredAt    DateTime?
+
+  webhook OutboundWebhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@index([status, nextAttemptAt])
+  @@index([webhookId, createdAt])
+}
+
+// ---------------------------------------------------------------- automation rules
+
+enum AutomationTrigger {
+  TASK_CREATED
+  STATUS_CHANGED
+}
+
+/// "When X happens to a task that matches Y, do Z" for one project.
+model AutomationRule {
+  id              String            @id @default(uuid(7))
+  projectId       String
+  name            String
+  enabled         Boolean           @default(true)
+  trigger         AutomationTrigger
+  /// For STATUS_CHANGED: only when the task moves to this status.
+  triggerStatusId String?
+  /// { "types": ["BUG"], "priorities": ["HIGH"], "labelIds": ["..."] } — each present list must match (any value).
+  conditions      Json              @default("{}")
+  /// [{ "type": "SET_PRIORITY", "value": "HIGH" }, { "type": "ASSIGN", "userId": "..." }, ...]
+  actions         Json              @default("[]")
+  runCount        Int               @default(0)
+  lastRunAt       DateTime?
+  lastError       String?
+  /// Actions run as this person (their permissions apply).
+  createdById     String
+  createdAt       DateTime          @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, trigger, enabled])
 }

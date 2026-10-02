@@ -57,6 +57,7 @@ export function describeActivity(a: Activity, userName: (id: string) => string):
     case "relation_added": return `${show(a.to)}`;
     case "relation_removed": return "removed a relation";
     case "github_linked": return `linked ${show(a.to)} from GitHub`;
+    case "automation": return `ran the rule “${show(a.to)}”`;
     case "github_branch": return `created branch ${show(a.to)}`;
     case "updated":
       switch (a.field) {

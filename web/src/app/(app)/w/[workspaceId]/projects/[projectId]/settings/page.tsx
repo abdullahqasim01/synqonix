@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { AutomationCard } from "@/components/automation/automation-card";
 import { ImportExport } from "@/components/project-tools/import-export";
 import { RecurringTasks, Templates } from "@/components/project-tools/templates-recurring";
 import { ProjectGithub } from "@/components/github/project-github";
@@ -398,6 +399,7 @@ export default function ProjectSettingsPage() {
       <Labels project={project} reload={reload} />
       <Members project={project} />
       <ProjectGithub project={project} />
+      <AutomationCard project={project} />
       <Templates project={project} />
       <RecurringTasks project={project} />
       <ImportExport project={project} onImported={reload} />

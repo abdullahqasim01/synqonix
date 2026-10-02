@@ -19,7 +19,7 @@
 
 ## Status
 
-Phase 9 is delivered in three parts. **9a and 9b are done** (below); 9c (outbound webhooks, automation rules, retention) follows.
+Phase 9 was delivered in three parts, all done: 9a (reports, time, roadmap), 9b (import/export, templates, recurring) and 9c (webhooks, automation, retention).
 
 ### 9a – reports, time tracking, roadmap
 
@@ -52,3 +52,19 @@ Phase 9 is delivered in three parts. **9a and 9b are done** (below); 9c (outboun
 **Not done.** Live importing from the GitHub API (issues arrive from linked repositories through the webhook from Phase 7, or from a CSV), user-defined project templates (the built-in Scrum/Kanban/Bug/Basic ones remain), and updating existing tasks from a re-import (rows already imported are skipped, not updated).
 
 **Tests.** 12 import/export and 9 template/recurring API e2e tests (round trip, Jira/GitHub fixtures with every error path, idempotency, dry run, limits, permissions, recurrence maths with fixed clocks), plus unit tests for the CSV parser, column mapping and recurrence. API: 279 e2e, 89 unit; web: 70 unit. Verified in a real browser: export download, check/import/re-import with the report table, template creation and use from the New task dialog, saving a task as a template, and creating/pausing/resuming a recurring task.
+
+### 9c – outbound webhooks, automation rules, retention
+
+**Outbound webhooks** (`api/src/webhooks`, workspace settings, admins only). A webhook has a URL, the events it wants (`task.created`, `task.updated`, `task.status_changed`, `task.commented`, `task.deleted`) and optionally one project; there can be 20 per workspace. Each request is JSON with `X-Synqonix-Event`, `X-Synqonix-Delivery`, `X-Synqonix-Timestamp` and `X-Synqonix-Signature: sha256=HMAC(secret, "<timestamp>.<body>")`, so receivers can verify the sender and reject replays. The signing secret is shown once when the webhook is created or rotated and stored AES-GCM encrypted. Payloads carry the project, the actor and a snapshot of the task (a deleted task carries only its id and key).
+- *Reliability*: events are written to a delivery table first and sent by a job every minute; a delivery is claimed with a compare-and-set so overlapping workers never send the same attempt twice. Failures retry after 1 minute, 5 minutes, 30 minutes, 2 hours and 6 hours, then are given up on; after 10 given-up deliveries in a row the webhook switches itself off (with the reason shown) until an admin turns it on. The log shows every delivery with status code or error, and any can be resent; "Send test" delivers a ping synchronously.
+- *SSRF protection*: URLs must be https (no credentials), and not localhost, `.local`/`.internal`, bare hostnames or private/loopback/link-local/metadata addresses. The same check runs on the address the connection actually uses (a custom DNS lookup refuses private results, which closes the DNS-rebinding gap) and redirects are never followed. `WEBHOOKS_ALLOW_PRIVATE_TARGETS=1` relaxes this for local development only.
+
+**Automation rules** (`api/src/automation`, project settings). Trigger: a task is created, or changes status (to a chosen status or any). Conditions: type, priority and labels. Actions (up to five): set priority, add an assignee, add a label, move to a status, add a comment. Rules run as the person who turned them on, so their permissions apply (a rule switches itself off if that person leaves the workspace), and everything a rule points at is validated when it is saved. Matching is decided against the task as it was when the event happened, before any rule changes it; changes made by a rule never start another rule (or the same one again), so there are no loops or cascades. A failing action is recorded on the rule and never breaks the original change; history shows "Automation ran the rule …". Imports are silent and do not trigger rules.
+
+**Retention** (`api/src/retention`). A nightly job removes audit-log entries older than `AUDIT_RETENTION_DAYS` (365), notifications that were read more than `NOTIFICATION_RETENTION_DAYS` ago (90; unread ones stay), and finished webhook and GitHub delivery records older than `DELIVERY_RETENTION_DAYS` (30; deliveries still waiting for a retry stay). A value of 0 keeps that kind forever.
+
+**API access.** The OpenAPI reference is served at `/docs` (linked from the webhook and API-token settings) and personal API tokens (Phase 1) authenticate any endpoint; the audit log viewer and workspace settings from earlier phases complete the list.
+
+**Not done.** Per-workspace (rather than server-wide) retention settings, automation triggers beyond task created / status changed (assigned, due date, GitHub events), conditions on assignees, scheduled (time-based) automations beyond recurring tasks, and per-user dashboard configuration.
+
+**Tests.** 13 webhook e2e tests (permissions, URL validation, signing, event payloads, scoping, backoff with a controlled clock, giving up, auto-disable, concurrent workers, redelivery, test pings), 9 automation and 1 retention e2e test (validation, every action, conditions, no cascades or loops, failure recording, owner leaving, silent imports), plus unit tests for address checks, signatures and encryption. API: 301 e2e, 95 unit; web: 70 unit. Verified in a real browser: a webhook receiving a validly signed ping and a task event from the job, the delivery log, and an automation rule changing a new bug, commenting and showing in history.
