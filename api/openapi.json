@@ -8365,6 +8365,691 @@
           "search"
         ]
       }
+    },
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/time": {
+      "get": {
+        "operationId": "TimeController_forTask_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskTimeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "time"
+        ]
+      },
+      "post": {
+        "operationId": "TimeController_log_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogTimeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeEntryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "time"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/time/{entryId}": {
+      "patch": {
+        "operationId": "TimeController_update_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entryId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTimeEntryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeEntryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "time"
+        ]
+      },
+      "delete": {
+        "operationId": "TimeController_remove_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entryId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "time"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/time/timer": {
+      "get": {
+        "operationId": "TimeController_timer_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimerDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "time"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/time/timer/start": {
+      "post": {
+        "operationId": "TimeController_start_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartTimerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimerDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "time"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/time/timer/stop": {
+      "post": {
+        "operationId": "TimeController_stop_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimerDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Stops the running timer; `entry` is the finished entry, or null when there was none (or it ran under a minute).",
+        "tags": [
+          "time"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/time/mine": {
+      "get": {
+        "operationId": "TimeController_mine_v1",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TimeEntryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "time"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/insights/overview": {
+      "get": {
+        "operationId": "InsightsController_overview_v1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceOverviewDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Dashboard numbers across every project the caller can see.",
+        "tags": [
+          "insights"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/created-resolved": {
+      "get": {
+        "operationId": "InsightsController_createdResolved_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "description": "How many days back to look (default 30).",
+            "schema": {
+              "minimum": 1,
+              "maximum": 180,
+              "type": "number"
+            }
+          },
+          {
+            "name": "bucket",
+            "required": false,
+            "in": "query",
+            "description": "Group by day or by week (Monday start).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week"
+              ]
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedResolvedDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "insights"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/cumulative-flow": {
+      "get": {
+        "operationId": "InsightsController_cumulativeFlow_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "description": "How many days back to look (default 30).",
+            "schema": {
+              "minimum": 1,
+              "maximum": 180,
+              "type": "number"
+            }
+          },
+          {
+            "name": "bucket",
+            "required": false,
+            "in": "query",
+            "description": "Group by day or by week (Monday start).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week"
+              ]
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CumulativeFlowDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "insights"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/workload": {
+      "get": {
+        "operationId": "InsightsController_workload_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkloadDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "insights"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/overdue": {
+      "get": {
+        "operationId": "InsightsController_overdue_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OverdueTaskDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "insights"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/time": {
+      "get": {
+        "operationId": "InsightsController_time_v1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeReportDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "insights"
+        ]
+      }
     }
   },
   "info": {
@@ -9889,6 +10574,12 @@
             "minimum": 0,
             "maximum": 1000
           },
+          "timeEstimateMinutes": {
+            "type": "number",
+            "description": "Planned effort in minutes.",
+            "minimum": 0,
+            "maximum": 600000
+          },
           "startDate": {
             "type": "string"
           },
@@ -10151,6 +10842,15 @@
             "type": "number",
             "nullable": true
           },
+          "timeEstimateMinutes": {
+            "type": "number",
+            "nullable": true,
+            "description": "Planned effort in minutes."
+          },
+          "timeSpentMinutes": {
+            "type": "number",
+            "description": "Minutes logged so far (finished entries and running timers up to now)."
+          },
           "startDate": {
             "format": "date-time",
             "type": "string",
@@ -10216,6 +10916,8 @@
           "release",
           "milestone",
           "estimate",
+          "timeEstimateMinutes",
+          "timeSpentMinutes",
           "startDate",
           "dueDate",
           "parentId",
@@ -10507,6 +11209,15 @@
             "type": "number",
             "nullable": true
           },
+          "timeEstimateMinutes": {
+            "type": "number",
+            "nullable": true,
+            "description": "Planned effort in minutes."
+          },
+          "timeSpentMinutes": {
+            "type": "number",
+            "description": "Minutes logged so far (finished entries and running timers up to now)."
+          },
           "startDate": {
             "format": "date-time",
             "type": "string",
@@ -10583,6 +11294,8 @@
           "release",
           "milestone",
           "estimate",
+          "timeEstimateMinutes",
+          "timeSpentMinutes",
           "startDate",
           "dueDate",
           "parentId",
@@ -10854,6 +11567,13 @@
             "nullable": true,
             "minimum": 0,
             "maximum": 1000
+          },
+          "timeEstimateMinutes": {
+            "type": "number",
+            "nullable": true,
+            "description": "Planned effort in minutes; `null` clears it.",
+            "minimum": 0,
+            "maximum": 600000
           },
           "startDate": {
             "type": "string",
@@ -13716,6 +14436,523 @@
           "channels",
           "messages",
           "people"
+        ]
+      },
+      "TimeEntryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "taskId": {
+            "type": "string"
+          },
+          "taskKey": {
+            "type": "string"
+          },
+          "taskTitle": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "startedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "endedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "minutes": {
+            "type": "number",
+            "description": "For a running timer, the minutes so far."
+          },
+          "running": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "taskId",
+          "taskKey",
+          "taskTitle",
+          "userId",
+          "userName",
+          "startedAt",
+          "endedAt",
+          "minutes",
+          "running",
+          "note"
+        ]
+      },
+      "TaskTimeDto": {
+        "type": "object",
+        "properties": {
+          "estimateMinutes": {
+            "type": "number",
+            "nullable": true
+          },
+          "spentMinutes": {
+            "type": "number"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeEntryDto"
+            }
+          }
+        },
+        "required": [
+          "estimateMinutes",
+          "spentMinutes",
+          "entries"
+        ]
+      },
+      "LogTimeDto": {
+        "type": "object",
+        "properties": {
+          "minutes": {
+            "type": "number",
+            "description": "Minutes spent (1 to 24 hours per entry).",
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "When the work started; defaults to `minutes` ago."
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "minutes"
+        ]
+      },
+      "UpdateTimeEntryDto": {
+        "type": "object",
+        "properties": {
+          "minutes": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "startedAt": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          }
+        }
+      },
+      "TimerDto": {
+        "type": "object",
+        "properties": {
+          "entry": {
+            "nullable": true,
+            "description": "The caller's running timer in this workspace, if any.",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimeEntryDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "entry"
+        ]
+      },
+      "StartTimerDto": {
+        "type": "object",
+        "properties": {
+          "taskRef": {
+            "type": "string",
+            "description": "Task key (`SYN-12`) or id."
+          }
+        },
+        "required": [
+          "taskRef"
+        ]
+      },
+      "ProjectOverviewDto": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "open": {
+            "type": "number"
+          },
+          "done": {
+            "type": "number"
+          },
+          "overdue": {
+            "type": "number"
+          },
+          "createdLast14Days": {
+            "type": "number"
+          },
+          "resolvedLast14Days": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "projectId",
+          "key",
+          "name",
+          "open",
+          "done",
+          "overdue",
+          "createdLast14Days",
+          "resolvedLast14Days"
+        ]
+      },
+      "WorkloadRowDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Null for work nobody is assigned to."
+          },
+          "name": {
+            "type": "string"
+          },
+          "openTasks": {
+            "type": "number"
+          },
+          "openPoints": {
+            "type": "number"
+          },
+          "overdueTasks": {
+            "type": "number"
+          },
+          "doneLast30Days": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "userId",
+          "name",
+          "openTasks",
+          "openPoints",
+          "overdueTasks",
+          "doneLast30Days"
+        ]
+      },
+      "WorkspaceOverviewDto": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectOverviewDto"
+            }
+          },
+          "workload": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkloadRowDto"
+            }
+          },
+          "totalOpen": {
+            "type": "number"
+          },
+          "totalOverdue": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "projects",
+          "workload",
+          "totalOpen",
+          "totalOverdue"
+        ]
+      },
+      "CreatedResolvedPointDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Start of the day, or of the week for weekly buckets (UTC, `YYYY-MM-DD`)."
+          },
+          "created": {
+            "type": "number"
+          },
+          "resolved": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "created",
+          "resolved"
+        ]
+      },
+      "CreatedResolvedDto": {
+        "type": "object",
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "enum": [
+              "week",
+              "day"
+            ]
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreatedResolvedPointDto"
+            }
+          },
+          "totalCreated": {
+            "type": "number"
+          },
+          "totalResolved": {
+            "type": "number"
+          },
+          "openNow": {
+            "type": "number",
+            "description": "Tasks open right now."
+          }
+        },
+        "required": [
+          "bucket",
+          "points",
+          "totalCreated",
+          "totalResolved",
+          "openNow"
+        ]
+      },
+      "StatusCountDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "count"
+        ]
+      },
+      "FlowPointDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number"
+          },
+          "todo": {
+            "type": "number"
+          },
+          "inProgress": {
+            "type": "number"
+          },
+          "done": {
+            "type": "number"
+          },
+          "byStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatusCountDto"
+            }
+          }
+        },
+        "required": [
+          "date",
+          "total",
+          "todo",
+          "inProgress",
+          "done",
+          "byStatus"
+        ]
+      },
+      "CumulativeFlowDto": {
+        "type": "object",
+        "properties": {
+          "statuses": {
+            "description": "Status names, workflow order.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlowPointDto"
+            }
+          }
+        },
+        "required": [
+          "statuses",
+          "points"
+        ]
+      },
+      "WorkloadDto": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkloadRowDto"
+            }
+          }
+        },
+        "required": [
+          "rows"
+        ]
+      },
+      "OverdueTaskDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "daysOverdue": {
+            "type": "number"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "statusName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "title",
+          "dueDate",
+          "daysOverdue",
+          "assignees",
+          "statusName"
+        ]
+      },
+      "TimeByUserDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "minutes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "userId",
+          "name",
+          "minutes"
+        ]
+      },
+      "TimeByTaskDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "estimateMinutes": {
+            "type": "number",
+            "nullable": true
+          },
+          "spentMinutes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "estimateMinutes",
+          "spentMinutes"
+        ]
+      },
+      "TimeReportDto": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "to": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "totalMinutes": {
+            "type": "number"
+          },
+          "byUser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeByUserDto"
+            }
+          },
+          "byTask": {
+            "description": "Tasks with the most time logged in the period.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeByTaskDto"
+            }
+          },
+          "estimatedMinutes": {
+            "type": "number",
+            "description": "Over every task that has an estimate: planned vs logged (all time)."
+          },
+          "actualMinutesOnEstimated": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "totalMinutes",
+          "byUser",
+          "byTask",
+          "estimatedMinutes",
+          "actualMinutesOnEstimated"
         ]
       }
     }

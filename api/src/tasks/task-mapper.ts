@@ -36,6 +36,8 @@ export function toTaskDto(t: TaskRow, doneSubtasks = 0): TaskDto {
     release: t.release,
     milestone: t.milestone,
     estimate: t.estimate,
+    timeEstimateMinutes: t.timeEstimateMinutes,
+    timeSpentMinutes: 0, // filled in by the service, which aggregates entries in one query
     startDate: t.startDate,
     dueDate: t.dueDate,
     parentId: t.parentId,

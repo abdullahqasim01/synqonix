@@ -5,6 +5,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChatProvider, useChat } from "@/components/chat/chat-provider";
 import { Button } from "@/components/ui/button";
+import { TimerPill } from "@/components/time/time-tracking";
 import { CommandPalette } from "@/components/command-palette";
 import { QuickCreate } from "@/components/tasks/quick-create";
 import { WorkspaceProvider } from "@/components/workspace/workspace-context";
@@ -48,6 +49,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
   const base = `/w/${workspaceId}`;
   const tabs = [
     { href: base, label: "Projects" },
+    { href: `${base}/overview`, label: "Overview" },
     { href: `${base}/my-tasks`, label: "My tasks" },
     { href: `${base}/chat`, label: "Chat" },
     { href: `${base}/members`, label: "Members" },
@@ -85,8 +87,9 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             </Link>
           ))}
         </nav>
+        <span className="ml-auto"><TimerPill ws={workspaceId} /></span>
         <button
-          className="ml-auto flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted"
+          className="flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted"
           onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }))}
           aria-label="Search"
         >

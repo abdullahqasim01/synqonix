@@ -51,6 +51,13 @@ export class CreateTaskDto {
   @Max(1000)
   estimate?: number;
 
+  /** Planned effort in minutes. */
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(600_000)
+  timeEstimateMinutes?: number;
+
   @IsOptional()
   @IsDateString()
   startDate?: string;
@@ -135,6 +142,14 @@ export class UpdateTaskDto {
   @Min(0)
   @Max(1000)
   estimate?: number | null;
+
+  /** Planned effort in minutes; `null` clears it. */
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsInt()
+  @Min(0)
+  @Max(600_000)
+  timeEstimateMinutes?: number | null;
 
   @IsOptional()
   @ValidateIf((_, v) => v !== null)
@@ -380,6 +395,10 @@ export class TaskDto {
   release: NamedRefDto | null;
   milestone: NamedRefDto | null;
   estimate: number | null;
+  /** Planned effort in minutes. */
+  timeEstimateMinutes: number | null;
+  /** Minutes logged so far (finished entries and running timers up to now). */
+  timeSpentMinutes: number;
   startDate: Date | null;
   dueDate: Date | null;
   parentId: string | null;

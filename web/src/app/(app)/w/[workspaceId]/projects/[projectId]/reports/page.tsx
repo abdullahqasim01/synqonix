@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { InsightsReport } from "@/components/reports/insights-report";
 import { BarChart, BurndownChart, Legend } from "@/components/charts/svg-charts";
 import { Alert, Card, Select } from "@/components/ui/form";
 import { useProject } from "@/components/workspace/project-context";
@@ -180,6 +181,7 @@ export default function ReportsPage() {
     <div className="grid gap-8">
       {project.methodology === "SCRUM" && <SprintReport />}
       <FlowReport />
+      <InsightsReport />
     </div>
   );
 }

@@ -39,6 +39,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
             { href: base, label: "Tasks" },
             ...(p.methodology === "SCRUM" ? [{ href: `${base}/backlog`, label: "Backlog" }] : []),
             { href: `${base}/epics`, label: "Epics" },
+            { href: `${base}/roadmap`, label: "Roadmap" },
             { href: `${base}/releases`, label: "Releases" },
             { href: `${base}/reports`, label: "Reports" },
             { href: `${base}/settings`, label: "Settings" },

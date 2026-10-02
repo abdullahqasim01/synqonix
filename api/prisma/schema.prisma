@@ -33,6 +33,7 @@ model User {
   notifications          Notification[]
   notificationPreference NotificationPreference?
   notificationMutes      NotificationMute[]
+  timeEntries            TimeEntry[]
 }
 
 /// One login on one device. Refresh tokens rotate within a session.
@@ -345,35 +346,37 @@ enum CustomFieldType {
 }
 
 model Task {
-  id                 String       @id @default(uuid(7))
-  projectId          String
+  id                  String       @id @default(uuid(7))
+  projectId           String
   /// Per-project sequence; the public key is `<project key>-<number>`.
-  number             Int
-  type               TaskType     @default(TASK)
-  title              String
+  number              Int
+  type                TaskType     @default(TASK)
+  title               String
   /// Markdown.
-  description        String?
-  statusId           String
-  priority           TaskPriority @default(NONE)
-  reporterId         String?
-  estimate           Float?
+  description         String?
+  statusId            String
+  priority            TaskPriority @default(NONE)
+  reporterId          String?
+  estimate            Float?
+  /// Planned effort in minutes, compared with the logged time.
+  timeEstimateMinutes Int?
   /// Current sprint (null = backlog). Finished tasks keep pointing at the sprint that completed them.
-  sprintId           String?
-  releaseId          String?
-  milestoneId        String?
+  sprintId            String?
+  releaseId           String?
+  milestoneId         String?
   /// Markdown.
-  acceptanceCriteria String?
+  acceptanceCriteria  String?
   /// Planned start, used by the timeline view.
-  startDate          DateTime?
-  dueDate            DateTime?
-  parentId           String?
+  startDate           DateTime?
+  dueDate             DateTime?
+  parentId            String?
   /// Sort order inside the project (boards rank within a status).
-  position           Float
-  startedAt          DateTime?
-  completedAt        DateTime?
-  archivedAt         DateTime?
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  position            Float
+  startedAt           DateTime?
+  completedAt         DateTime?
+  archivedAt          DateTime?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
 
   project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   status    ProjectStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
@@ -397,6 +400,7 @@ model Task {
   sprintTasks      SprintTask[]
   messageTaskLinks MessageTaskLink[]
   githubLinks      TaskGithubLink[]
+  timeEntries      TimeEntry[]
 
   @@unique([projectId, number])
   @@index([projectId, statusId, position])
@@ -1176,4 +1180,25 @@ model NotificationMute {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@id([userId, projectId])
+}
+
+// ---------------------------------------------------------------- time tracking
+
+/// Time logged on a task, by hand or with the timer. A running timer has no end yet.
+model TimeEntry {
+  id        String    @id @default(uuid(7))
+  taskId    String
+  userId    String
+  startedAt DateTime
+  endedAt   DateTime?
+  /// Whole minutes; filled in when a timer stops.
+  minutes   Int       @default(0)
+  note      String?
+  createdAt DateTime  @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([userId, startedAt])
 }

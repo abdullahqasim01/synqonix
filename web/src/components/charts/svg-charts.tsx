@@ -1,6 +1,6 @@
 "use client";
 
-import { linePath, niceMax, scaleLinear, stepPath, ticks } from "@/lib/charts";
+import { bandPath, labelIndexes, linePath, niceMax, scaleLinear, stackBands, stepPath, ticks } from "@/lib/charts";
 
 const W = 640;
 const H = 280;
@@ -104,5 +104,38 @@ export function Legend({ items }: { items: { label: string; className: string }[
         </li>
       ))}
     </ul>
+  );
+}
+
+/** Stacked areas over time (cumulative flow): one band per series, bottom to top in the given order. */
+export function StackedAreaChart({ labels, series, label }: {
+  labels: string[];
+  series: { name: string; className: string; values: number[] }[];
+  label: string;
+}) {
+  const count = labels.length;
+  const rows = Array.from({ length: count }, (_, i) => series.map((s) => s.values[i] ?? 0));
+  const bands = stackBands(rows);
+  const max = niceMax(Math.max(1, ...bands.map((b) => b[b.length - 1]?.upper ?? 0)));
+  const x = scaleLinear([0, Math.max(1, count - 1)], [M.left, W - M.right]);
+  const y = scaleLinear([0, max], [H - M.bottom, M.top]);
+  const xs = labels.map((_, i) => x(i));
+  const show = labelIndexes(count, 8);
+
+  return (
+    <svg role="img" aria-label={label} viewBox={`0 0 ${W} ${H}`} className="h-auto w-full">
+      {ticks(max).map((t) => (
+        <g key={t}>
+          <line x1={M.left} x2={W - M.right} y1={y(t)} y2={y(t)} className={css.grid} />
+          <text x={M.left - 6} y={y(t) + 4} textAnchor="end" className={css.axis}>{t}</text>
+        </g>
+      ))}
+      {series.map((s, si) => (
+        <path key={s.name} d={bandPath(xs, bands.map((b) => y(b[si].upper)), bands.map((b) => y(b[si].lower)))} className={s.className} data-series={s.name}>
+          <title>{s.name}</title>
+        </path>
+      ))}
+      {labels.map((l, i) => show.has(i) && <text key={l} x={xs[i]} y={H - 10} textAnchor="middle" className={css.axis}>{l}</text>)}
+    </svg>
   );
 }

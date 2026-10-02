@@ -2033,6 +2033,200 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TimeController_forTask_v1"];
+        put?: never;
+        post: operations["TimeController_log_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/time/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TimeController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TimeController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/time/timer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TimeController_timer_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/time/timer/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TimeController_start_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/time/timer/stop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stops the running timer; `entry` is the finished entry, or null when there was none (or it ran under a minute). */
+        post: operations["TimeController_stop_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/time/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TimeController_mine_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/insights/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dashboard numbers across every project the caller can see. */
+        get: operations["InsightsController_overview_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/created-resolved": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_createdResolved_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/cumulative-flow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_cumulativeFlow_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/workload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_workload_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/overdue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_overdue_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/insights/time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InsightsController_time_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2449,6 +2643,8 @@ export interface components {
             assigneeIds?: string[];
             labelIds?: string[];
             estimate?: number;
+            /** @description Planned effort in minutes. */
+            timeEstimateMinutes?: number;
             startDate?: string;
             dueDate?: string;
             parentId?: string;
@@ -2518,6 +2714,10 @@ export interface components {
             release: components["schemas"]["NamedRefDto"] | null;
             milestone: components["schemas"]["NamedRefDto"] | null;
             estimate: number | null;
+            /** @description Planned effort in minutes. */
+            timeEstimateMinutes: number | null;
+            /** @description Minutes logged so far (finished entries and running timers up to now). */
+            timeSpentMinutes: number;
             /** Format: date-time */
             startDate: string | null;
             /** Format: date-time */
@@ -2602,6 +2802,10 @@ export interface components {
             release: components["schemas"]["NamedRefDto"] | null;
             milestone: components["schemas"]["NamedRefDto"] | null;
             estimate: number | null;
+            /** @description Planned effort in minutes. */
+            timeEstimateMinutes: number | null;
+            /** @description Minutes logged so far (finished entries and running timers up to now). */
+            timeSpentMinutes: number;
             /** Format: date-time */
             startDate: string | null;
             /** Format: date-time */
@@ -2685,6 +2889,8 @@ export interface components {
             /** @description Replaces the label list. */
             labelIds?: string[];
             estimate?: number | null;
+            /** @description Planned effort in minutes; `null` clears it. */
+            timeEstimateMinutes?: number | null;
             startDate?: string | null;
             dueDate?: string | null;
             /** @description Pass `null` to detach from the parent. */
@@ -3455,6 +3661,141 @@ export interface components {
             channels: components["schemas"]["ChannelHitDto"][];
             messages: components["schemas"]["MessageHitDto"][];
             people: components["schemas"]["PersonHitDto"][];
+        };
+        TimeEntryDto: {
+            id: string;
+            taskId: string;
+            taskKey: string;
+            taskTitle: string;
+            userId: string;
+            userName: string;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            endedAt: string | null;
+            /** @description For a running timer, the minutes so far. */
+            minutes: number;
+            running: boolean;
+            note: string | null;
+        };
+        TaskTimeDto: {
+            estimateMinutes: number | null;
+            spentMinutes: number;
+            entries: components["schemas"]["TimeEntryDto"][];
+        };
+        LogTimeDto: {
+            /** @description Minutes spent (1 to 24 hours per entry). */
+            minutes: number;
+            /** @description When the work started; defaults to `minutes` ago. */
+            startedAt?: string;
+            note?: string;
+        };
+        UpdateTimeEntryDto: {
+            minutes?: number;
+            startedAt?: string;
+            note?: string | null;
+        };
+        TimerDto: {
+            /** @description The caller's running timer in this workspace, if any. */
+            entry: components["schemas"]["TimeEntryDto"] | null;
+        };
+        StartTimerDto: {
+            /** @description Task key (`SYN-12`) or id. */
+            taskRef: string;
+        };
+        ProjectOverviewDto: {
+            projectId: string;
+            key: string;
+            name: string;
+            open: number;
+            done: number;
+            overdue: number;
+            createdLast14Days: number;
+            resolvedLast14Days: number;
+        };
+        WorkloadRowDto: {
+            /** @description Null for work nobody is assigned to. */
+            userId: string | null;
+            name: string;
+            openTasks: number;
+            openPoints: number;
+            overdueTasks: number;
+            doneLast30Days: number;
+        };
+        WorkspaceOverviewDto: {
+            projects: components["schemas"]["ProjectOverviewDto"][];
+            workload: components["schemas"]["WorkloadRowDto"][];
+            totalOpen: number;
+            totalOverdue: number;
+        };
+        CreatedResolvedPointDto: {
+            /** @description Start of the day, or of the week for weekly buckets (UTC, `YYYY-MM-DD`). */
+            date: string;
+            created: number;
+            resolved: number;
+        };
+        CreatedResolvedDto: {
+            /** @enum {string} */
+            bucket: "week" | "day";
+            points: components["schemas"]["CreatedResolvedPointDto"][];
+            totalCreated: number;
+            totalResolved: number;
+            /** @description Tasks open right now. */
+            openNow: number;
+        };
+        StatusCountDto: {
+            name: string;
+            count: number;
+        };
+        FlowPointDto: {
+            date: string;
+            total: number;
+            todo: number;
+            inProgress: number;
+            done: number;
+            byStatus: components["schemas"]["StatusCountDto"][];
+        };
+        CumulativeFlowDto: {
+            /** @description Status names, workflow order. */
+            statuses: string[];
+            points: components["schemas"]["FlowPointDto"][];
+        };
+        WorkloadDto: {
+            rows: components["schemas"]["WorkloadRowDto"][];
+        };
+        OverdueTaskDto: {
+            id: string;
+            key: string;
+            title: string;
+            /** Format: date-time */
+            dueDate: string;
+            daysOverdue: number;
+            assignees: string[];
+            statusName: string;
+        };
+        TimeByUserDto: {
+            userId: string;
+            name: string;
+            minutes: number;
+        };
+        TimeByTaskDto: {
+            key: string;
+            title: string;
+            estimateMinutes: number | null;
+            spentMinutes: number;
+        };
+        TimeReportDto: {
+            /** Format: date-time */
+            from: string;
+            /** Format: date-time */
+            to: string;
+            totalMinutes: number;
+            byUser: components["schemas"]["TimeByUserDto"][];
+            /** @description Tasks with the most time logged in the period. */
+            byTask: components["schemas"]["TimeByTaskDto"][];
+            /** @description Over every task that has an estimate: planned vs logged (all time). */
+            estimatedMinutes: number;
+            actualMinutesOnEstimated: number;
         };
     };
     responses: never;
@@ -7572,6 +7913,337 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SearchResultDto"];
+                };
+            };
+        };
+    };
+    TimeController_forTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskTimeDto"];
+                };
+            };
+        };
+    };
+    TimeController_log_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LogTimeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeEntryDto"];
+                };
+            };
+        };
+    };
+    TimeController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                entryId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimeController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                entryId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTimeEntryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeEntryDto"];
+                };
+            };
+        };
+    };
+    TimeController_timer_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimerDto"];
+                };
+            };
+        };
+    };
+    TimeController_start_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartTimerDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimerDto"];
+                };
+            };
+        };
+    };
+    TimeController_stop_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimerDto"];
+                };
+            };
+        };
+    };
+    TimeController_mine_v1: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeEntryDto"][];
+                };
+            };
+        };
+    };
+    InsightsController_overview_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkspaceOverviewDto"];
+                };
+            };
+        };
+    };
+    InsightsController_createdResolved_v1: {
+        parameters: {
+            query?: {
+                /** @description How many days back to look (default 30). */
+                days?: number;
+                /** @description Group by day or by week (Monday start). */
+                bucket?: "day" | "week";
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedResolvedDto"];
+                };
+            };
+        };
+    };
+    InsightsController_cumulativeFlow_v1: {
+        parameters: {
+            query?: {
+                /** @description How many days back to look (default 30). */
+                days?: number;
+                /** @description Group by day or by week (Monday start). */
+                bucket?: "day" | "week";
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CumulativeFlowDto"];
+                };
+            };
+        };
+    };
+    InsightsController_workload_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkloadDto"];
+                };
+            };
+        };
+    };
+    InsightsController_overdue_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverdueTaskDto"][];
+                };
+            };
+        };
+    };
+    InsightsController_time_v1: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeReportDto"];
                 };
             };
         };

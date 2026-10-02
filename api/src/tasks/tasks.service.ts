@@ -12,6 +12,7 @@ import { hierarchyError, validParentTypes } from './hierarchy.js';
 import { TaskEvents, type TaskEvent } from './events.js';
 import { extractMentionedUserIds } from './mentions.js';
 import { TaskAccessService } from './task-access.service.js';
+import { timeSpentByTask } from './time-spent.js';
 import { refInclude, summaryInclude, toRefDto, toTaskDto, type TaskRow } from './task-mapper.js';
 import { TaskSupportService } from './task-support.service.js';
 import { taskKey } from './task-ref.js';
@@ -82,6 +83,7 @@ export class TasksService {
           priority: dto.priority ?? 'NONE',
           reporterId: m.userId,
           estimate: dto.estimate ?? null,
+          timeEstimateMinutes: dto.timeEstimateMinutes ?? null,
           startDate: dto.startDate ? new Date(dto.startDate) : null,
           dueDate: dto.dueDate ? new Date(dto.dueDate) : null,
           parentId: parent?.id ?? null,
@@ -146,8 +148,11 @@ export class TasksService {
   }
 
   async toDtos(rows: TaskRow[]): Promise<TaskDto[]> {
-    const done = await this.doneCounts(rows.filter((r) => r._count.children > 0).map((r) => r.id));
-    return rows.map((r) => toTaskDto(r, done.get(r.id) ?? 0));
+    const [done, spent] = await Promise.all([
+      this.doneCounts(rows.filter((r) => r._count.children > 0).map((r) => r.id)),
+      timeSpentByTask(this.prisma, rows.map((r) => r.id)),
+    ]);
+    return rows.map((r) => ({ ...toTaskDto(r, done.get(r.id) ?? 0), timeSpentMinutes: spent.get(r.id) ?? 0 }));
   }
 
   /** Filters shared by the list and the board. 404s when the project is hidden from the caller. */
@@ -440,6 +445,10 @@ export class TasksService {
       this.support.assertEstimate(project, dto.estimate);
       data.estimate = dto.estimate;
       entries.push({ type: 'updated', field: 'estimate', from: task.estimate, to: dto.estimate });
+    }
+    if (dto.timeEstimateMinutes !== undefined && dto.timeEstimateMinutes !== task.timeEstimateMinutes) {
+      data.timeEstimateMinutes = dto.timeEstimateMinutes;
+      entries.push({ type: 'updated', field: 'timeEstimate', from: task.timeEstimateMinutes, to: dto.timeEstimateMinutes });
     }
     if (dto.startDate !== undefined) {
       const next = dto.startDate ? new Date(dto.startDate) : null;

@@ -16,6 +16,7 @@ export function commandEntries(workspaceId: string, query: string): PaletteEntry
   const all: (PaletteEntry & { keywords?: string })[] = [
     { id: "cmd:create-task", group: "Actions", label: "Create task", hint: "C", action: "create-task", keywords: "new add issue" },
     { id: "cmd:projects", group: "Go to", label: "Projects", href: base, keywords: "home boards" },
+    { id: "cmd:overview", group: "Go to", label: "Overview", href: `${base}/overview`, keywords: "dashboard workload reports" },
     { id: "cmd:my-tasks", group: "Go to", label: "My tasks", href: `${base}/my-tasks`, keywords: "assigned mine" },
     { id: "cmd:chat", group: "Go to", label: "Chat", href: `${base}/chat`, keywords: "messages channels discussion" },
     { id: "cmd:members", group: "Go to", label: "Members", href: `${base}/members`, keywords: "people invite" },

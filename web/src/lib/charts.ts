@@ -37,3 +37,33 @@ export function ticks(max: number, count = 4): number[] {
   if (out[out.length - 1] !== max && max - out[out.length - 1] > step / 2) out.push(max);
   return out;
 }
+
+/** Running totals for stacked areas: band `i` of point `p` spans `bands[p][i].lower` to `.upper`. */
+export function stackBands(rows: number[][]): { lower: number; upper: number }[][] {
+  return rows.map((values) => {
+    let acc = 0;
+    return values.map((v) => {
+      const lower = acc;
+      acc += Math.max(0, v);
+      return { lower, upper: acc };
+    });
+  });
+}
+
+/** Closed SVG path for one band across all x positions: along the top, then back along the bottom. */
+export function bandPath(xs: number[], upper: number[], lower: number[]): string {
+  if (xs.length === 0) return "";
+  const top = xs.map((x, i) => `${i === 0 ? "M" : "L"}${x},${upper[i]}`).join(" ");
+  const bottom = [...xs].reverse().map((x, i) => `L${x},${lower[xs.length - 1 - i]}`).join(" ");
+  return `${top} ${bottom} Z`;
+}
+
+/** Which of `count` labels to show so at most `max` are drawn, always including the first and the last. */
+export function labelIndexes(count: number, max = 8): Set<number> {
+  if (count <= max) return new Set(Array.from({ length: count }, (_, i) => i));
+  const step = Math.ceil((count - 1) / (max - 1));
+  const out = new Set<number>();
+  for (let i = 0; i < count; i += step) out.add(i);
+  out.add(count - 1);
+  return out;
+}
