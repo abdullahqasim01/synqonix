@@ -1,5 +1,6 @@
 # Phase 11 – Hardening & Release
 
+- Strict Content-Security-Policy and XSS review for the web app (auth tokens live in localStorage, see phase 1).
 - Security review: authZ matrix tests, input validation, rate limits, CSRF/XSS review, secret scanning, dependency audit.
 - Performance: indexes, N+1 checks, pagination everywhere, load test of board and search endpoints.
 - Observability: structured logs, error tracking, metrics, health/readiness.

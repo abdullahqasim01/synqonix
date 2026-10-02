@@ -8,13 +8,21 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/lib/auth/auth-context";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { user, status, logout } = useAuth();
+  const { user, status, logout, retry } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (status === "anonymous") router.replace("/login");
   }, [status, router]);
 
+  if (status === "error") {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 text-sm text-muted-foreground">
+        <p>We could not reach Synqonix. Your session is still saved.</p>
+        <Button variant="outline" size="sm" onClick={retry}>Try again</Button>
+      </div>
+    );
+  }
   if (status !== "authenticated" || !user) {
     return <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">Loading…</div>;
   }
