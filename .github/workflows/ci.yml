@@ -23,6 +23,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm, cache-dependency-path: api/package-lock.json }
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
@@ -37,6 +38,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm, cache-dependency-path: web/package-lock.json }
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
@@ -50,7 +52,64 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm, cache-dependency-path: vscode-extension/package-lock.json }
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+
+  web-e2e:
+    runs-on: ubuntu-latest
+    needs: [api, web]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: synqonix, POSTGRES_PASSWORD: synqonix, POSTGRES_DB: synqonix }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U synqonix" --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://synqonix:synqonix@localhost:5432/synqonix
+      THROTTLE_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Start the API
+        working-directory: api
+        run: |
+          npm ci
+          npm run build
+          npx prisma migrate deploy
+          nohup node dist/main > ../api.log 2>&1 &
+          npx --yes wait-on http://localhost:4000/api/v1/health/ready
+      - name: Build and start the web app
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+          nohup npm start > ../web.log 2>&1 &
+          npx --yes wait-on http://localhost:3000/login
+      - name: Browser tests (critical flows, CSP, accessibility)
+        working-directory: web
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with: { name: e2e-logs, path: "api.log\nweb.log\nweb/test-results" }
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t synqonix-api ./api
+      - run: docker build -t synqonix-web --build-arg NEXT_PUBLIC_API_URL=https://api.example.com ./web
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }

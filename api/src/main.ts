@@ -11,7 +11,10 @@ import type { Env } from './config/env.js';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { rawBody: true });
   const config = app.get<ConfigService<Env, true>>(ConfigService);
-  setupApp(app, config.get('WEB_URL'));
+  setupApp(app, config.get('WEB_URL'), {
+    trustProxy: config.get('TRUST_PROXY'),
+    logFormat: config.get('LOG_FORMAT') ?? (config.get('NODE_ENV') === 'production' ? 'json' : 'pretty'),
+  });
 
   const document = buildOpenApi(app);
   SwaggerModule.setup('docs', app, document);

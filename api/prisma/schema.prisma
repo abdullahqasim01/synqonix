@@ -315,6 +315,7 @@ model AuditLog {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, createdAt])
+  @@index([actorId])
 }
 
 // ---------- Phase 3: tasks ----------
@@ -415,6 +416,8 @@ model Task {
   @@index([sprintId])
   @@index([releaseId])
   @@index([milestoneId])
+  @@index([statusId])
+  @@index([reporterId])
 }
 
 model TaskAssignee {
@@ -606,6 +609,7 @@ model RecentTask {
 
   @@id([userId, taskId])
   @@index([userId, viewedAt])
+  @@index([taskId])
 }
 
 // ---------- Phase 5: agile ----------
@@ -837,6 +841,8 @@ model Message {
 
   @@unique([channelId, seq])
   @@index([channelId, parentId, seq])
+  @@index([parentId])
+  @@index([authorId])
 }
 
 model MessageMention {
@@ -955,6 +961,7 @@ model LinkedRepository {
 
   @@unique([projectId, githubRepoId])
   @@index([githubRepoId])
+  @@index([workspaceId])
 }
 
 model GithubBranch {
@@ -1160,6 +1167,9 @@ model Notification {
   @@index([userId, surfacedAt])
   @@index([userId, readAt])
   @@index([emailState, userId])
+  @@index([taskId])
+  @@index([channelId])
+  @@index([workspaceId])
 }
 
 model NotificationPreference {

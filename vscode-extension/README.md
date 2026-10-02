@@ -22,3 +22,10 @@ npm run test:vscode    # smoke test inside a real VS Code (@vscode/test-electron
 npm run package        # .vsix via vsce
 ```
 Press **F5** (Run Extension) to try it in a development host. `src/core` has no `vscode` imports and is unit-tested directly; `src/ui` is the VS Code glue.
+
+## Releasing to the Marketplace
+1. Create a publisher (`synqonix`) at <https://marketplace.visualstudio.com/manage> and a Personal Access Token with *Marketplace → Manage* scope.
+2. Add a 128×128 PNG `icon` to `package.json` (not included yet) and bump `version` + `CHANGELOG.md`.
+3. `npm run package:pre` builds a pre-release `.vsix` to try locally (`code --install-extension synqonix-*.vsix`).
+4. `npx vsce login synqonix` then `npm run publish:pre` publishes on the **pre-release channel**; promote to stable with `npx vsce publish --no-dependencies` once it has soaked.
+Point users of a self-hosted install at the `synqonix.apiUrl` / `synqonix.webUrl` settings.

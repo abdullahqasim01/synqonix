@@ -34,6 +34,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:ring-2 focus:ring-ring">Skip to content</a>
       <header className="flex items-center justify-between border-b border-border px-6 py-3">
         <nav className="flex items-center gap-6 text-sm">
           <Link href="/dashboard" className="font-semibold tracking-tight">Synqonix</Link>
@@ -50,7 +51,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </Button>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">{children}</main>
+      <main id="main" tabIndex={-1} className="mx-auto outline-none w-full max-w-6xl flex-1 px-6 py-8">{children}</main>
     </div>
   );
 }

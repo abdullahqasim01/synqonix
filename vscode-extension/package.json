@@ -2,7 +2,7 @@
   "name": "synqonix",
   "displayName": "Synqonix",
   "description": "Manage Synqonix projects and tasks without leaving VS Code",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "publisher": "synqonix",
   "license": "UNLICENSED",
@@ -408,7 +408,9 @@
     "package": "vsce package --no-dependencies",
     "vscode:prepublish": "npm run build",
     "test:e2e": "vitest run --config vitest.e2e.config.mts",
-    "test:vscode": "tsc -p test/integration/tsconfig.json && node out/test/integration/run.js"
+    "test:vscode": "tsc -p test/integration/tsconfig.json && node out/test/integration/run.js",
+    "package:pre": "vsce package --no-dependencies --pre-release",
+    "publish:pre": "vsce publish --no-dependencies --pre-release"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
@@ -426,5 +428,20 @@
   },
   "dependencies": {
     "openapi-fetch": "^0.17.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abdullahqasim01/synqonix.git",
+    "directory": "vscode-extension"
+  },
+  "keywords": [
+    "project management",
+    "tasks",
+    "sprint",
+    "kanban",
+    "git",
+    "branch",
+    "issue tracker"
+  ],
+  "preview": true
 }
