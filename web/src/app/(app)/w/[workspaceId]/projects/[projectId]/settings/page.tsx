@@ -2,6 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { ImportExport } from "@/components/project-tools/import-export";
+import { RecurringTasks, Templates } from "@/components/project-tools/templates-recurring";
 import { ProjectGithub } from "@/components/github/project-github";
 import { useWorkspace } from "@/components/workspace/workspace-context";
 import { Button } from "@/components/ui/button";
@@ -396,6 +398,9 @@ export default function ProjectSettingsPage() {
       <Labels project={project} reload={reload} />
       <Members project={project} />
       <ProjectGithub project={project} />
+      <Templates project={project} />
+      <RecurringTasks project={project} />
+      <ImportExport project={project} onImported={reload} />
       {project.canManage && <AgileSettings project={project} reload={reload} />}
       {project.canManage ? <ProjectSettings project={project} reload={reload} /> : <p className="text-sm text-muted-foreground">Only project admins can change these settings.</p>}
     </div>

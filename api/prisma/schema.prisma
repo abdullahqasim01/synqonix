@@ -249,6 +249,9 @@ model Project {
   notifications     Notification[]
   notificationMutes NotificationMute[]
   channel           Channel?
+  taskImports       TaskImport[]
+  taskTemplates     TaskTemplate[]
+  recurringTasks    RecurringTask[]
 
   @@unique([workspaceId, key])
 }
@@ -401,6 +404,7 @@ model Task {
   messageTaskLinks MessageTaskLink[]
   githubLinks      TaskGithubLink[]
   timeEntries      TimeEntry[]
+  imports          TaskImport[]
 
   @@unique([projectId, number])
   @@index([projectId, statusId, position])
@@ -1201,4 +1205,79 @@ model TimeEntry {
 
   @@index([taskId])
   @@index([userId, startedAt])
+}
+
+// ---------------------------------------------------------------- import, templates, recurring
+
+/// Remembers which external row became which task, so importing the same file twice changes nothing.
+model TaskImport {
+  id         String   @id @default(uuid(7))
+  projectId  String
+  /// csv, jira, github or synqonix.
+  source     String
+  externalId String
+  taskId     String
+  createdAt  DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, source, externalId])
+  @@index([taskId])
+}
+
+/// A reusable starting point for tasks of a project.
+model TaskTemplate {
+  id                  String       @id @default(uuid(7))
+  projectId           String
+  name                String
+  title               String
+  description         String?
+  type                TaskType     @default(TASK)
+  priority            TaskPriority @default(NONE)
+  labelIds            Json         @default("[]")
+  /// [{ "title": "Release", "items": ["Tag", "Announce"] }]
+  checklists          Json         @default("[]")
+  estimate            Float?
+  timeEstimateMinutes Int?
+  createdById         String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, name])
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+/// Creates a task on a schedule (a weekly "Triage bugs", a monthly "Rotate keys").
+model RecurringTask {
+  id          String              @id @default(uuid(7))
+  projectId   String
+  name        String
+  title       String
+  description String?
+  type        TaskType            @default(TASK)
+  priority    TaskPriority        @default(NONE)
+  assigneeIds Json                @default("[]")
+  labelIds    Json                @default("[]")
+  frequency   RecurrenceFrequency
+  /// Every `interval` days, weeks or months.
+  interval    Int                 @default(1)
+  startsAt    DateTime
+  nextRunAt   DateTime
+  lastRunAt   DateTime?
+  lastTaskId  String?
+  active      Boolean             @default(true)
+  createdById String
+  createdAt   DateTime            @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([active, nextRunAt])
 }

@@ -41,7 +41,8 @@ export class TasksService {
 
   // ---------- create ----------
 
-  async create(m: Membership, projectId: string, dto: CreateTaskDto): Promise<TaskDetailDto> {
+  /** `silent` skips the domain events, for bulk imports that should not notify anyone. */
+  async create(m: Membership, projectId: string, dto: CreateTaskDto, opts: { silent?: boolean } = {}): Promise<TaskDetailDto> {
     const { project } = await this.projects.load(m, projectId, { write: true });
     if (project.archivedAt) throw new BadRequestException('This project is archived');
 
@@ -114,7 +115,7 @@ export class TasksService {
     if (created.sprintId) events.push({ name: TaskEvents.updated, payload: { ...base, fields: ['sprint'], sprintIds: [created.sprintId] } });
     if (dto.assigneeIds?.length) events.push({ name: TaskEvents.assigned, payload: { ...base, assigneeIds: [...new Set(dto.assigneeIds)] } });
     await this.pushMentions(events, base, project, m.workspaceId, extractMentionedUserIds(dto.description), 'description');
-    this.emit(events);
+    if (!opts.silent) this.emit(events);
     return this.detail(m, created.id);
   }
 

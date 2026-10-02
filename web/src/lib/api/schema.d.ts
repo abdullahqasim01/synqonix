@@ -2227,6 +2227,136 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Downloads the project's tasks as CSV (default) or JSON. Cells that could run as spreadsheet formulas are neutralised. */
+        get: operations["DataIoController_export_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Imports a CSV (ours, Jira's or GitHub's columns) or our JSON export. Importing the same file again creates nothing new. */
+        post: operations["DataIoController_import_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TemplatesController_list_v1"];
+        put?: never;
+        post: operations["TemplatesController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates/from-task/{taskRef}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TemplatesController_fromTask_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates/{templateId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TemplatesController_remove_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TemplatesController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates/{templateId}/create-task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TemplatesController_createTask_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/recurring": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TemplatesController_listRecurring_v1"];
+        put?: never;
+        post: operations["TemplatesController_createRecurring_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspaceId}/projects/{projectId}/recurring/{recurringId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TemplatesController_removeRecurring_v1"];
+        options?: never;
+        head?: never;
+        patch: operations["TemplatesController_updateRecurring_v1"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3796,6 +3926,153 @@ export interface components {
             /** @description Over every task that has an estimate: planned vs logged (all time). */
             estimatedMinutes: number;
             actualMinutesOnEstimated: number;
+        };
+        ImportColumnDto: {
+            column: string;
+            /** @description The field it feeds, or `ignore`. */
+            field: string;
+        };
+        ImportMessageDto: {
+            /** @enum {string} */
+            level: "error" | "warning";
+            text: string;
+        };
+        ImportRowDto: {
+            /** @description Line in the file (1 is the header). */
+            row: number;
+            /** @enum {string} */
+            status: "error" | "created" | "skipped";
+            /** @description Key of the created task, or of the one imported earlier. */
+            key: string | null;
+            messages: components["schemas"]["ImportMessageDto"][];
+        };
+        ImportResultDto: {
+            dryRun: boolean;
+            source: string;
+            total: number;
+            /** @description With `dryRun`: how many would be created. */
+            created: number;
+            /** @description Rows that were imported before. */
+            skipped: number;
+            failed: number;
+            warnings: number;
+            columns: components["schemas"]["ImportColumnDto"][];
+            /** @description Rows with something to say (errors, warnings, skips), at most 500. */
+            rows: components["schemas"]["ImportRowDto"][];
+            truncated: boolean;
+        };
+        TemplateChecklistDto: {
+            title: string;
+            items: string[];
+        };
+        TemplateDto: {
+            id: string;
+            name: string;
+            title: string;
+            description: string | null;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            labelIds: string[];
+            checklists: components["schemas"]["TemplateChecklistDto"][];
+            estimate: number | null;
+            timeEstimateMinutes: number | null;
+        };
+        CreateTemplateDto: {
+            name: string;
+            title: string;
+            description?: string;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            labelIds?: string[];
+            checklists?: components["schemas"]["TemplateChecklistDto"][];
+            estimate?: number;
+            timeEstimateMinutes?: number;
+        };
+        SaveAsTemplateDto: {
+            name: string;
+        };
+        UpdateTemplateDto: {
+            name?: string;
+            title?: string;
+            description?: string | null;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            labelIds?: string[];
+            checklists?: components["schemas"]["TemplateChecklistDto"][];
+            estimate?: number | null;
+            timeEstimateMinutes?: number | null;
+        };
+        CreateFromTemplateDto: {
+            /** @description Replaces the template's title. */
+            title?: string;
+            description?: string;
+            assigneeIds?: string[];
+            statusId?: string;
+            dueDate?: string;
+        };
+        RecurringDto: {
+            id: string;
+            name: string;
+            title: string;
+            description: string | null;
+            /** @enum {string} */
+            type: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assigneeIds: string[];
+            labelIds: string[];
+            /** @enum {string} */
+            frequency: "DAILY" | "WEEKLY" | "MONTHLY";
+            interval: number;
+            /** Format: date-time */
+            startsAt: string;
+            /** Format: date-time */
+            nextRunAt: string;
+            /** Format: date-time */
+            lastRunAt: string | null;
+            /** @description Key of the task created by the last run. */
+            lastTaskKey: string | null;
+            active: boolean;
+        };
+        CreateRecurringDto: {
+            name: string;
+            /** @description May contain `{date}`, replaced by the day the task is created. */
+            title: string;
+            description?: string;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assigneeIds?: string[];
+            labelIds?: string[];
+            /** @enum {string} */
+            frequency: "DAILY" | "WEEKLY" | "MONTHLY";
+            /** @description Every N days, weeks or months. */
+            interval: number;
+            /** @description First run; later runs follow from it. */
+            startsAt: string;
+        };
+        UpdateRecurringDto: {
+            name?: string;
+            title?: string;
+            description?: string | null;
+            /** @enum {string} */
+            type?: "STORY" | "BUG" | "TASK" | "EPIC" | "SUBTASK";
+            /** @enum {string} */
+            priority?: "URGENT" | "HIGH" | "MEDIUM" | "LOW" | "NONE";
+            assigneeIds?: string[];
+            labelIds?: string[];
+            /** @enum {string} */
+            frequency?: "DAILY" | "WEEKLY" | "MONTHLY";
+            interval?: number;
+            startsAt?: string;
+            active?: boolean;
         };
     };
     responses: never;
@@ -8244,6 +8521,308 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TimeReportDto"];
+                };
+            };
+        };
+    };
+    DataIoController_export_v1: {
+        parameters: {
+            query?: {
+                format?: "csv" | "json";
+            };
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The file contents */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataIoController_import_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                    /** @enum {string} */
+                    source?: "csv" | "jira" | "github" | "synqonix";
+                    dryRun?: boolean;
+                    mapping?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportResultDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateDto"][];
+                };
+            };
+        };
+    };
+    TemplatesController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTemplateDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_fromTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                taskRef: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveAsTemplateDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_remove_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                templateId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TemplatesController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                templateId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTemplateDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_createTask_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                templateId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFromTemplateDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDetailDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_listRecurring_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurringDto"][];
+                };
+            };
+        };
+    };
+    TemplatesController_createRecurring_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRecurringDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurringDto"];
+                };
+            };
+        };
+    };
+    TemplatesController_removeRecurring_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                recurringId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TemplatesController_updateRecurring_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+                recurringId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRecurringDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecurringDto"];
                 };
             };
         };

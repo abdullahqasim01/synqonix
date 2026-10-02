@@ -9,6 +9,7 @@ import { validateEnv } from './config/env.js';
 import { GithubModule } from './github/github.module.js';
 import { HealthController } from './health/health.controller.js';
 import { AgileModule } from './agile/agile.module.js';
+import { DataIoModule } from './dataio/dataio.module.js';
 import { AuditModule } from './audit/audit.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { ChannelsModule } from './channels/channels.module.js';
@@ -19,6 +20,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { RealtimeModule } from './realtime/realtime.module.js';
 import { SearchModule } from './search/search.module.js';
 import { TasksModule } from './tasks/tasks.module.js';
+import { TemplatesModule } from './templates/templates.module.js';
 import { TimeModule } from './time/time.module.js';
 import { ViewsModule } from './views/views.module.js';
 import { WorkspacesModule } from './workspaces/workspaces.module.js';
@@ -47,6 +49,8 @@ import { WorkspacesModule } from './workspaces/workspaces.module.js';
     SearchModule,
     TimeModule,
     InsightsModule,
+    DataIoModule,
+    TemplatesModule,
     RealtimeModule,
   ],
   controllers: [HealthController],

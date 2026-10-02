@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, Field, Input, Select } from "@/components/ui/form";
 import { useWorkspace } from "@/components/workspace/workspace-context";
-import { api, errorMessage } from "@/lib/api/client";
+import { api, errorMessage, type Schemas } from "@/lib/api/client";
 import { PRIORITIES, TASK_TYPES, type TaskPriority, type TaskType } from "@/lib/tasks";
 import { useQuery } from "@/lib/use-query";
 
@@ -19,10 +19,20 @@ export function QuickCreate({ open, onClose }: { open: boolean; onClose: () => v
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const title = useRef<HTMLInputElement>(null);
+  const [chosenProject, setChosenProject] = useState<string | null>(null);
+  const [templateId, setTemplateId] = useState("");
 
   const projects = useQuery(
     async () => (open ? api.GET("/api/v1/workspaces/{workspaceId}/projects", { params: { path: { workspaceId: workspace.id } } }) : { data: undefined }),
     [workspace.id, open],
+  );
+
+  const projectForTemplates = chosenProject ?? params.projectId ?? null;
+  const templates = useQuery(
+    async () => (open && projectForTemplates
+      ? api.GET("/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates", { params: { path: { workspaceId: workspace.id, projectId: projectForTemplates } } })
+      : { data: [] as Schemas["TemplateDto"][] }),
+    [workspace.id, open, projectForTemplates],
   );
 
   useEffect(() => {
@@ -45,10 +55,15 @@ export function QuickCreate({ open, onClose }: { open: boolean; onClose: () => v
     const f = new FormData(e.currentTarget);
     const projectId = String(f.get("project"));
     setBusy(true);
-    const { data, error } = await api.POST("/api/v1/workspaces/{workspaceId}/projects/{projectId}/tasks", {
-      params: { path: { workspaceId: workspace.id, projectId } },
-      body: { title: String(f.get("title")), type: f.get("type") as TaskType, priority: f.get("priority") as TaskPriority },
-    });
+    const typed = String(f.get("title")).trim();
+    const { data, error } = templateId
+      ? await api.POST("/api/v1/workspaces/{workspaceId}/projects/{projectId}/templates/{templateId}/create-task", {
+        params: { path: { workspaceId: workspace.id, projectId, templateId } }, body: typed ? { title: typed } : {},
+      })
+      : await api.POST("/api/v1/workspaces/{workspaceId}/projects/{projectId}/tasks", {
+        params: { path: { workspaceId: workspace.id, projectId } },
+        body: { title: typed, type: f.get("type") as TaskType, priority: f.get("priority") as TaskPriority },
+      });
     setBusy(false);
     if (!data) return setError(errorMessage(error));
     try { localStorage.setItem(LAST_PROJECT, projectId); } catch { /* ignore */ }
@@ -61,10 +76,10 @@ export function QuickCreate({ open, onClose }: { open: boolean; onClose: () => v
       <form role="dialog" aria-label="Create task" onSubmit={submit} className="grid w-full max-w-lg gap-4 rounded-lg border border-border bg-background p-5 shadow-xl">
         <h2 className="font-medium">New task</h2>
         {error && <Alert>{error}</Alert>}
-        <Field label="Title" htmlFor="qc-title"><Input id="qc-title" ref={title} name="title" required maxLength={300} placeholder="What needs doing?" /></Field>
+        <Field label="Title" htmlFor="qc-title"><Input id="qc-title" ref={title} name="title" required={!templateId} maxLength={300} placeholder={templateId ? "Leave empty to use the template title" : "What needs doing?"} /></Field>
         <div className="grid grid-cols-3 gap-3">
           <Field label="Project" htmlFor="qc-project">
-            <Select id="qc-project" name="project" required defaultValue={defaultProject?.id} key={defaultProject?.id} className="w-full">
+            <Select id="qc-project" name="project" required defaultValue={defaultProject?.id} key={defaultProject?.id} className="w-full" onChange={(e) => { setChosenProject(e.target.value); setTemplateId(""); }}>
               {choices.filter((p) => !p.archived).map((p) => <option key={p.id} value={p.id}>{p.key}</option>)}
             </Select>
           </Field>
@@ -75,6 +90,14 @@ export function QuickCreate({ open, onClose }: { open: boolean; onClose: () => v
             <Select id="qc-priority" name="priority" defaultValue="NONE" className="w-full">{PRIORITIES.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}</Select>
           </Field>
         </div>
+        {(templates.data?.length ?? 0) > 0 && (
+          <Field label="Template" htmlFor="qc-template">
+            <Select id="qc-template" value={templateId} onChange={(e) => setTemplateId(e.target.value)} className="w-full">
+              <option value="">No template</option>
+              {templates.data?.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </Select>
+          </Field>
+        )}
         <div className="flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
           <Button type="submit" disabled={busy || choices.length === 0}>{busy ? "Creating…" : "Create task"}</Button>
