@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
-  devIndicators: { position: "bottom-right" },
+  devIndicators: false, // hides the dev-mode badge that otherwise overlays the top-left corner
   async headers() {
     return [
       {
