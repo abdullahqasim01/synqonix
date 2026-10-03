@@ -11,7 +11,7 @@ jobs:
     defaults: { run: { working-directory: api } }
     services:
       postgres:
-        image: postgres:17.9-alpine
+        image: postgres:17.9
         env: { POSTGRES_USER: synqonix, POSTGRES_PASSWORD: synqonix, POSTGRES_DB: synqonix }
         ports: ["5432:5432"]
         options: >-
@@ -63,7 +63,7 @@ jobs:
     needs: [api, web]
     services:
       postgres:
-        image: postgres:17.9-alpine
+        image: postgres:17.9
         env: { POSTGRES_USER: synqonix, POSTGRES_PASSWORD: synqonix, POSTGRES_DB: synqonix }
         ports: ["5432:5432"]
         options: >-

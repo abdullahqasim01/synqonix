@@ -4,7 +4,7 @@
 #   docker compose -f docker-compose.prod.yml up -d --build
 services:
   postgres:
-    image: postgres:17.9-alpine
+    image: postgres:17.9
     restart: unless-stopped
     env_file: ./api/.env.production # uses POSTGRES_PASSWORD only; the other values are ignored by Postgres
     environment:
