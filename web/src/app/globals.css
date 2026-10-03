@@ -1,40 +1,59 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/rubik";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  /* Synqonix brand kit: Neutral / Primary / Success / Warning / Danger / Info, 100-900. */
+  --n-100: #f4f5fc; --n-200: #c2c8cf; --n-300: #9196a6; --n-400: #6d778d; --n-500: #545a6f;
+  --n-600: #364058; --n-700: #273149; --n-800: #182336; --n-900: #101523;
+  --p-100: #f1e7fc; --p-200: #d7b5fa; --p-300: #bf83f7; --p-400: #a456f0; --p-500: #7e28db;
+  --p-600: #651ab5; --p-700: #4b108f; --p-800: #310763; --p-900: #1c0032;
+
   --background: #ffffff;
-  --foreground: #16161d;
-  --muted: #f4f4f8;
-  --muted-foreground: #53536a;
-  --border: #e6e6ee;
-  --ring: #7c5cfc;
-  --primary: #6240e8;
+  --foreground: var(--n-900);
+  --muted: #f1f2f9;
+  --muted-foreground: var(--n-500);
+  --border: #e1e4ec;
+  --ring: var(--p-400);
+  --primary: var(--p-500);
   --primary-foreground: #ffffff;
-  --secondary: #f0f0f6;
-  --secondary-foreground: #1c1c28;
-  /* Shell: a dark workspace rail and a soft sidebar, like Slack and ClickUp. */
-  --rail: #1b1633;
-  --rail-foreground: #cfc9ea;
-  --sidebar: #f8f8fb;
-  --canvas: #fbfbfd;
+  --primary-text: var(--p-500);
+  --secondary: #eceef7;
+  --secondary-foreground: var(--n-800);
+  /* Shell */
+  --rail: var(--p-900);
+  --rail-foreground: var(--p-200);
+  --sidebar: #f8f9fd;
+  --canvas: #fafbfe;
+  /* Status colours (500 for fills, 100 for tints, 700 for text) */
+  --success: #17b74f; --success-soft: #e2feeb; --success-text: #118b3b;
+  --warning: #e49d2e; --warning-soft: #faeddb; --warning-text: #8c5b0e;
+  --danger: #e02b2f; --danger-soft: #fde7e7; --danger-text: #b91a19;
+  --info: #305ce3; --info-soft: #e8efff; --info-text: #1640b6;
 }
 
 .dark {
-  --background: #0f0f15;
-  --foreground: #f3f3f8;
-  --muted: #1a1a24;
-  --muted-foreground: #a3a3b8;
-  --border: #272735;
-  --ring: #9b86ff;
-  --primary: #7b5cf6;
+  --background: var(--n-900);
+  --foreground: var(--n-100);
+  --muted: var(--n-800);
+  --muted-foreground: var(--n-300);
+  --border: var(--n-700);
+  --ring: var(--p-400);
+  --primary: #8a38e8;
   --primary-foreground: #ffffff;
-  --secondary: #242433;
-  --secondary-foreground: #f3f3f8;
-  --rail: #0a0a10;
-  --rail-foreground: #b4b0cc;
-  --sidebar: #13131b;
-  --canvas: #0c0c12;
+  --primary-text: #b57af5;
+  --secondary: var(--n-700);
+  --secondary-foreground: var(--n-100);
+  --rail: #0b0714;
+  --rail-foreground: var(--p-200);
+  --sidebar: #0d1220;
+  --canvas: #0b0f1b;
+  --success-soft: #0b2a18; --success-text: #79efa0;
+  --warning-soft: #2e2007; --warning-text: #f3c67a;
+  --danger-soft: #350a0b; --danger-text: #f47c79;
+  --info-soft: #0c1a42; --info-text: #81a0f7;
 }
 
 @theme inline {
@@ -55,7 +74,13 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --shadow-card: 0 1px 2px rgb(20 20 40 / 0.05), 0 1px 3px rgb(20 20 40 / 0.06);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --color-success: var(--success); --color-success-soft: var(--success-soft); --color-success-text: var(--success-text);
+  --color-warning: var(--warning); --color-warning-soft: var(--warning-soft); --color-warning-text: var(--warning-text);
+  --color-danger: var(--danger); --color-danger-soft: var(--danger-soft); --color-danger-text: var(--danger-text);
+  --color-info: var(--info); --color-info-soft: var(--info-soft); --color-info-text: var(--info-text);
+  --color-primary-text: var(--primary-text);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Rubik Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
@@ -67,3 +92,14 @@ body {
 
 /* Slim scrollbars inside the shell. */
 * { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--muted-foreground) 35%, transparent) transparent; }
+
+/* Typography from the brand kit: Rubik for headings and buttons, Inter for everything else. */
+h1, h2 { font-family: var(--font-heading); }
+h1 { font-weight: 700; }
+h2 { font-weight: 600; }
+h3, h4 { font-family: var(--font-heading); font-weight: 600; }
+button, [role="button"], a[class*="bg-primary"] { font-family: var(--font-heading); font-weight: 600; }
+
+/* Purple text needs a lighter shade on dark backgrounds to stay readable. */
+.dark .text-primary { color: var(--primary-text); }
+.dark .hover\:text-primary:hover { color: var(--primary-text); }

@@ -32,8 +32,8 @@ export function Alert({
   variant = "error", children,
 }: { variant?: "error" | "success" | "info"; children: React.ReactNode }) {
   const styles = {
-    error: "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300",
-    success: "border-green-500/40 bg-green-500/10 text-green-700 dark:text-green-300",
+    error: "border-danger/40 bg-danger-soft text-danger-text",
+    success: "border-success/40 bg-success-soft text-success-text",
     info: "border-border bg-muted text-foreground",
   }[variant];
   return (

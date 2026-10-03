@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  images: { unoptimized: true }, // logos are small static PNGs; no image optimizer needed at runtime
   devIndicators: false, // hides the dev-mode badge that otherwise overlays the top-left corner
   async headers() {
     return [

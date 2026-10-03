@@ -443,5 +443,6 @@
     "branch",
     "issue tracker"
   ],
-  "preview": true
+  "preview": true,
+  "icon": "media/icon.png"
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { useEffect } from "react";
+import { Logo } from "@/components/logo";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { Rail } from "@/components/shell/rail";
 import { UserMenu } from "@/components/shell/user-menu";
@@ -48,13 +49,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Rail workspaces={workspaces.data ?? []} activeId={activeId} />
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-background px-4">
-          <Link href="/dashboard" className="font-semibold tracking-tight md:hidden">Synqonix</Link>
+          <Link href="/dashboard" aria-label="Synqonix home" className="md:hidden"><Logo height={26} /></Link>
           <div className="mx-auto w-full max-w-xl">
             {inWorkspace && (
               <button
                 onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }))}
                 aria-label="Search"
-                className="flex h-8 w-full items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted"
+                className="flex h-8 w-full items-center gap-2 rounded-lg font-sans font-normal border border-border bg-muted/60 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted"
               >
                 <Search className="h-4 w-4" />
                 <span>Search tasks, messages, people…</span>
