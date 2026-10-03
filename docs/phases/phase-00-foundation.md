@@ -3,7 +3,7 @@
 **Goal:** three runnable, independent apps with a database and CI, ready for features.
 
 ## Tasks
-- [x] `docker-compose.yml`: Postgres 16 and Mailpit (local SMTP/inbox for dev).
+- [x] `docker-compose.yml`: Postgres 17.9 and Mailpit (local SMTP/inbox for dev).
 - [x] `api/`: NestJS app (`npm init`/Nest CLI), own `package.json`.
   - Config module (env validation), Prisma setup, health endpoint, global validation pipe, exception filter, request logging, Swagger/OpenAPI at `/docs` and exported to `openapi.json`.
   - Versioned routes (`/api/v1`), CORS, rate limiting, Helmet.

@@ -1,12 +1,14 @@
-# Production-style stack: Postgres + API + web. Copy .env.production.example to .env.production and fill it in:
-#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+# Production-style stack: Postgres + API + web. Each app has its own env file:
+#   cp api/.env.production.example api/.env.production   # and fill it in
+#   cp web/.env.production.example web/.env.production
+#   docker compose -f docker-compose.prod.yml up -d --build
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17.9-alpine
     restart: unless-stopped
+    env_file: ./api/.env.production # uses POSTGRES_PASSWORD only; the other values are ignored by Postgres
     environment:
       POSTGRES_USER: synqonix
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_DB: synqonix
     volumes: [pgdata:/var/lib/postgresql/data]
     healthcheck:
@@ -20,33 +22,15 @@ services:
     restart: unless-stopped
     depends_on:
       postgres: { condition: service_healthy }
-    environment:
-      NODE_ENV: production
-      PORT: 4000
-      DATABASE_URL: postgresql://synqonix:${POSTGRES_PASSWORD}@postgres:5432/synqonix
-      WEB_URL: ${WEB_URL:?set WEB_URL}
-      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?set JWT_ACCESS_SECRET}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?set JWT_REFRESH_SECRET}
-      RESEND_API_KEY: ${RESEND_API_KEY:-}
-      MAIL_FROM: ${MAIL_FROM:-Synqonix <no-reply@example.com>}
-      TRUST_PROXY: ${TRUST_PROXY:-1}
-      METRICS_TOKEN: ${METRICS_TOKEN:-}
-      GITHUB_APP_ID: ${GITHUB_APP_ID:-}
-      GITHUB_APP_SLUG: ${GITHUB_APP_SLUG:-}
-      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
-      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:-}
+    env_file: ./api/.env.production
     volumes: [uploads:/app/uploads]
     ports: ["4000:4000"]
 
   web:
-    build:
-      context: ./web
-      args:
-        NEXT_PUBLIC_API_URL: ${API_PUBLIC_URL:?set API_PUBLIC_URL}
+    # NEXT_PUBLIC_API_URL comes from web/.env.production, which Next.js reads while building.
+    build: ./web
     restart: unless-stopped
     depends_on: [api]
-    environment:
-      NEXT_PUBLIC_API_URL: ${API_PUBLIC_URL}
     ports: ["3000:3000"]
 
 volumes:

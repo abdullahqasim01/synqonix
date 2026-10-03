@@ -4,7 +4,7 @@ Part 1 sets up the stack. Part 2 runs the automated suites. Part 3 is a manual c
 
 ## 1. Setup
 
-Prerequisites: Node 22, npm, Docker (for Postgres and Mailpit), git, and VS Code 1.90+ for the extension.
+Prerequisites: Node 22, npm, Docker (for Postgres 17.9 and Mailpit), git, and VS Code 1.90+ for the extension.
 
 ```bash
 # from the repo root
@@ -133,7 +133,7 @@ Open `vscode-extension/` in VS Code and press **F5** (Run Extension). In the new
 - [ ] Accessibility: navigate a page with Tab only (visible focus, "Skip to content" appears first); zoom to 200% without losing content; try a screen reader on the login form and task page.
 
 ### 3.12 Deployment (needs Docker)
-- [ ] `cp .env.production.example .env.production`, fill it in, then `docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build`. **This is the first real build of the images** (the sandbox could not run Docker): note any failure.
+- [ ] `cp api/.env.production.example api/.env.production` and `cp web/.env.production.example web/.env.production`, fill them in (keep the Postgres password in `DATABASE_URL` and `POSTGRES_PASSWORD` identical), then `docker compose -f docker-compose.prod.yml up -d --build`. **This is the first real build of the images** (the sandbox could not run Docker): note any failure.
 - [ ] `curl localhost:4000/api/v1/health/ready` is ok; register through the web app on :3000; migrations ran on start.
 - [ ] Back up and restore the database as described in `docs/deployment.md`.
 

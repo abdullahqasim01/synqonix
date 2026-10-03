@@ -36,7 +36,7 @@
 - Structured JSON logs in production (`LOG_FORMAT`), request ids (`X-Request-Id`, honoured when sane), no bodies/headers/query strings logged; `GET /api/v1/health/live` and `/health/ready` (the old `/health` still works); Prometheus metrics at `/api/v1/metrics` behind `METRICS_TOKEN`; a single exception filter as the hook for error tracking. Details in `docs/deployment.md`.
 
 ### Operations
-- Dockerfiles for the API (migrates on start, runs as non-root, healthcheck, `tini`) and web (standalone output), `docker-compose.prod.yml`, `.env.production.example`, deployment/environment/backup/upgrade guide in `docs/deployment.md`, demo data script `api/scripts/seed-demo.mjs` (idempotent), `prisma` moved to production dependencies so migrations can run in the image.
+- Dockerfiles for the API (migrates on start, runs as non-root, healthcheck, `tini`) and web (standalone output), `docker-compose.prod.yml` (Postgres 17.9), per-app `api/.env.production.example` and `web/.env.production.example`, deployment/environment/backup/upgrade guide in `docs/deployment.md`, demo data script `api/scripts/seed-demo.mjs` (idempotent), `prisma` moved to production dependencies so migrations can run in the image.
 - CI now also audits dependencies, builds both Docker images, scans for secrets and runs the browser suite against a real API + production web build.
 
 ### Accessibility

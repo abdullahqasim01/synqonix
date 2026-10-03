@@ -1,16 +1,16 @@
 # Deploying Synqonix
 
-Three pieces: **Postgres 16**, the **API** (NestJS, port 4000) and the **web app** (Next.js, port 3000). Both apps ship a Dockerfile; `docker-compose.prod.yml` wires them together.
+Three pieces: **Postgres 17.9**, the **API** (NestJS, port 4000) and the **web app** (Next.js, port 3000). Both apps ship a Dockerfile; `docker-compose.prod.yml` wires them together.
 
 ## From scratch
 
 1. **Server**: any host with Docker and Compose. Put a TLS-terminating reverse proxy (Caddy, nginx, a cloud load balancer) in front, with two public names, e.g. `app.example.com` → web:3000 and `api.example.com` → api:4000. The proxy must pass WebSocket upgrades to the API (chat and live updates use socket.io on the same port).
-2. **Configuration**: `cp .env.production.example .env.production` and fill it in (see the table below). Generate secrets with `openssl rand -base64 48`.
-3. **Start**: `docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build`. The API container applies database migrations on start (`prisma migrate deploy`), and refuses to boot in production with development secrets or a `localhost` `WEB_URL`.
+2. **Configuration**: each app has its own env file. `cp api/.env.production.example api/.env.production` and `cp web/.env.production.example web/.env.production`, then fill them in (see the table below). Generate secrets with `openssl rand -base64 48`. The Postgres container takes its password from `POSTGRES_PASSWORD` in `api/.env.production`, which must match the password inside `DATABASE_URL` there.
+3. **Start**: `docker compose -f docker-compose.prod.yml up -d --build`. The API container applies database migrations on start (`prisma migrate deploy`), and refuses to boot in production with development secrets or a `localhost` `WEB_URL`.
 4. **Check**: `curl https://api.example.com/api/v1/health/ready` → `{"status":"ok","db":"up",…}`; open `https://app.example.com` and register. The first user creates the first workspace.
 5. **Optional demo data** (not for real installs): `SYNQONIX_API=https://api.example.com node api/scripts/seed-demo.mjs`.
 
-`API_PUBLIC_URL` is compiled into the web bundle, so changing it needs `up -d --build web`.
+`NEXT_PUBLIC_API_URL` (in `web/.env.production`) is compiled into the web bundle, so changing it needs `up -d --build web`.
 
 ## Environment reference (API)
 
@@ -31,7 +31,7 @@ Three pieces: **Postgres 16**, the **API** (NestJS, port 4000) and the **web app
 | `AUDIT_RETENTION_DAYS`, `NOTIFICATION_RETENTION_DAYS`, `DELIVERY_RETENTION_DAYS` | `365`, `90`, `30` | `0` keeps forever |
 | `WEBHOOKS_ALLOW_PRIVATE_TARGETS` | `0` | Development only |
 
-Web: `NEXT_PUBLIC_API_URL` (build argument), nothing else.
+Web: `NEXT_PUBLIC_API_URL` in `web/.env.production` (read at build time), nothing else. Both `.env.production` files are git-ignored.
 
 ## Upgrades and migrations
 
