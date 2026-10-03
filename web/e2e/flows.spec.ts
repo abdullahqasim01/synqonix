@@ -15,10 +15,12 @@ test.describe("critical flows", () => {
     await page.getByRole("button", { name: "Create workspace" }).click();
     await expect(page).toHaveURL(/\/w\//);
 
-    await page.getByRole("button", { name: "Sign out" }).click();
+    await page.getByRole("button", { name: "Account menu" }).click();
+    await page.getByRole("menuitem", { name: "Sign out" }).click();
     await expect(page).toHaveURL(/\/login/);
     await logIn(page, email);
-    await expect(page.getByText("Flow Workspace")).toBeVisible();
+    await page.goto("/dashboard");
+    await expect(page.getByText("Flow Workspace").first()).toBeVisible();
   });
 
   test("a wrong password is refused with a message", async ({ page }) => {

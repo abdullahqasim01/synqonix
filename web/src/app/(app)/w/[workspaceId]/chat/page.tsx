@@ -28,9 +28,9 @@ function Chat() {
   const active = fromList ?? (wanted ? direct.data : undefined) ?? (!wanted ? channels.find((c) => c.isMember) ?? channels[0] : undefined);
 
   return (
-    <div className="grid h-[calc(100vh-11rem)] min-h-96 grid-cols-1 gap-4 md:grid-cols-[16rem_1fr]">
+    <div className="grid h-[calc(100vh-6.5rem)] min-h-96 grid-cols-1 gap-4 md:grid-cols-[16rem_1fr]">
       <aside className="overflow-y-auto"><ChannelSidebar activeId={active?.id ?? null} base={base} /></aside>
-      <div className="min-h-0 rounded-lg border border-border">
+      <div className="min-h-0 overflow-hidden rounded-xl border border-border bg-background shadow-card">
         {active ? (
           <ChannelView key={active.id} channel={active} onGone={() => router.replace(base)} />
         ) : wanted && direct.error ? (

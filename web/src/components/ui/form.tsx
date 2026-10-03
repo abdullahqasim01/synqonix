@@ -44,7 +44,7 @@ export function Alert({
 }
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("rounded-lg border border-border bg-background p-6", className)} {...props} />;
+  return <div className={cn("rounded-xl border border-border bg-background p-6 shadow-card", className)} {...props} />;
 }
 
 export function Select({ className, ...props }: React.SelectHTMLAttributes<HTMLSelectElement>) {
@@ -62,7 +62,7 @@ export function Select({ className, ...props }: React.SelectHTMLAttributes<HTMLS
 export function Badge({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
     <span
-      className={cn("inline-flex items-center rounded-full border border-border bg-muted px-2 py-0.5 text-xs", className)}
+      className={cn("inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground", className)}
       {...props}
     />
   );

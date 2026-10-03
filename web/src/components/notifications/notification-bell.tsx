@@ -1,5 +1,6 @@
 "use client";
 
+import { Bell } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { NotificationList } from "@/components/notifications/notification-list";
@@ -24,7 +25,7 @@ export function NotificationBell() {
   return (
     <div ref={box} className="relative">
       <Button variant="ghost" size="icon" aria-label={feed.unread ? `Notifications, ${feed.unread} unread` : "Notifications"} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <span aria-hidden>🔔</span>
+        <Bell aria-hidden className="h-[18px] w-[18px]" />
         {feed.unread > 0 && (
           <span aria-hidden className="absolute right-0.5 top-0.5 min-w-4 rounded-full bg-red-500 px-1 text-[10px] font-medium leading-4 text-white">{feed.unread > 99 ? "99+" : feed.unread}</span>
         )}

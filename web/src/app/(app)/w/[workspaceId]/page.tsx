@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useWorkspace } from "@/components/workspace/workspace-context";
+import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Alert, Badge, Card, Field, Input, Select, Textarea } from "@/components/ui/form";
 import { api, errorMessage, type Schemas } from "@/lib/api/client";
@@ -103,16 +104,19 @@ export default function ProjectsPage() {
       <div className="grid gap-3 sm:grid-cols-2">
         {projects.data?.map((p) => (
           <Link key={p.id} href={`/w/${workspace.id}/projects/${p.id}`}>
-            <Card className="h-full transition-colors hover:bg-muted">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-medium">{p.name}</span>
-                <span className="flex gap-1">
-                  {p.visibility === "PRIVATE" && <Badge>private</Badge>}
-                  {p.archived && <Badge>archived</Badge>}
-                  <Badge className="font-mono">{p.key}</Badge>
-                </span>
+            <Card className="flex h-full gap-4 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+              <Avatar name={p.name} size={44} />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="truncate font-medium">{p.name}</span>
+                  <span className="flex gap-1">
+                    {p.visibility === "PRIVATE" && <Badge>private</Badge>}
+                    {p.archived && <Badge>archived</Badge>}
+                    <Badge className="font-mono">{p.key}</Badge>
+                  </span>
+                </div>
+                {p.description ? <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.description}</p> : <p className="mt-1 text-sm text-muted-foreground/70">No description</p>}
               </div>
-              {p.description && <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.description}</p>}
             </Card>
           </Link>
         ))}

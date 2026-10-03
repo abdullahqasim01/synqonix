@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Alert, Badge, Card, Field, Input } from "@/components/ui/form";
 import { VerifyEmailBanner } from "@/components/verify-email-banner";
@@ -36,12 +37,13 @@ export default function DashboardPage() {
       <div className="grid gap-3 sm:grid-cols-2">
         {workspaces.data?.map((w) => (
           <Link key={w.id} href={`/w/${w.id}`}>
-            <Card className="transition-colors hover:bg-muted">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">{w.name}</span>
-                <Badge>{w.role.toLowerCase()}</Badge>
+            <Card className="flex items-center gap-4 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+              <Avatar name={w.name} size={48} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium">{w.name}</p>
+                <p className="truncate text-xs text-muted-foreground">/{w.slug}</p>
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">/{w.slug}</p>
+              <Badge className="capitalize">{w.role.toLowerCase()}</Badge>
             </Card>
           </Link>
         ))}

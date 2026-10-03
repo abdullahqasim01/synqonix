@@ -57,3 +57,6 @@
 - **Load testing** of board/search endpoints, error-tracking service integration, and automated database backups (documented, not scheduled).
 - **Running more than one API instance** (needs a socket.io adapter, e.g. Redis).
 - Real VS Code integration test for the extension (Phase 10 caveat), accessibility scan of dark mode and the remaining pages, and the GitHub App install flow against real GitHub (needs credentials).
+
+### UI refresh (after the phase)
+App shell redesigned in the style of Slack/ClickUp: a dark workspace rail (workspace avatars, add, account menu), a top bar with a global search field, notifications and theme toggle, and a per-workspace sidebar (New task button, Home / My tasks / Overview / Chat / Members / Teams / Settings, collapsible Projects and Channels lists with unread badges, running timer) that becomes a drawer on small screens. New design tokens (violet primary, softer neutrals, dark-mode shell colours), generated avatars for workspaces/projects/people, card and button polish, project header with breadcrumb and pill tabs, split-screen sign-in with a brand panel. Sign out moved into the account menu. The axe scan and the 9 browser tests still pass against the production build. Not restyled in this pass: the task list filter bar, the board and the settings sub-pages (they inherit the new colours but keep their old layouts).

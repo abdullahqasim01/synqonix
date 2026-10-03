@@ -4,28 +4,37 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0a0a0a;
-  --muted: #f4f4f5;
-  --muted-foreground: #52525b;
-  --border: #e4e4e7;
-  --ring: #6366f1;
-  --primary: #4f46e5;
+  --foreground: #16161d;
+  --muted: #f4f4f8;
+  --muted-foreground: #53536a;
+  --border: #e6e6ee;
+  --ring: #7c5cfc;
+  --primary: #6240e8;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
+  --secondary: #f0f0f6;
+  --secondary-foreground: #1c1c28;
+  /* Shell: a dark workspace rail and a soft sidebar, like Slack and ClickUp. */
+  --rail: #1b1633;
+  --rail-foreground: #cfc9ea;
+  --sidebar: #f8f8fb;
+  --canvas: #fbfbfd;
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --muted: #18181b;
-  --muted-foreground: #a1a1aa;
-  --border: #27272a;
-  --ring: #818cf8;
-  --primary: #6366f1;
+  --background: #0f0f15;
+  --foreground: #f3f3f8;
+  --muted: #1a1a24;
+  --muted-foreground: #a3a3b8;
+  --border: #272735;
+  --ring: #9b86ff;
+  --primary: #7b5cf6;
   --primary-foreground: #ffffff;
-  --secondary: #27272a;
-  --secondary-foreground: #fafafa;
+  --secondary: #242433;
+  --secondary-foreground: #f3f3f8;
+  --rail: #0a0a10;
+  --rail-foreground: #b4b0cc;
+  --sidebar: #13131b;
+  --canvas: #0c0c12;
 }
 
 @theme inline {
@@ -39,6 +48,13 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-rail: var(--rail);
+  --color-rail-foreground: var(--rail-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-canvas: var(--canvas);
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(20 20 40 / 0.05), 0 1px 3px rgb(20 20 40 / 0.06);
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -48,3 +64,6 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+/* Slim scrollbars inside the shell. */
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--muted-foreground) 35%, transparent) transparent; }
