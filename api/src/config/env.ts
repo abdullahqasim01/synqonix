@@ -33,6 +33,20 @@ const schema = z.object({
   LOG_FORMAT: z.enum(['json', 'pretty']).optional(),
   /** Enables GET /metrics for a scraper presenting `Authorization: Bearer <token>`. Unset: the endpoint is off. */
   METRICS_TOKEN: z.string().min(16).optional(),
+  /** Where files live: `local` (disk, for development) or `s3` (any S3-compatible service, e.g. Filebase, R2, MinIO, AWS). */
+  STORAGE_DRIVER: z.enum(['local', 's3']).default('local'),
+  /** S3-compatible endpoint, e.g. https://s3.filebase.com. Leave empty for AWS. */
+  S3_ENDPOINT: z.string().url().optional(),
+  S3_REGION: z.string().default('us-east-1'),
+  S3_BUCKET: z.string().optional(),
+  S3_ACCESS_KEY_ID: z.string().optional(),
+  S3_SECRET_ACCESS_KEY: z.string().optional(),
+  /** `bucket` in the path (https://host/bucket/key); required by most non-AWS services. */
+  S3_FORCE_PATH_STYLE: z.enum(['0', '1']).default('1'),
+  /** How long a presigned upload or download link works. */
+  PRESIGN_TTL_SECONDS: z.coerce.number().int().min(30).max(3600).default(300),
+  /** Public address of this API (used in local-driver upload and download links). */
+  API_PUBLIC_URL: z.string().url().optional(),
   GITHUB_API_URL: z.string().url().default('https://api.github.com'),
 });
 
@@ -49,6 +63,10 @@ export function validateEnv(config: Record<string, unknown>): Env {
     throw new Error(`Invalid environment: ${issues}`);
   }
   const env = parsed.data;
+  if (env.STORAGE_DRIVER === 's3') {
+    const missing = (['S3_BUCKET', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'] as const).filter((k) => !env[k]);
+    if (missing.length) throw new Error(`Invalid environment: STORAGE_DRIVER=s3 needs ${missing.join(', ')}`);
+  }
   if (env.NODE_ENV === 'production') {
     const problems: string[] = [];
     for (const key of ['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'] as const) {

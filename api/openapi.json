@@ -10,6 +10,36 @@
             "description": ""
           }
         },
+        "summary": "Readiness: the database answers. Kept at `/health` for existing probes.",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/v1/health/live": {
+      "get": {
+        "operationId": "HealthController_live_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Liveness: the process is up and serving; deliberately independent of the database.",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "HealthController_ready_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
         "tags": [
           "health"
         ]
@@ -4351,9 +4381,9 @@
         ]
       }
     },
-    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments": {
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/upload-url": {
       "post": {
-        "operationId": "TaskDetailsController_upload_v1",
+        "operationId": "TaskDetailsController_requestUpload_v1",
         "parameters": [
           {
             "name": "taskId",
@@ -4375,18 +4405,62 @@
         "requestBody": {
           "required": true,
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                },
-                "required": [
-                  "file"
-                ]
+                "$ref": "#/components/schemas/RequestUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTargetDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments": {
+      "post": {
+        "operationId": "TaskDetailsController_confirmUpload_v1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmUploadDto"
               }
             }
           }
@@ -4408,14 +4482,15 @@
             "bearer": []
           }
         ],
+        "summary": "Step 2: confirm the upload so the file shows up on the task.",
         "tags": [
           "tasks"
         ]
       }
     },
-    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/{attachmentId}/download": {
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/{attachmentId}/download-url": {
       "get": {
-        "operationId": "TaskDetailsController_download_v1",
+        "operationId": "TaskDetailsController_downloadUrl_v1",
         "parameters": [
           {
             "name": "taskId",
@@ -4444,7 +4519,14 @@
         ],
         "responses": {
           "200": {
-            "description": "The file contents"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadUrlDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -4452,7 +4534,7 @@
             "bearer": []
           }
         ],
-        "summary": "Always served as a download, never inline, so uploaded files cannot run scripts on our origin.",
+        "summary": "A short-lived presigned link; the file is always served as a download, never inline.",
         "tags": [
           "tasks"
         ]
@@ -6823,9 +6905,9 @@
         ]
       }
     },
-    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments": {
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/upload-url": {
       "post": {
-        "operationId": "MessagesController_upload_v1",
+        "operationId": "MessagesController_requestUpload_v1",
         "parameters": [
           {
             "name": "channelId",
@@ -6847,18 +6929,62 @@
         "requestBody": {
           "required": true,
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                },
-                "required": [
-                  "file"
-                ]
+                "$ref": "#/components/schemas/RequestUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTargetDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments": {
+      "post": {
+        "operationId": "MessagesController_confirmUpload_v1",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmUploadDto"
               }
             }
           }
@@ -6885,9 +7011,9 @@
         ]
       }
     },
-    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/{attachmentId}/download": {
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/{attachmentId}/download-url": {
       "get": {
-        "operationId": "MessagesController_download_v1",
+        "operationId": "MessagesController_downloadUrl_v1",
         "parameters": [
           {
             "name": "channelId",
@@ -6916,7 +7042,14 @@
         ],
         "responses": {
           "200": {
-            "description": "The file contents"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadUrlDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -6924,7 +7057,7 @@
             "bearer": []
           }
         ],
-        "summary": "Always served as a download so uploaded files cannot run scripts on our origin.",
+        "summary": "A short-lived presigned link; files are always served as downloads so they cannot run scripts on our origin.",
         "tags": [
           "messages"
         ]
@@ -13013,6 +13146,95 @@
         "required": [
           "type",
           "targetTask"
+        ]
+      },
+      "RequestUploadDto": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "size": {
+            "type": "number",
+            "description": "Exact size in bytes; the upload link only accepts a file of this size.",
+            "minimum": 1,
+            "maximum": 5368709120
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "What the file is (for display); defaults to application/octet-stream.",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "filename",
+          "size"
+        ]
+      },
+      "UploadTargetDto": {
+        "type": "object",
+        "properties": {
+          "uploadUrl": {
+            "type": "string",
+            "description": "Send the file with a plain `PUT` to this URL, with exactly these headers and no Authorization header."
+          },
+          "method": {
+            "enum": [
+              "PUT"
+            ],
+            "type": "string"
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "uploadToken": {
+            "type": "string",
+            "description": "Pass this back to confirm the upload once the PUT has succeeded."
+          }
+        },
+        "required": [
+          "uploadUrl",
+          "method",
+          "headers",
+          "expiresAt",
+          "uploadToken"
+        ]
+      },
+      "ConfirmUploadDto": {
+        "type": "object",
+        "properties": {
+          "uploadToken": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 4000
+          }
+        },
+        "required": [
+          "uploadToken"
+        ]
+      },
+      "DownloadUrlDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Time-limited link; open it to download the file."
+          },
+          "expiresAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "expiresAt"
         ]
       },
       "CustomFieldDto": {

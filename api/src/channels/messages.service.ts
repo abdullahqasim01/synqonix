@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { randomUUID } from 'node:crypto';
-import type { Readable } from 'node:stream';
 import type { Env } from '../config/env.js';
 import type { Channel, Membership, Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -13,7 +12,9 @@ import { ProjectAccessService } from '../projects/project-access.service.js';
 import { safeFilename } from '../tasks/attachments.service.js';
 import type { TaskRefDto } from '../tasks/dto/task.dto.js';
 import { extractMentionedUserIds } from '../tasks/mentions.js';
-import { StorageService } from '../tasks/storage/storage.service.js';
+import { SignedTokens } from '../storage/signed-token.js';
+import { DownloadUrlDto, RequestUploadDto, UploadTargetDto } from '../storage/storage.dto.js';
+import { StorageService } from '../storage/storage.service.js';
 import { TaskAccessService } from '../tasks/task-access.service.js';
 import { refInclude, toRefDto } from '../tasks/task-mapper.js';
 import { parseTaskRef } from '../tasks/task-ref.js';
@@ -49,6 +50,7 @@ export class MessagesService {
     private readonly taskAccess: TaskAccessService,
     private readonly tasks: TasksService,
     private readonly storage: StorageService,
+    private readonly tokens: SignedTokens,
     private readonly events: EventEmitter2,
     private readonly config: ConfigService<Env, true>,
   ) {}
@@ -392,33 +394,43 @@ export class MessagesService {
 
   // ---------------------------------------------------------------- files
 
-  async upload(m: Membership, channelId: string, file: Express.Multer.File | undefined): Promise<MessageAttachmentDto> {
-    if (!file) throw new BadRequestException('Attach a file in the "file" field');
+  async requestUpload(m: Membership, channelId: string, dto: RequestUploadDto): Promise<UploadTargetDto> {
     await this.access.loadForPosting(m, channelId);
     const maxMb = this.config.get('MAX_UPLOAD_MB');
-    if (file.size > maxMb * 1024 * 1024) throw new PayloadTooLargeException(`Files can be at most ${maxMb} MB`);
-    const storageKey = `${m.workspaceId}/chat/${channelId}/${randomUUID()}`;
-    await this.storage.put(storageKey, file.buffer);
-    try {
-      const a = await this.prisma.messageAttachment.create({
-        data: {
-          channelId, uploaderId: m.userId, filename: safeFilename(file.originalname), storageKey,
-          mimeType: file.mimetype || 'application/octet-stream', size: file.size,
-        },
-      });
-      return { id: a.id, filename: a.filename, mimeType: a.mimeType, size: a.size };
-    } catch (e) {
-      await this.storage.delete(storageKey).catch(() => undefined);
-      throw e;
-    }
+    if (dto.size > maxMb * 1024 * 1024) throw new PayloadTooLargeException(`Files can be at most ${maxMb} MB`);
+    const filename = safeFilename(dto.filename);
+    const key = `${m.workspaceId}/chat/${channelId}/${randomUUID()}`;
+    const target = await this.storage.presignUpload(key, dto.size);
+    const mimeType = dto.mimeType?.trim() || 'application/octet-stream';
+    const uploadToken = this.tokens.sign({ kind: 'chat', key, filename, mimeType, size: dto.size, channel: channelId, user: m.userId }, 15 * 60);
+    return { uploadUrl: target.url, method: target.method, headers: target.headers, expiresAt: target.expiresAt, uploadToken };
   }
 
-  async download(m: Membership, channelId: string, attachmentId: string): Promise<{ stream: Readable; filename: string; size: number }> {
+  async confirmUpload(m: Membership, channelId: string, uploadToken: string): Promise<MessageAttachmentDto> {
+    await this.access.loadForPosting(m, channelId);
+    const c = this.tokens.verify<{ kind: string; key: string; filename: string; mimeType: string; size: number; channel: string; user: string }>(uploadToken);
+    if (c.kind !== 'chat' || c.channel !== channelId || c.user !== m.userId) throw new BadRequestException('This upload does not belong to this channel');
+    const toDto = (a: { id: string; filename: string; mimeType: string; size: number }): MessageAttachmentDto => ({ id: a.id, filename: a.filename, mimeType: a.mimeType, size: a.size });
+    const existing = await this.prisma.messageAttachment.findFirst({ where: { storageKey: c.key } });
+    if (existing) return toDto(existing);
+    const stored = await this.storage.head(c.key);
+    if (!stored) throw new BadRequestException('The file was not uploaded');
+    if (stored.size !== c.size) {
+      await this.storage.delete(c.key).catch(() => undefined);
+      throw new BadRequestException('The uploaded file does not match the size that was announced');
+    }
+    const a = await this.prisma.messageAttachment.create({
+      data: { channelId, uploaderId: m.userId, filename: c.filename, storageKey: c.key, mimeType: c.mimeType, size: c.size },
+    });
+    return toDto(a);
+  }
+
+  async downloadUrl(m: Membership, channelId: string, attachmentId: string): Promise<DownloadUrlDto> {
     await this.access.load(m, channelId);
     const a = await this.prisma.messageAttachment.findFirst({ where: { id: attachmentId, channelId } });
     // A file that has not been sent yet is only visible to the person who uploaded it.
     if (!a || (!a.messageId && a.uploaderId !== m.userId)) throw new NotFoundException('Attachment not found');
-    return { stream: await this.storage.read(a.storageKey), filename: a.filename, size: a.size };
+    return this.storage.presignDownload(a.storageKey, a.filename);
   }
 
   /** Files uploaded but never sent are removed after a day. */

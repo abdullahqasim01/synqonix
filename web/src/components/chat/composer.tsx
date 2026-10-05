@@ -5,6 +5,7 @@ import { useChat } from "@/components/chat/chat-provider";
 import { useWorkspace } from "@/components/workspace/workspace-context";
 import { Button } from "@/components/ui/button";
 import { Alert, Textarea } from "@/components/ui/form";
+import { putToPresigned, UploadError } from "@/lib/files";
 import { api, errorMessage, type Schemas } from "@/lib/api/client";
 import { mentionLink, mentionQuery, type Message } from "@/lib/chat";
 
@@ -56,17 +57,23 @@ export function Composer({
     const file = list?.[0];
     if (!file) return;
     setUploading(true);
-    const form = new FormData();
-    form.append("file", file);
-    const { data, error } = await api.POST("/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments", {
-      params: { path: { workspaceId: workspace.id, channelId } },
-      body: form as unknown as { file: string },
-      bodySerializer: (b: unknown) => b as FormData,
-    });
-    setUploading(false);
-    if (input.current) input.current.value = "";
-    if (data) setFiles((f) => [...f, data]);
-    setError(data ? null : errorMessage(error, "Upload failed"));
+    try {
+      const path = { workspaceId: workspace.id, channelId };
+      const asked = await api.POST("/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/upload-url", {
+        params: { path }, body: { filename: file.name, size: file.size, mimeType: file.type || undefined },
+      });
+      if (!asked.data) throw new UploadError(errorMessage(asked.error, "Upload failed"));
+      await putToPresigned(asked.data, file);
+      const done = await api.POST("/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments", { params: { path }, body: { uploadToken: asked.data.uploadToken } });
+      if (!done.data) throw new UploadError(errorMessage(done.error, "Upload failed"));
+      setFiles((f) => [...f, done.data]);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof UploadError ? e.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      if (input.current) input.current.value = "";
+    }
   }
 
   async function send() {

@@ -7,7 +7,6 @@ import { CustomFieldsController } from './custom-fields.controller.js';
 import { CustomFieldsService } from './custom-fields.service.js';
 import { RecentTasksService } from './recent-tasks.service.js';
 import { RelationsService } from './relations.service.js';
-import { StorageService } from './storage/storage.service.js';
 import { TaskAccessService } from './task-access.service.js';
 import { TaskDetailsController } from './task-details.controller.js';
 import { TaskMoveService } from './task-move.service.js';
@@ -24,8 +23,8 @@ import { WorkspacesModule } from '../workspaces/workspaces.module.js';
   controllers: [TasksController, TaskDetailsController, CustomFieldsController],
   providers: [
     TasksService, TaskMoveService, TaskRankService, RecentTasksService, TaskAccessService, TaskSupportService, ActivityService, CommentsService,
-    ChecklistsService, RelationsService, WatchersService, AttachmentsService, CustomFieldsService, StorageService,
+    ChecklistsService, RelationsService, WatchersService, AttachmentsService, CustomFieldsService,
   ],
-  exports: [TasksService, TaskAccessService, ActivityService, StorageService, CommentsService],
+  exports: [TasksService, TaskAccessService, ActivityService, CommentsService],
 })
 export class TasksModule {}

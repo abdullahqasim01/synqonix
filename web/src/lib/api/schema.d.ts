@@ -11,7 +11,41 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Readiness: the database answers. Kept at `/health` for existing probes. */
         get: operations["HealthController_check_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/health/live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liveness: the process is up and serving; deliberately independent of the database. */
+        get: operations["HealthController_live_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/health/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["HealthController_ready_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1067,6 +1101,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TaskDetailsController_requestUpload_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments": {
         parameters: {
             query?: never;
@@ -1076,22 +1126,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["TaskDetailsController_upload_v1"];
+        /** Step 2: confirm the upload so the file shows up on the task. */
+        post: operations["TaskDetailsController_confirmUpload_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/{attachmentId}/download": {
+    "/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/{attachmentId}/download-url": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Always served as a download, never inline, so uploaded files cannot run scripts on our origin. */
-        get: operations["TaskDetailsController_download_v1"];
+        /** A short-lived presigned link; the file is always served as a download, never inline. */
+        get: operations["TaskDetailsController_downloadUrl_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1597,6 +1648,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MessagesController_requestUpload_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments": {
         parameters: {
             query?: never;
@@ -1606,22 +1673,22 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["MessagesController_upload_v1"];
+        post: operations["MessagesController_confirmUpload_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/{attachmentId}/download": {
+    "/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/{attachmentId}/download-url": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Always served as a download so uploaded files cannot run scripts on our origin. */
-        get: operations["MessagesController_download_v1"];
+        /** A short-lived presigned link; files are always served as downloads so they cannot run scripts on our origin. */
+        get: operations["MessagesController_downloadUrl_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3225,6 +3292,33 @@ export interface components {
             /** @description Key (`SYN-12`) or id of the other task. */
             targetTask: string;
         };
+        RequestUploadDto: {
+            filename: string;
+            /** @description Exact size in bytes; the upload link only accepts a file of this size. */
+            size: number;
+            /** @description What the file is (for display); defaults to application/octet-stream. */
+            mimeType?: string;
+        };
+        UploadTargetDto: {
+            /** @description Send the file with a plain `PUT` to this URL, with exactly these headers and no Authorization header. */
+            uploadUrl: string;
+            /** @enum {string} */
+            method: "PUT";
+            headers: {
+                [key: string]: string;
+            };
+            expiresAt: string;
+            /** @description Pass this back to confirm the upload once the PUT has succeeded. */
+            uploadToken: string;
+        };
+        ConfirmUploadDto: {
+            uploadToken: string;
+        };
+        DownloadUrlDto: {
+            /** @description Time-limited link; open it to download the file. */
+            url: string;
+            expiresAt: string;
+        };
         CustomFieldDto: {
             id: string;
             name: string;
@@ -4321,6 +4415,40 @@ export interface components {
 export type $defs = Record<string, never>;
 export interface operations {
     HealthController_check_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    HealthController_live_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    HealthController_ready_v1: {
         parameters: {
             query?: never;
             header?: never;
@@ -6530,7 +6658,7 @@ export interface operations {
             };
         };
     };
-    TaskDetailsController_upload_v1: {
+    TaskDetailsController_requestUpload_v1: {
         parameters: {
             query?: never;
             header?: never;
@@ -6542,10 +6670,33 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "multipart/form-data": {
-                    /** Format: binary */
-                    file: string;
+                "application/json": components["schemas"]["RequestUploadDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
                 };
+                content: {
+                    "application/json": components["schemas"]["UploadTargetDto"];
+                };
+            };
+        };
+    };
+    TaskDetailsController_confirmUpload_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmUploadDto"];
             };
         };
         responses: {
@@ -6559,7 +6710,7 @@ export interface operations {
             };
         };
     };
-    TaskDetailsController_download_v1: {
+    TaskDetailsController_downloadUrl_v1: {
         parameters: {
             query?: never;
             header?: never;
@@ -6572,12 +6723,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description The file contents */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DownloadUrlDto"];
+                };
             };
         };
     };
@@ -7661,7 +7813,7 @@ export interface operations {
             };
         };
     };
-    MessagesController_upload_v1: {
+    MessagesController_requestUpload_v1: {
         parameters: {
             query?: never;
             header?: never;
@@ -7673,10 +7825,33 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "multipart/form-data": {
-                    /** Format: binary */
-                    file: string;
+                "application/json": components["schemas"]["RequestUploadDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
                 };
+                content: {
+                    "application/json": components["schemas"]["UploadTargetDto"];
+                };
+            };
+        };
+    };
+    MessagesController_confirmUpload_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channelId: string;
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmUploadDto"];
             };
         };
         responses: {
@@ -7690,7 +7865,7 @@ export interface operations {
             };
         };
     };
-    MessagesController_download_v1: {
+    MessagesController_downloadUrl_v1: {
         parameters: {
             query?: never;
             header?: never;
@@ -7703,12 +7878,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description The file contents */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DownloadUrlDto"];
+                };
             };
         };
     };

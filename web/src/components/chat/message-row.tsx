@@ -6,6 +6,7 @@ import { Markdown } from "@/components/markdown";
 import { StatusBadge } from "@/components/tasks/badges";
 import { Button } from "@/components/ui/button";
 import { Alert, Textarea } from "@/components/ui/form";
+import { startDownload } from "@/lib/files";
 import { api, errorMessage } from "@/lib/api/client";
 import { linkifyTaskKeys, QUICK_REACTIONS, type Message } from "@/lib/chat";
 import { cn } from "@/lib/utils";
@@ -67,16 +68,11 @@ export function MessageRow({ workspaceId, channelId, message: m, header, isOwn, 
   }
 
   async function download(a: Message["attachments"][number]) {
-    const { data, error } = await api.GET("/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/{attachmentId}/download", {
-      params: { path: { workspaceId, channelId, attachmentId: a.id } }, parseAs: "blob",
+    const { data, error } = await api.GET("/api/v1/workspaces/{workspaceId}/channels/{channelId}/attachments/{attachmentId}/download-url", {
+      params: { path: { workspaceId, channelId, attachmentId: a.id } },
     });
     if (!data) return setError(errorMessage(error, "Download failed"));
-    const url = URL.createObjectURL(data as Blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = a.filename;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    startDownload(data.url, a.filename);
   }
 
   const action = "rounded px-1.5 py-0.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground";

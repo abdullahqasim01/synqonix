@@ -26,12 +26,16 @@ Three pieces: **Postgres 17.9**, the **API** (NestJS, port 4000) and the **web a
 | `LOG_FORMAT` | `json` in production | `json` or `pretty` |
 | `METRICS_TOKEN` | unset | 16+ chars; enables `GET /api/v1/metrics` for `Authorization: Bearer …` |
 | `RESEND_API_KEY`, `MAIL_FROM` | – | Email via Resend; without a key the API uses SMTP (`SMTP_HOST`/`SMTP_PORT`, default Mailpit) |
-| `UPLOAD_DIR`, `MAX_UPLOAD_MB` | `./uploads`, `10` | Mount a volume at `/app/uploads` |
+| `STORAGE_DRIVER` | `local` | `local` (container disk, mount a volume at `/app/uploads`) or `s3` |
+| `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_FORCE_PATH_STYLE` | – / `us-east-1` / – / – / – / `1` | Any S3-compatible bucket (required with `s3`). The bucket stays private: every upload and download uses a presigned link |
+| `PRESIGN_TTL_SECONDS` | `300` | How long a presigned link works |
+| `API_PUBLIC_URL` | `http://localhost:PORT` | Used only for the local driver's links |
+| `UPLOAD_DIR`, `MAX_UPLOAD_MB` | `./uploads`, `10` | Local-driver folder; the size limit applies to both drivers |
 | `GITHUB_APP_ID`, `GITHUB_APP_SLUG`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET` | unset | GitHub integration is off until set (Phase 7) |
 | `AUDIT_RETENTION_DAYS`, `NOTIFICATION_RETENTION_DAYS`, `DELIVERY_RETENTION_DAYS` | `365`, `90`, `30` | `0` keeps forever |
 | `WEBHOOKS_ALLOW_PRIVATE_TARGETS` | `0` | Development only |
 
-Web: `NEXT_PUBLIC_API_URL` in `web/.env.production` (read at build time), nothing else. Both `.env.production` files are git-ignored.
+Web: `NEXT_PUBLIC_STORAGE_URL` (origin of the S3 endpoint; lets the browser upload to it under the Content-Security-Policy), `NEXT_PUBLIC_API_URL` in `web/.env.production` (read at build time), nothing else. Both `.env.production` files are git-ignored.
 
 ## Upgrades and migrations
 
@@ -43,7 +47,7 @@ Web: `NEXT_PUBLIC_API_URL` in `web/.env.production` (read at build time), nothin
 ## Backups
 
 - **Database**: `docker compose exec postgres pg_dump -U synqonix -Fc synqonix > synqonix-$(date +%F).dump`; restore with `pg_restore --clean --if-exists -d synqonix`. Schedule it (cron) and copy off the host; test a restore.
-- **Uploads**: back up the `uploads` volume (attachments and chat files) together with the database dump, since rows refer to files.
+- **Uploads**: with the S3 driver the bucket holds the files (enable versioning or copy it elsewhere if you need backups); with the local driver back up the `uploads` volume (attachments and chat files) together with the database dump, since rows refer to files.
 - Postgres WAL archiving / managed point-in-time recovery is preferable for production data; the dump is the minimum.
 
 ## Observability
@@ -52,3 +56,5 @@ Web: `NEXT_PUBLIC_API_URL` in `web/.env.production` (read at build time), nothin
 - Probes: `GET /api/v1/health/live` (process) and `/health/ready` (database). The Docker images use `live`.
 - Metrics: set `METRICS_TOKEN` and scrape `/api/v1/metrics` (request counts by method and status class, request time, memory, uptime).
 - Error tracking: unhandled errors go through one filter (`api/src/common/all-exceptions.filter.ts`); attach Sentry or similar there.
+
+For a zero-cost hosted setup (Vercel + Northflank + Neon + Resend + Filebase) see [deploy-free-tier.md](deploy-free-tier.md).

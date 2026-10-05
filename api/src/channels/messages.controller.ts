@@ -1,9 +1,5 @@
-import {
-  Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Query, Res, UploadedFile, UseGuards, UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
-import type { Response } from 'express';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import type { Membership } from '../generated/prisma/client.js';
 import { CurrentMembership, RequirePermission, WorkspaceGuard } from '../permissions/workspace.guard.js';
 import { TaskRefDto } from '../tasks/dto/task.dto.js';
@@ -11,9 +7,9 @@ import {
   CreateTaskFromMessageDto, DiscussionDto, EditMessageDto, LinkTaskDto, ListMessagesQueryDto, MarkReadDto, MessageAttachmentDto,
   MessageDto, MessageListDto, PostMessageDto, RepliesQueryDto, TaskRefsQueryDto,
 } from './dto/channels.dto.js';
+import { ConfirmUploadDto, DownloadUrlDto, RequestUploadDto, UploadTargetDto } from '../storage/storage.dto.js';
 import { MessagesService } from './messages.service.js';
 
-const MAX_UPLOAD_BYTES = 25 * 1024 * 1024; // hard ceiling; the configured limit is enforced in the service
 
 @ApiTags('messages')
 @ApiBearerAuth()
@@ -61,29 +57,26 @@ export class MessagesController {
     return this.messages.markRead(m, id, dto.seq);
   }
 
-  @Post('channels/:channelId/attachments') @RequirePermission('workspace.read')
+  @Post('channels/:channelId/attachments/upload-url') @RequirePermission('workspace.read')
   @ApiParam({ name: 'channelId', type: String })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } }, required: ['file'] } })
-  @ApiCreatedResponse({ type: MessageAttachmentDto })
-  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 } }))
-  upload(@CurrentMembership() m: Membership, @Param('channelId') id: string, @UploadedFile() file: Express.Multer.File | undefined) {
-    return this.messages.upload(m, id, file);
+  @ApiCreatedResponse({ type: UploadTargetDto })
+  requestUpload(@CurrentMembership() m: Membership, @Param('channelId') id: string, @Body() dto: RequestUploadDto) {
+    return this.messages.requestUpload(m, id, dto);
   }
 
-  /** Always served as a download so uploaded files cannot run scripts on our origin. */
-  @Get('channels/:channelId/attachments/:attachmentId/download') @RequirePermission('workspace.read')
+  @Post('channels/:channelId/attachments') @RequirePermission('workspace.read')
   @ApiParam({ name: 'channelId', type: String })
-  @ApiOkResponse({ description: 'The file contents' })
-  async download(
-    @CurrentMembership() m: Membership, @Param('channelId') id: string, @Param('attachmentId') attachmentId: string, @Res() res: Response,
-  ) {
-    const { stream, filename, size } = await this.messages.download(m, id, attachmentId);
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Length', String(size));
-    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    stream.pipe(res);
+  @ApiCreatedResponse({ type: MessageAttachmentDto })
+  confirmUpload(@CurrentMembership() m: Membership, @Param('channelId') id: string, @Body() dto: ConfirmUploadDto) {
+    return this.messages.confirmUpload(m, id, dto.uploadToken);
+  }
+
+  /** A short-lived presigned link; files are always served as downloads so they cannot run scripts on our origin. */
+  @Get('channels/:channelId/attachments/:attachmentId/download-url') @RequirePermission('workspace.read')
+  @ApiParam({ name: 'channelId', type: String })
+  @ApiOkResponse({ type: DownloadUrlDto })
+  downloadUrl(@CurrentMembership() m: Membership, @Param('channelId') id: string, @Param('attachmentId') attachmentId: string) {
+    return this.messages.downloadUrl(m, id, attachmentId);
   }
 
   @Get('channels/:channelId/messages/:messageId') @RequirePermission('workspace.read')

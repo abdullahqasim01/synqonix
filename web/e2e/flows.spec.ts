@@ -56,6 +56,27 @@ test.describe("critical flows", () => {
     expect(task.key).toBe(s.tasks[0].key);
   });
 
+  test("attach a file to a task through a presigned link and download it again", async ({ page }) => {
+    const s = await seed("files");
+    await logIn(page, s.email);
+    await page.goto(`/w/${s.workspaceId}/tasks/${s.tasks[0].key}`);
+    const requests: string[] = [];
+    page.on("request", (r) => { if (r.method() === "PUT") requests.push(r.url()); });
+    await page.getByLabel("Attach a file").setInputFiles({ name: "notes.txt", mimeType: "text/plain", buffer: Buffer.from("hello from the browser") });
+    await expect(page.getByRole("button", { name: "notes.txt", exact: true })).toBeVisible();
+    // The bytes went to a presigned link, not to the task's attachments route.
+    expect(requests).toHaveLength(1);
+    expect(requests[0]).toMatch(/\/storage\/local\/upload\?token=|X-Amz-Signature=/);
+    expect(requests[0]).not.toContain("/tasks/");
+
+    const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "notes.txt", exact: true }).click()]);
+    expect(download.suggestedFilename()).toBe("notes.txt");
+    const stream = await download.createReadStream();
+    const chunks: Buffer[] = [];
+    for await (const c of stream) chunks.push(c as Buffer);
+    expect(Buffer.concat(chunks).toString()).toBe("hello from the browser");
+  });
+
   test("the project board lists the project's tasks", async ({ page }) => {
     const s = await seed("board");
     await logIn(page, s.email);

@@ -8,6 +8,7 @@ import { MarkdownEditor } from "@/components/markdown-editor";
 import { Markdown } from "@/components/markdown";
 import { useWorkspace } from "@/components/workspace/workspace-context";
 import { StatusBadge, TypeIcon } from "@/components/tasks/badges";
+import { putToPresigned, startDownload, UploadError } from "@/lib/files";
 import { api, errorMessage, type Schemas } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@/lib/use-query";
@@ -323,30 +324,31 @@ export function Attachments({ task, ws, reload }: SectionProps) {
     const file = files?.[0];
     if (!file) return;
     setBusy(true);
-    const form = new FormData();
-    form.append("file", file);
-    const { error } = await api.POST("/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments", {
-      params: { path: { workspaceId: ws, taskId: task.id } },
-      body: form as unknown as { file: string },
-      bodySerializer: (b: unknown) => b as FormData, // let the browser set the multipart boundary
-    });
-    setBusy(false);
-    if (input.current) input.current.value = "";
-    setError(error ? errorMessage(error, "Upload failed") : null);
-    reload();
+    try {
+      const path = { workspaceId: ws, taskId: task.id };
+      const asked = await api.POST("/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/upload-url", {
+        params: { path }, body: { filename: file.name, size: file.size, mimeType: file.type || undefined },
+      });
+      if (!asked.data) throw new UploadError(errorMessage(asked.error, "Upload failed"));
+      await putToPresigned(asked.data, file);
+      const done = await api.POST("/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments", { params: { path }, body: { uploadToken: asked.data.uploadToken } });
+      if (!done.data) throw new UploadError(errorMessage(done.error, "Upload failed"));
+      setError(null);
+    } catch (e) {
+      setError(e instanceof UploadError ? e.message : "Upload failed");
+    } finally {
+      setBusy(false);
+      if (input.current) input.current.value = "";
+      reload();
+    }
   }
 
   async function download(a: Schemas["AttachmentDto"]) {
-    const { data, error } = await api.GET("/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/{attachmentId}/download", {
-      params: { path: { workspaceId: ws, taskId: task.id, attachmentId: a.id } }, parseAs: "blob",
+    const { data, error } = await api.GET("/api/v1/workspaces/{workspaceId}/tasks/{taskId}/attachments/{attachmentId}/download-url", {
+      params: { path: { workspaceId: ws, taskId: task.id, attachmentId: a.id } },
     });
     if (!data) return setError(errorMessage(error, "Download failed"));
-    const url = URL.createObjectURL(data as Blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = a.filename;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    startDownload(data.url, a.filename);
   }
 
   return (

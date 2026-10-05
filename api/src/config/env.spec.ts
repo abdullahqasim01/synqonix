@@ -37,3 +37,13 @@ describe('validateEnv with empty values', () => {
     expect(env.PORT).toBe(4000);
   });
 });
+
+describe('validateEnv storage', () => {
+  it('defaults to local disk and wants credentials for s3', () => {
+    expect(validateEnv({ DATABASE_URL: 'postgresql://x' }).STORAGE_DRIVER).toBe('local');
+    expect(() => validateEnv({ DATABASE_URL: 'postgresql://x', STORAGE_DRIVER: 's3' })).toThrow(/S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY/);
+    const env = validateEnv({ DATABASE_URL: 'postgresql://x', STORAGE_DRIVER: 's3', S3_BUCKET: 'b', S3_ACCESS_KEY_ID: 'k', S3_SECRET_ACCESS_KEY: 's', S3_ENDPOINT: 'https://s3.filebase.com' });
+    expect(env.S3_FORCE_PATH_STYLE).toBe('1');
+    expect(env.PRESIGN_TTL_SECONDS).toBe(300);
+  });
+});

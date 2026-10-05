@@ -16,7 +16,7 @@ import { timeSpentByTask } from './time-spent.js';
 import { refInclude, summaryInclude, toRefDto, toTaskDto, type TaskRow } from './task-mapper.js';
 import { TaskSupportService } from './task-support.service.js';
 import { taskKey } from './task-ref.js';
-import { StorageService } from './storage/storage.service.js';
+import { StorageService } from '../storage/storage.service.js';
 import { ViewsService } from '../views/views.service.js';
 
 type Tx = Prisma.TransactionClient;

@@ -23,6 +23,7 @@ import { TasksModule } from './tasks/tasks.module.js';
 import { TemplatesModule } from './templates/templates.module.js';
 import { TimeModule } from './time/time.module.js';
 import { AutomationModule } from './automation/automation.module.js';
+import { StorageModule } from './storage/storage.module.js';
 import { RetentionModule } from './retention/retention.module.js';
 import { WebhooksModule } from './webhooks/webhooks.module.js';
 import { ViewsModule } from './views/views.module.js';
@@ -39,6 +40,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module.js';
       skipIf: () => process.env.THROTTLE_DISABLED === '1',
     }),
     PrismaModule,
+    StorageModule,
     MailModule,
     AuditModule,
     AuthModule,

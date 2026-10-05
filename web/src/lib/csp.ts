@@ -1,5 +1,6 @@
 /** Builds the Content-Security-Policy for one response; `nonce` is fresh per request. */
-export function buildCsp(opts: { nonce: string; apiUrl: string; dev?: boolean }): string {
+export function buildCsp(opts: { nonce: string; apiUrl: string; /** Origin(s) of the file storage that browsers upload to (space or comma separated). */ storageUrl?: string; dev?: boolean }): string {
+  const storage = (opts.storageUrl ?? "").split(/[\s,]+/).filter(Boolean).map((u) => new URL(u).origin);
   const api = new URL(opts.apiUrl);
   const ws = `${api.protocol === "https:" ? "wss:" : "ws:"}//${api.host}`;
   const directives = [
@@ -11,7 +12,7 @@ export function buildCsp(opts: { nonce: string; apiUrl: string; dev?: boolean })
     "style-src-attr 'unsafe-inline'",
     `img-src 'self' blob: data: ${api.origin}`,
     "font-src 'self' data:",
-    `connect-src 'self' ${api.origin} ${ws}`,
+    `connect-src 'self' ${[api.origin, ws, ...storage].join(" ")}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

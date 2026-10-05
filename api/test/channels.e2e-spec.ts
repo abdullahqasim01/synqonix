@@ -1,5 +1,6 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
+import { downloadFile, uploadFile } from './files.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
@@ -347,16 +348,18 @@ describe('Channels and messages (e2e)', () => {
   describe('attachments', () => {
     it('uploads, attaches to a message and downloads as an attachment', async () => {
       const ch = await mkChannel(alice, { name: 'files', type: 'PUBLIC' });
-      const up = (await http().post(api(`/channels/${ch.id}/attachments`)).set(alice.auth).attach('file', Buffer.from('hello world'), '../notes.txt').expect(201)).body;
+      const att = api(`/channels/${ch.id}/attachments`);
+      const { confirm } = await uploadFile(app, att, alice.auth, Buffer.from('hello world'), '../notes.txt');
+      const up = (await confirm().expect(201)).body;
       expect(up).toMatchObject({ filename: 'notes.txt', size: 11 });
       // Unsent files are private to the uploader.
-      await http().get(api(`/channels/${ch.id}/attachments/${up.id}/download`)).set(bob.auth).expect(404);
-      await http().get(api(`/channels/${ch.id}/attachments/${up.id}/download`)).set(alice.auth).expect(200);
+      await http().get(`${att}/${up.id}/download-url`).set(bob.auth).expect(404);
+      await http().get(`${att}/${up.id}/download-url`).set(alice.auth).expect(200);
       // Someone else cannot attach it.
       await post(bob, ch.id, { body: 'stolen', attachmentIds: [up.id] }).expect(400);
       const m = (await post(alice, ch.id, { body: '', attachmentIds: [up.id] }).expect(201)).body;
       expect(m.attachments).toEqual([{ id: up.id, filename: 'notes.txt', mimeType: expect.any(String), size: 11 }]);
-      const dl = await http().get(api(`/channels/${ch.id}/attachments/${up.id}/download`)).set(bob.auth).expect(200);
+      const dl = await downloadFile(app, `${att}/${up.id}/download-url`, bob.auth);
       expect(dl.headers['content-disposition']).toContain('attachment');
       expect(dl.headers['x-content-type-options']).toBe('nosniff');
       expect(dl.body.toString()).toBe('hello world');
@@ -366,16 +369,18 @@ describe('Channels and messages (e2e)', () => {
 
     it('enforces the size limit, access and the channel', async () => {
       const priv = await mkChannel(alice, { name: 'hush', type: 'PRIVATE' });
-      await http().post(api(`/channels/${priv.id}/attachments`)).set(bob.auth).attach('file', Buffer.from('x'), 'x.txt').expect(404);
-      await http().post(api(`/channels/${priv.id}/attachments`)).set(alice.auth).attach('file', Buffer.alloc(1024 * 1024 + 1), 'big.bin').expect(413);
-      await http().post(api(`/channels/${priv.id}/attachments`)).set(alice.auth).expect(400);
-      const up = (await http().post(api(`/channels/${priv.id}/attachments`)).set(alice.auth).attach('file', Buffer.from('x'), 'x.txt').expect(201)).body;
+      const att = api(`/channels/${priv.id}/attachments`);
+      await http().post(`${att}/upload-url`).set(bob.auth).send({ filename: 'x.txt', size: 1 }).expect(404);
+      await http().post(`${att}/upload-url`).set(alice.auth).send({ filename: 'big.bin', size: 1024 * 1024 + 1 }).expect(413);
+      await http().post(att).set(alice.auth).send({}).expect(400);
+      const { confirm } = await uploadFile(app, att, alice.auth, Buffer.from('x'), 'x.txt');
+      const up = (await confirm().expect(201)).body;
       const m = (await post(alice, priv.id, { body: 'file', attachmentIds: [up.id] }).expect(201)).body;
       expect(m.attachments).toHaveLength(1);
-      await http().get(api(`/channels/${priv.id}/attachments/${up.id}/download`)).set(carol.auth).expect(404);
+      await http().get(`${att}/${up.id}/download-url`).set(carol.auth).expect(404);
       // Deleting the message removes the file.
       await http().delete(api(`/channels/${priv.id}/messages/${m.id}`)).set(alice.auth).expect(204);
-      await http().get(api(`/channels/${priv.id}/attachments/${up.id}/download`)).set(alice.auth).expect(404);
+      await http().get(`${att}/${up.id}/download-url`).set(alice.auth).expect(404);
     });
   });
 

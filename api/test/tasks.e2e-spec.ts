@@ -6,6 +6,7 @@ const uploadDir = process.env.UPLOAD_DIR!; // set in vitest.config.e2e.ts
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
+import { downloadFile, uploadFile } from './files.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
@@ -331,17 +332,17 @@ describe('Tasks (e2e)', () => {
   });
 
   describe('attachments', () => {
-    it('uploads, downloads as an attachment, and deletes the stored file', async () => {
+    it('uploads and downloads through presigned links, and deletes the stored file', async () => {
       await mk(alice).expect(201);
-      const up = await http().post(api('/tasks/SYN-1/attachments')).set(bob.auth)
-        .attach('file', Buffer.from('hello world'), { filename: '../../evil/notes.txt', contentType: 'text/html' }).expect(201);
+      const att = api('/tasks/SYN-1/attachments');
+      const { confirm, target } = await uploadFile(app, att, bob.auth, Buffer.from('hello world'), '../../evil/notes.txt', { mimeType: 'text/html' });
+      // The link, not the API route, receives the bytes, and only accepts the announced size and type.
+      expect(target.uploadUrl).toContain('/storage/local/upload');
+      expect(target.headers).toEqual({ 'Content-Type': 'application/octet-stream' });
+      const up = await confirm().expect(201);
       expect(up.body).toMatchObject({ filename: 'notes.txt', size: 11, uploaderId: bob.id });
 
-      const dl = await http().get(api(`/tasks/SYN-1/attachments/${up.body.id}/download`)).set(vic.auth).buffer().parse((res, cb) => {
-        const chunks: Buffer[] = [];
-        res.on('data', (c: Buffer) => chunks.push(c));
-        res.on('end', () => cb(null, Buffer.concat(chunks)));
-      }).expect(200);
+      const dl = await downloadFile(app, api(`/tasks/SYN-1/attachments/${up.body.id}/download-url`), vic.auth);
       expect(dl.body.toString()).toBe('hello world');
       expect(dl.headers['content-disposition']).toMatch(/^attachment;/);
       expect(dl.headers['content-type']).toBe('application/octet-stream');
@@ -357,18 +358,50 @@ describe('Tasks (e2e)', () => {
       expect(leftovers).toHaveLength(0);
     });
 
-    it('rejects missing, oversized and unauthorised uploads', async () => {
+    it('there is no way to send or fetch file bytes through the API itself', async () => {
       await mk(alice).expect(201);
-      await http().post(api('/tasks/SYN-1/attachments')).set(bob.auth).expect(400);
-      await http().post(api('/tasks/SYN-1/attachments')).set(bob.auth)
-        .attach('file', Buffer.alloc(2 * 1024 * 1024), 'big.bin').expect(413);
-      await http().post(api('/tasks/SYN-1/attachments')).set(vic.auth).attach('file', Buffer.from('x'), 'x.txt').expect(403);
-      await http().get(api('/tasks/SYN-1/attachments/nope/download')).set(bob.auth).expect(404);
+      await http().post(api('/tasks/SYN-1/attachments')).set(bob.auth).attach('file', Buffer.from('x'), 'x.txt').expect(400);
+      await http().get(api('/tasks/SYN-1/attachments/anything/download')).set(bob.auth).expect(404);
+    });
+
+    it('rejects oversized, unauthorised and mismatched uploads', async () => {
+      await mk(alice).expect(201);
+      const att = api('/tasks/SYN-1/attachments');
+      await http().post(`${att}/upload-url`).set(bob.auth).send({ filename: 'big.bin', size: 2 * 1024 * 1024 }).expect(413);
+      await http().post(`${att}/upload-url`).set(bob.auth).send({ filename: 'x.txt', size: 0 }).expect(400);
+      await http().post(`${att}/upload-url`).set(vic.auth).send({ filename: 'x.txt', size: 1 }).expect(403);
+      await http().get(api('/tasks/SYN-1/attachments/nope/download-url')).set(bob.auth).expect(404);
+
+      // Confirming without uploading, with a forged token, or as someone else fails.
+      const target = (await http().post(`${att}/upload-url`).set(bob.auth).send({ filename: 'a.txt', size: 3 }).expect(201)).body;
+      await http().post(att).set(bob.auth).send({ uploadToken: target.uploadToken }).expect(400);
+      await http().post(att).set(bob.auth).send({ uploadToken: `${target.uploadToken}x` }).expect(401);
+      const url = new URL(target.uploadUrl);
+      await http().put(url.pathname + url.search).set(target.headers).send(Buffer.from('abc')).expect(200);
+      await http().post(att).set(alice.auth).send({ uploadToken: target.uploadToken }).expect(400);
+
+      // A different size than announced is refused by the upload link itself.
+      const small = (await http().post(`${att}/upload-url`).set(bob.auth).send({ filename: 'b.txt', size: 5 }).expect(201)).body;
+      const u2 = new URL(small.uploadUrl);
+      await http().put(u2.pathname + u2.search).set(small.headers).send(Buffer.from('toolong')).expect(400);
+      // A link only works for what it was issued for.
+      await http().put(`/api/v1/storage/local/upload?token=${target.uploadToken}`).send(Buffer.from('abc')).expect(400);
+    });
+
+    it('a download link expires with the token and is refused when tampered with', async () => {
+      await mk(alice).expect(201);
+      const { confirm } = await uploadFile(app, api('/tasks/SYN-1/attachments'), bob.auth, Buffer.from('data'), 'd.txt');
+      const att = (await confirm().expect(201)).body;
+      const link = (await http().get(api(`/tasks/SYN-1/attachments/${att.id}/download-url`)).set(bob.auth).expect(200)).body as { url: string };
+      const u = new URL(link.url);
+      await http().get(u.pathname + u.search.slice(0, -2) + 'zz').expect(401);
+      await http().get('/api/v1/storage/local/download').expect(401);
     });
 
     it('deletes stored files when the task is deleted', async () => {
       await mk(alice).expect(201);
-      await http().post(api('/tasks/SYN-1/attachments')).set(alice.auth).attach('file', Buffer.from('bye'), 'b.txt').expect(201);
+      const { confirm } = await uploadFile(app, api('/tasks/SYN-1/attachments'), alice.auth, Buffer.from('bye'), 'b.txt');
+      await confirm().expect(201);
       await http().delete(api('/tasks/SYN-1')).set(alice.auth).expect(204);
       const left = existsSync(join(uploadDir, ws)) ? readdirSync(join(uploadDir, ws), { recursive: true, withFileTypes: true }).filter((e) => e.isFile()) : [];
       expect(left).toHaveLength(0);

@@ -66,7 +66,7 @@ Run each app's checks. All should pass with no failures.
 ### 3.3 Tasks
 - [ ] Create tasks with "New task" and with the quick-add box (`/` focuses it). Keys are `KEY-1`, `KEY-2`, …
 - [ ] Open a task: edit title, description (markdown), acceptance criteria, priority, assignees, labels, due date, estimate.
-- [ ] Add a sub-task, a checklist with items (tick one), a link to another task, an attachment, a comment with an @mention.
+- [ ] Add a sub-task, a checklist with items (tick one), a link to another task, an attachment, a comment with an @mention. In dev tools (Network) the file goes in a `PUT` to a presigned URL (`/storage/local/upload?token=…` locally, an `X-Amz-Signature` URL with S3), and clicking the attachment downloads it via a short-lived link.
 - [ ] History shows each change. Delete a task (via Actions) and confirm it disappears.
 - [ ] Bulk actions in the list: select several tasks and change status or assignee.
 - [ ] Saved views and filters persist after reload.
@@ -136,6 +136,11 @@ Open `vscode-extension/` in VS Code and press **F5** (Run Extension). In the new
 - [ ] `cp api/.env.production.example api/.env.production` and `cp web/.env.production.example web/.env.production`, fill them in (keep the Postgres password in `DATABASE_URL` and `POSTGRES_PASSWORD` identical), then `docker compose -f docker-compose.prod.yml up -d --build`. **This is the first real build of the images** (the sandbox could not run Docker): note any failure.
 - [ ] `curl localhost:4000/api/v1/health/ready` is ok; register through the web app on :3000; migrations ran on start.
 - [ ] Back up and restore the database as described in `docs/deployment.md`.
+
+### 3.13 S3 storage (needs an S3-compatible bucket, e.g. Filebase)
+- [ ] Set `STORAGE_DRIVER=s3` and the `S3_*` variables on the API, `NEXT_PUBLIC_STORAGE_URL` on the web app, and the bucket's CORS (see `docs/deploy-free-tier.md`).
+- [ ] Attach a file to a task and to a chat message; both appear and download. The `PUT` goes to the bucket host, no API route carries file bytes, and the bucket is not publicly readable.
+- [ ] A file larger than `MAX_UPLOAD_MB` is refused before any upload; deleting the task or message removes the object from the bucket.
 
 ## 4. Reporting problems
 For each failure note: the step number, what you did, what you expected, what happened, browser console errors, and the `X-Request-Id` of the failing API call. The API log line with that id has the server-side detail.

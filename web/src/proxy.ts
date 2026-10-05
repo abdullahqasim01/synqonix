@@ -6,6 +6,7 @@ export function proxy(request: NextRequest) {
   const csp = buildCsp({
     nonce,
     apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000",
+    storageUrl: process.env.NEXT_PUBLIC_STORAGE_URL,
     dev: process.env.NODE_ENV === "development",
   });
   const headers = new Headers(request.headers);

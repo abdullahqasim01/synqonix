@@ -15,6 +15,12 @@ describe("buildCsp", () => {
     expect(directive("default-src")).toBe("default-src 'self'");
   });
 
+  it("lets browsers upload to the configured storage origin and nowhere else", () => {
+    const withStorage = buildCsp({ nonce: "n", apiUrl: "https://api.example.com", storageUrl: "https://s3.filebase.com/some/path, https://other.example.org" });
+    expect(withStorage).toContain("connect-src 'self' https://api.example.com wss://api.example.com https://s3.filebase.com https://other.example.org");
+    expect(csp).not.toContain("filebase");
+  });
+
   it("blocks framing, plugins and base-tag tricks", () => {
     expect(csp).toContain("frame-ancestors 'none'");
     expect(csp).toContain("object-src 'none'");

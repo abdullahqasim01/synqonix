@@ -1,13 +1,9 @@
-import {
-  Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Query, Res, UploadedFile,
-  UseGuards, UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
-import type { Response } from 'express';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import type { Membership } from '../generated/prisma/client.js';
 import { CurrentMembership, RequirePermission, WorkspaceGuard } from '../permissions/workspace.guard.js';
 import { ActivityService } from './activity.service.js';
+import { ConfirmUploadDto, DownloadUrlDto, RequestUploadDto, UploadTargetDto } from '../storage/storage.dto.js';
 import { AttachmentsService } from './attachments.service.js';
 import { ChecklistsService } from './checklists.service.js';
 import { CommentsService } from './comments.service.js';
@@ -20,7 +16,6 @@ import { RelationsService } from './relations.service.js';
 import { TaskAccessService } from './task-access.service.js';
 import { WatchersService } from './watchers.service.js';
 
-const MAX_UPLOAD_BYTES = 25 * 1024 * 1024; // hard ceiling; the configured limit is enforced below
 
 /** Everything that hangs off a single task: comments, checklists, relations, files, activity. */
 @ApiTags('tasks')
@@ -140,28 +135,25 @@ export class TaskDetailsController {
 
   // ----- attachments -----
 
-  @Post('attachments') @RequirePermission('task.write')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } }, required: ['file'] } })
-  @ApiCreatedResponse({ type: AttachmentDto })
-  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 } }))
-  upload(@CurrentMembership() m: Membership, @Param('taskId') ref: string, @UploadedFile() file: Express.Multer.File | undefined) {
-    return this.attachments.upload(m, ref, file);
+  /** Step 1 of an upload: get a presigned link, then `PUT` the file to it. */
+  @Post('attachments/upload-url') @RequirePermission('task.write')
+  @ApiCreatedResponse({ type: UploadTargetDto })
+  requestUpload(@CurrentMembership() m: Membership, @Param('taskId') ref: string, @Body() dto: RequestUploadDto) {
+    return this.attachments.requestUpload(m, ref, dto);
   }
 
-  /** Always served as a download, never inline, so uploaded files cannot run scripts on our origin. */
-  @Get('attachments/:attachmentId/download') @RequirePermission('task.read')
-  @ApiOkResponse({ description: 'The file contents' })
-  async download(
-    @CurrentMembership() m: Membership, @Param('taskId') ref: string,
-    @Param('attachmentId') id: string, @Res() res: Response,
-  ) {
-    const { stream, filename, size } = await this.attachments.download(m, ref, id);
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Length', String(size));
-    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    stream.pipe(res);
+  /** Step 2: confirm the upload so the file shows up on the task. */
+  @Post('attachments') @RequirePermission('task.write')
+  @ApiCreatedResponse({ type: AttachmentDto })
+  confirmUpload(@CurrentMembership() m: Membership, @Param('taskId') ref: string, @Body() dto: ConfirmUploadDto) {
+    return this.attachments.confirmUpload(m, ref, dto.uploadToken);
+  }
+
+  /** A short-lived presigned link; the file is always served as a download, never inline. */
+  @Get('attachments/:attachmentId/download-url') @RequirePermission('task.read')
+  @ApiOkResponse({ type: DownloadUrlDto })
+  downloadUrl(@CurrentMembership() m: Membership, @Param('taskId') ref: string, @Param('attachmentId') id: string) {
+    return this.attachments.downloadUrl(m, ref, id);
   }
 
   @Delete('attachments/:attachmentId') @HttpCode(204) @RequirePermission('task.write')
