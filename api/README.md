@@ -18,3 +18,5 @@ npm run start:dev                                # http://localhost:4000/api/v1/
 | `npm run generate:openapi` | write `openapi.json` (consumed by `web/` and `vscode-extension/`) |
 
 Swagger UI: `http://localhost:4000/docs`.
+
+See the [root README](../README.md) for the full setup and [docs/deployment.md](../docs/deployment.md) for production configuration.

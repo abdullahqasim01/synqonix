@@ -31,7 +31,7 @@ Three pieces: **Postgres 17.9**, the **API** (NestJS, port 4000) and the **web a
 | `PRESIGN_TTL_SECONDS` | `300` | How long a presigned link works |
 | `API_PUBLIC_URL` | `http://localhost:PORT` | Used only for the local driver's links |
 | `UPLOAD_DIR`, `MAX_UPLOAD_MB` | `./uploads`, `10` | Local-driver folder; the size limit applies to both drivers |
-| `GITHUB_APP_ID`, `GITHUB_APP_SLUG`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET` | unset | GitHub integration is off until set (Phase 7) |
+| `GITHUB_APP_ID`, `GITHUB_APP_SLUG`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET` | unset | GitHub integration is off until set, see [github-integration.md](github-integration.md) |
 | `AUDIT_RETENTION_DAYS`, `NOTIFICATION_RETENTION_DAYS`, `DELIVERY_RETENTION_DAYS` | `365`, `90`, `30` | `0` keeps forever |
 | `WEBHOOKS_ALLOW_PRIVATE_TARGETS` | `0` | Development only |
 

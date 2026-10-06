@@ -15,3 +15,5 @@ npm run dev          # http://localhost:3000
 | `npm run lint`, `npm run typecheck` | static checks |
 
 Add shadcn components with `npx shadcn add <component>` (config in `components.json`).
+
+See the [root README](../README.md) for the full setup and [docs/deployment.md](../docs/deployment.md) for production configuration.

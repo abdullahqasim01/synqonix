@@ -112,7 +112,7 @@ Free-plan limits (about 100 emails/day) are plenty for verification, reset and n
 2. Open the verification email (proves Resend works), attach a file to a task and download it (proves Filebase and CORS work).
 3. Optional demo data: `SYNQONIX_API=https://API node api/scripts/seed-demo.mjs`.
 
-**GitHub App (optional).** Create the app as described in `docs/phases/phase-07-github.md`; webhook URL `https://API/api/v1/github/webhooks`, then set `GITHUB_APP_ID`, `GITHUB_APP_SLUG`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET` on the service.
+**GitHub App (optional).** Create the app as described in `docs/github-integration.md`; webhook URL `https://API/api/v1/github/webhooks`, then set `GITHUB_APP_ID`, `GITHUB_APP_SLUG`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET` on the service.
 
 ## 8. Backups (free, GitHub Actions)
 
