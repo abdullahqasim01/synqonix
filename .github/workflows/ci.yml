@@ -27,6 +27,7 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - run: npx prisma migrate deploy # the e2e suites need the tables to exist
       - run: npm run test:e2e
       - run: npm run build
 
