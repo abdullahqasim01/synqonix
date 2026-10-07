@@ -14,7 +14,7 @@ Three independent apps — `api/`, `web/`, `vscode-extension/` — each with its
 
 ## Setup
 
-See *Quick start* in the [README](README.md). Postgres and a mail inbox come from `docker compose up -d` at the repo root. The [test plan](docs/test-plan.md) lists every command for running the suites.
+See *Quick start* in the [README](README.md). Postgres and a mail inbox come from `docker compose -f docker-compose.dev.yml up -d` at the repo root. The [test plan](docs/test-plan.md) lists every command for running the suites.
 
 ## Before you open a pull request
 

@@ -1,0 +1,22 @@
+# Development infrastructure only: Postgres and a local mail inbox (Mailpit). You run the API and web app yourself.
+#   docker compose -f docker-compose.dev.yml up -d
+# To run the whole app in containers instead, use docker-compose.yml.
+services:
+  postgres:
+    image: postgres:17.9
+    environment:
+      POSTGRES_USER: synqonix
+      POSTGRES_PASSWORD: synqonix
+      POSTGRES_DB: synqonix
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U synqonix"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  mailpit:
+    image: axllent/mailpit
+    ports: ["1025:1025", "8025:8025"]
+volumes:
+  pgdata:

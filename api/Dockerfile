@@ -19,6 +19,7 @@ COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/prisma ./prisma
 COPY --from=build --chown=node:node /app/prisma.config.ts /app/package.json ./
 COPY --chown=node:node docker-entrypoint.sh ./
+COPY --chown=node:node scripts ./scripts
 USER node
 EXPOSE 4000
 VOLUME ["/app/uploads"]

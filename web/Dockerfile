@@ -4,8 +4,14 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-# NEXT_PUBLIC_API_URL is baked into the browser bundle: Next.js reads it from .env.production while building.
-RUN npm run build
+# NEXT_PUBLIC_* values are baked into the browser bundle. Pass them as build arguments, or put them in
+# web/.env.production (Next.js reads that file while building); an argument wins over the file.
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_STORAGE_URL
+# An empty argument must not shadow the file, so unset it unless a value was given.
+RUN if [ -z "$NEXT_PUBLIC_API_URL" ]; then unset NEXT_PUBLIC_API_URL; fi; \
+    if [ -z "$NEXT_PUBLIC_STORAGE_URL" ]; then unset NEXT_PUBLIC_STORAGE_URL; fi; \
+    npm run build
 
 FROM node:22-alpine
 ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0

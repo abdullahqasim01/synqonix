@@ -1,19 +1,81 @@
+# Run all of Synqonix in containers with one command:
+#
+#   docker compose up --build
+#
+# then open http://localhost:3000, register an account, and read the verification email in the
+# inbox at http://localhost:8025. Add `--profile demo` to also load a sample workspace
+# (sign in as demo@synqonix.local / demo-password-123).
+#
+# This setup is for trying Synqonix and for local use. It uses fixed development secrets and plain
+# HTTP on localhost. For a real deployment use docker-compose.prod.yml (docs/deployment.md).
+# For developing the code, use docker-compose.dev.yml (Postgres + Mailpit only).
+name: synqonix-app
+
 services:
   postgres:
     image: postgres:17.9
+    restart: unless-stopped
     environment:
       POSTGRES_USER: synqonix
       POSTGRES_PASSWORD: synqonix
       POSTGRES_DB: synqonix
-    ports: ["5432:5432"]
     volumes: [pgdata:/var/lib/postgresql/data]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U synqonix"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 20
+
+  # Catches every email the app sends (verification, password reset, notifications).
   mailpit:
     image: axllent/mailpit
-    ports: ["1025:1025", "8025:8025"]
+    restart: unless-stopped
+    ports: ["8025:8025"]
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+      mailpit: { condition: service_started }
+    environment:
+      # Development mode accepts the built-in dev secrets; production mode (docker-compose.prod.yml) does not.
+      NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: postgresql://synqonix:synqonix@postgres:5432/synqonix
+      WEB_URL: http://localhost:3000
+      API_PUBLIC_URL: http://localhost:4000
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      MAIL_FROM: Synqonix <no-reply@synqonix.local>
+      STORAGE_DRIVER: local
+      UPLOAD_DIR: /app/uploads
+    volumes: [uploads:/app/uploads]
+    ports: ["4000:4000"]
+
+  web:
+    build:
+      context: ./web
+      args:
+        # Compiled into the browser bundle: the address the browser uses to reach the API.
+        NEXT_PUBLIC_API_URL: http://localhost:4000
+    restart: unless-stopped
+    depends_on:
+      api: { condition: service_healthy }
+    ports: ["3000:3000"]
+
+  # Optional sample data: docker compose --profile demo up
+  seed:
+    profiles: [demo]
+    build: ./api
+    depends_on:
+      api: { condition: service_healthy }
+    environment:
+      SKIP_MIGRATIONS: "1"
+      SYNQONIX_API: http://api:4000
+    command: ["node", "scripts/seed-demo.mjs"]
+    restart: "no"
+
 volumes:
   pgdata:
+  uploads:

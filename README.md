@@ -45,14 +45,28 @@ It is self-hostable, runs on a small free-tier stack for a single team, and ever
 
 </details>
 
-## Quick start (development)
+## Try it with Docker (one command)
 
-You need **Node.js 22**, **npm**, and **Docker** (for Postgres and a local mail inbox).
+You only need **Docker**:
 
 ```bash
 git clone https://github.com/abdullahqasim01/synqonix.git
 cd synqonix
-docker compose up -d                 # Postgres 17.9 on :5432, Mailpit on :8025
+docker compose up --build
+```
+
+Then open **<http://localhost:3000>**, create an account, and read the verification email in the local inbox at <http://localhost:8025>. To start with a sample workspace, run `docker compose --profile demo up --build` and sign in as `demo@synqonix.local` / `demo-password-123`.
+
+This starts Postgres, the API, the web app and Mailpit (a fake inbox), applies the database migrations automatically, and keeps your data in Docker volumes (`docker compose down -v` wipes it). It uses fixed development secrets over plain HTTP, so it is for trying Synqonix and for local use; for a real deployment see [Deploying](#deploying).
+
+## Quick start (development)
+
+To work on the code you run the apps yourself with hot reload. You need **Node.js 22**, **npm**, and **Docker** (for Postgres and a local mail inbox only).
+
+```bash
+git clone https://github.com/abdullahqasim01/synqonix.git
+cd synqonix
+docker compose -f docker-compose.dev.yml up -d   # Postgres 17.9 on :5432, Mailpit on :8025
 
 # API  → http://localhost:4000  (Swagger UI at /docs)
 cd api
@@ -99,7 +113,7 @@ The API publishes an OpenAPI document (`api/openapi.json`); `web` and `vscode-ex
 
 ## Deploying
 
-- **Anywhere with Docker:** `docker-compose.prod.yml` runs Postgres, the API and the web app. See [docs/deployment.md](docs/deployment.md) for configuration, upgrades, backups and observability.
+- **Anywhere with Docker:** `docker-compose.prod.yml` (production settings and secrets) runs Postgres, the API and the web app. See [docs/deployment.md](docs/deployment.md) for configuration, upgrades, backups and observability.
 - **Free tier for one team:** Vercel + Northflank + Neon + Resend + Filebase — step by step in [docs/deploy-free-tier.md](docs/deploy-free-tier.md).
 - **Files** go to local disk in development or any S3-compatible bucket in production; uploads and downloads always use short-lived presigned links, so the bucket can stay private.
 

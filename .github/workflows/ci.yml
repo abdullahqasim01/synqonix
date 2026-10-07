@@ -108,6 +108,30 @@ jobs:
       - run: cp web/.env.production.example web/.env.production
       - run: docker build -t synqonix-web ./web
 
+  # The one-command setup from the README: build everything, start it, and use it.
+  compose-quickstart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the stack, then load the demo data
+        run: |
+          docker compose up -d --build --wait
+          docker compose --profile demo run --rm --build seed
+      - name: API and web answer
+        run: |
+          curl -fsS http://localhost:4000/api/v1/health/ready
+          curl -fsS -o /dev/null http://localhost:3000/login
+          curl -fsS -o /dev/null http://localhost:8025
+      - name: Sign in with the demo account and read data
+        run: |
+          token=$(curl -fsS -X POST http://localhost:4000/api/v1/auth/login -H 'content-type: application/json' \
+            -d '{"email":"demo@synqonix.local","password":"demo-password-123"}' | python3 -c 'import sys,json;print(json.load(sys.stdin)["accessToken"])')
+          curl -fsS http://localhost:4000/api/v1/workspaces -H "authorization: Bearer $token" | grep -q "Demo Workspace"
+      - if: failure()
+        run: docker compose --profile demo logs --no-color
+      - if: always()
+        run: docker compose --profile demo down -v
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:

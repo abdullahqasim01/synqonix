@@ -8,7 +8,7 @@ Prerequisites: Node 22, npm, Docker (for Postgres 17.9 and Mailpit), git, and VS
 
 ```bash
 # from the repo root
-docker compose up -d                      # Postgres :5432, Mailpit :1025 (SMTP) / :8025 (inbox UI)
+docker compose -f docker-compose.dev.yml up -d   # Postgres :5432, Mailpit :1025 (SMTP) / :8025 (inbox UI)
 
 cd api
 cp .env.example .env                      # defaults work locally
