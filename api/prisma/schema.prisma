@@ -1,7 +1,9 @@
 generator client {
-  provider     = "prisma-client"
-  output       = "../src/generated/prisma"
-  moduleFormat = "esm"
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  // Explicit, so the generated imports are the same whether or not a tsconfig is visible when it runs (Docker build).
+  importFileExtension = "js"
 }
 
 datasource db {
