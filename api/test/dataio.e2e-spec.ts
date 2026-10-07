@@ -3,7 +3,7 @@ import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { parseCsv } from '../src/dataio/csv.js';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 interface Result {
   dryRun: boolean; total: number; created: number; skipped: number; failed: number; warnings: number; truncated: boolean;
@@ -26,7 +26,7 @@ describe('Import and export (e2e)', () => {
   beforeAll(async () => ({ app, mail, prisma } = await createTestApp()));
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, viv, eve] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Viv'), await signUp(app, 'Eve')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [viv, 'VIEWER']]);
     src = (await http().post(api('/projects')).set(alice.auth).send({ name: 'Source', key: 'SRC', template: 'SCRUM' }).expect(201)).body;

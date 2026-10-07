@@ -3,7 +3,7 @@ import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { RecurringService } from '../src/templates/recurring.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 describe('Templates and recurring tasks (e2e)', () => {
   let app: NestExpressApplication;
@@ -24,7 +24,7 @@ describe('Templates and recurring tasks (e2e)', () => {
   });
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, viv, eve] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Viv'), await signUp(app, 'Eve')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [viv, 'VIEWER']]);
     project = (await http().post(api('/projects')).set(alice.auth).send({ name: 'Synqonix', key: 'SYN', template: 'SCRUM' }).expect(201)).body;

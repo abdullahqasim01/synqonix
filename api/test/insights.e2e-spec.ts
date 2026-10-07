@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { InsightsService } from '../src/insights/insights.service.js';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { TimeService } from '../src/time/time.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 const NOW = new Date('2026-03-10T12:00:00Z');
 const at = (iso: string) => new Date(iso);
@@ -30,7 +30,7 @@ describe('Insights and time tracking (e2e)', () => {
   });
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, viv, eve] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Viv'), await signUp(app, 'Eve')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [viv, 'VIEWER']]);
     project = (await http().post(api('/projects')).set(alice.auth).send({ name: 'Synqonix', key: 'SYN', template: 'SCRUM' }).expect(201)).body;

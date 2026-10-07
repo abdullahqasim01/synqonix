@@ -2,7 +2,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { buildOpenApi } from '../src/setup-app.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 const UUID = '00000000-0000-4000-8000-000000000000';
 type Route = { method: 'get' | 'post' | 'put' | 'patch' | 'delete'; path: string };
@@ -31,7 +31,7 @@ describe('Security matrix (e2e)', () => {
   beforeAll(async () => {
     let prisma;
     ({ app, mail, prisma } = await createTestApp());
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     owner = await signUp(app, 'Sec_Owner');
     outsider = await signUp(app, 'Sec_Outsider');
     ws = await createWorkspace(app, mail, owner);

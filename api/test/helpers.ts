@@ -87,6 +87,25 @@ export async function createTestApp({ throttle = false } = {}) {
 
 import request from 'supertest';
 
+/**
+ * Empties the tables between tests. Work started by the previous test (event handlers, notification
+ * jobs) can still hold row locks for a moment, which makes Postgres report a deadlock; the data is
+ * about to be thrown away anyway, so wait briefly and retry.
+ */
+export async function resetDatabase(prisma: PrismaService, extraTables: string[] = []) {
+  const tables = ['User', 'Workspace', ...extraTables].map((t) => `"${t.replace(/"/g, '')}"`).join(', ');
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await prisma.$executeRawUnsafe(`TRUNCATE ${tables} CASCADE`);
+      return;
+    } catch (e) {
+      const deadlock = /40P01|deadlock/i.test(`${(e as Error).message} ${JSON.stringify((e as { meta?: unknown }).meta ?? '')}`);
+      if (!deadlock || attempt >= 6) throw e;
+      await new Promise((r) => setTimeout(r, 150 * attempt));
+    }
+  }
+}
+
 export interface TestUser { id: string; email: string; token: string; auth: { Authorization: string } }
 
 /** Registers a user and returns a ready-to-use bearer header. */

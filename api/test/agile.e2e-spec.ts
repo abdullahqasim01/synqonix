@@ -3,7 +3,7 @@ import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { SprintTracker } from '../src/agile/sprint-tracker.service.js';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 interface Sprint { id: string; number: number; name: string; state: string; stats: { taskCount: number; doneCount: number; points: number; donePoints: number }; summary: Record<string, number> | null }
 interface Point { reason: string; scopePoints: number; donePoints: number; remainingPoints: number; scopeTasks: number; doneTasks: number }
@@ -22,7 +22,7 @@ describe('Agile (e2e)', () => {
   beforeAll(async () => ({ app, mail, prisma } = await createTestApp()));
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, vic] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Vic')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [vic, 'VIEWER']]);
     project = (await http().post(api('/projects')).set(alice.auth).send({ name: 'Synqonix', key: 'SYN', template: 'SCRUM' }).expect(201)).body;

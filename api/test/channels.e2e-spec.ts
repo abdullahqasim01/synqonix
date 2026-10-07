@@ -3,7 +3,7 @@ import request from 'supertest';
 import { downloadFile, uploadFile } from './files.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 describe('Channels and messages (e2e)', () => {
   let app: NestExpressApplication;
@@ -17,7 +17,7 @@ describe('Channels and messages (e2e)', () => {
   beforeAll(async () => ({ app, mail, prisma } = await createTestApp()));
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, carol, viv, eve] = [
       await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Carol'), await signUp(app, 'Viv'), await signUp(app, 'Eve'),
     ];

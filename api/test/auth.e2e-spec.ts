@@ -2,7 +2,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, type FakeMailService } from './helpers.js';
+import { createTestApp, type FakeMailService, resetDatabase } from './helpers.js';
 
 const creds = { email: 'ada@example.com', name: 'Ada', password: 'correct horse battery' };
 
@@ -15,7 +15,7 @@ describe('Auth (e2e)', () => {
   beforeAll(async () => ({ app, mail, prisma } = await createTestApp()));
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     mail.sent = [];
   });
 

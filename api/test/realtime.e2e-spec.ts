@@ -4,7 +4,7 @@ import { io, type Socket } from 'socket.io-client';
 import request from 'supertest';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 interface Evt { type: string; taskKey: string; projectId: string; actorId: string; fields?: string[]; statusId?: string }
 
@@ -27,7 +27,7 @@ describe('Realtime (e2e)', () => {
   });
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, eve] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Eve')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER']]);
     project = (await http().post(api('/projects')).set(alice.auth).send({ name: 'Synqonix', key: 'SYN', template: 'SCRUM' }).expect(201)).body;

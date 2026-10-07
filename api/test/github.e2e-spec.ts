@@ -5,7 +5,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeGithubClient, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeGithubClient, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 const SECRET = 'test-webhook-secret';
 const fixture = (name: string): Record<string, unknown> =>
@@ -46,7 +46,7 @@ describe('GitHub integration (e2e)', () => {
   const activity = async (key: string) => (await http().get(api(`/tasks/${key}/activity`)).set(alice.auth).expect(200)).body as { type: string; field: string | null; to: unknown; actorId: string | null }[];
 
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace", "WebhookDelivery" CASCADE`;
+    await resetDatabase(prisma, ['WebhookDelivery']);
     github.installations.clear(); github.repos.clear(); github.branches = []; github.issueStates = []; github.configured = true; github.failBranch = false;
     [alice, bob, viv, carol] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Viv'), await signUp(app, 'Carol')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [viv, 'VIEWER'], [carol, 'ADMIN']]);

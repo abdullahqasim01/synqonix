@@ -6,7 +6,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { NotificationsService } from '../src/notifications/notifications.service.js';
 import { RemindersService } from '../src/notifications/reminders.service.js';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 interface Item { id: string; type: string; title: string; body: string | null; url: string; read: boolean; taskKey: string | null; workspaceId: string }
 
@@ -34,7 +34,7 @@ describe('Notifications (e2e)', () => {
   afterAll(() => app.close());
   afterEach(() => { sockets.splice(0).forEach((s) => s.close()); });
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     mail.notifications = []; mail.failNotifications = false;
     [alice, bob, carol, viv] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Carol'), await signUp(app, 'Viv')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [carol, 'MEMBER'], [viv, 'VIEWER']]);

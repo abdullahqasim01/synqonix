@@ -4,7 +4,7 @@ import { io, type Socket } from 'socket.io-client';
 import request from 'supertest';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 interface Msg { type: string; channelId: string; message: { id: string; seq: number; body: string; parentId: string | null; replyCount: number } }
 
@@ -26,7 +26,7 @@ describe('Chat realtime (e2e)', () => {
   });
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, carol] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Carol')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [carol, 'ADMIN']]);
   });

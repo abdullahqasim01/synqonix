@@ -6,7 +6,7 @@ import request from 'supertest';
 import S3rver from 's3rver';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { S3Storage } from '../src/storage/s3-storage.js';
-import { createTestApp, createWorkspace, signUp, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type TestUser, resetDatabase } from './helpers.js';
 
 // The app reads its configuration when its modules are first imported, so set it before the imports below run.
 vi.hoisted(() => {
@@ -91,7 +91,7 @@ describe('S3 storage (against an S3-compatible server)', () => {
     beforeAll(async () => {
       let mail, prisma;
       ({ app, mail, prisma } = await createTestApp());
-      await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+      await resetDatabase(prisma);
       alice = await signUp(app, 'S3_Alice');
       bob = await signUp(app, 'S3_Bob');
       ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER']]);

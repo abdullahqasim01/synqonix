@@ -2,7 +2,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 describe('Saved views & recent tasks (e2e)', () => {
   let app: NestExpressApplication;
@@ -17,7 +17,7 @@ describe('Saved views & recent tasks (e2e)', () => {
   beforeAll(async () => ({ app, mail, prisma } = await createTestApp()));
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, vic, carol] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Vic'), await signUp(app, 'Carol')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [vic, 'VIEWER'], [carol, 'MEMBER']]);
     project = (await http().post(api('/projects')).set(alice.auth).send({ name: 'Synqonix', key: 'SYN', template: 'SCRUM' }).expect(201)).body;

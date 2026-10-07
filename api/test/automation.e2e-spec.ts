@@ -3,7 +3,7 @@ import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { RetentionService } from '../src/retention/retention.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 describe('Automation rules (e2e)', () => {
   let app: NestExpressApplication;
@@ -22,7 +22,7 @@ describe('Automation rules (e2e)', () => {
   beforeAll(async () => ({ app, mail, prisma } = await createTestApp()));
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, viv, eve] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Viv'), await signUp(app, 'Eve')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER'], [viv, 'VIEWER']]);
     project = (await http().post(api('/projects')).set(alice.auth).send({ name: 'Synqonix', key: 'SYN', template: 'SCRUM' }).expect(201)).body;
@@ -177,7 +177,7 @@ describe('Retention (e2e)', () => {
   afterAll(() => app.close());
 
   it('removes old audit entries, read notifications and finished deliveries, but not what is still needed', async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace", "WebhookDelivery" CASCADE`;
+    await resetDatabase(prisma, ['WebhookDelivery']);
     const alice = await signUp(app, 'Alice');
     const ws = await createWorkspace(app, mail, alice);
     const now = new Date('2031-01-01T00:00:00Z');

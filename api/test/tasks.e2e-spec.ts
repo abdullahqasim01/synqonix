@@ -9,7 +9,7 @@ import request from 'supertest';
 import { downloadFile, uploadFile } from './files.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 describe('Tasks (e2e)', () => {
   let app: NestExpressApplication;
@@ -30,7 +30,7 @@ describe('Tasks (e2e)', () => {
 
   beforeEach(async () => {
     emitted = [];
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [alice, bob, vic, eve, admin] = [
       await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Vic'),
       await signUp(app, 'Eve'), await signUp(app, 'Adm'),

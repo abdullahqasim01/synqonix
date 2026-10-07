@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { verifySignature } from '../src/webhooks/crypto.js';
 import { MAX_ATTEMPTS, MAX_FAILURES, RETRY_DELAYS_MS, WebhooksService } from '../src/webhooks/webhooks.service.js';
-import { createTestApp, createWorkspace, signUp, type FakeMailService, type FakeWebhookSender, type TestUser } from './helpers.js';
+import { createTestApp, createWorkspace, signUp, type FakeMailService, type FakeWebhookSender, type TestUser, resetDatabase } from './helpers.js';
 
 describe('Outbound webhooks (e2e)', () => {
   let app: NestExpressApplication;
@@ -25,7 +25,7 @@ describe('Outbound webhooks (e2e)', () => {
   });
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     sender.requests = []; sender.status = 200; sender.fail = null;
     [alice, bob, eve] = [await signUp(app, 'Alice'), await signUp(app, 'Bob'), await signUp(app, 'Eve')];
     ws = await createWorkspace(app, mail, alice, [[bob, 'MEMBER']]);

@@ -2,7 +2,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
-import { createTestApp, signUp, type FakeMailService, type TestUser } from './helpers.js';
+import { createTestApp, signUp, type FakeMailService, type TestUser, resetDatabase } from './helpers.js';
 
 describe('Teams & projects (e2e)', () => {
   let app: NestExpressApplication;
@@ -17,7 +17,7 @@ describe('Teams & projects (e2e)', () => {
   beforeAll(async () => ({ app, mail, prisma } = await createTestApp()));
   afterAll(() => app.close());
   beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE "User", "Workspace" CASCADE`;
+    await resetDatabase(prisma);
     [owner, admin, member, viewer, outsider] = [
       await signUp(app, 'Owner'), await signUp(app, 'Admin'), await signUp(app, 'Member'),
       await signUp(app, 'Viewer'), await signUp(app, 'Outsider'),
