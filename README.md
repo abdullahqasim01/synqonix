@@ -15,7 +15,11 @@ Plan sprints, track tasks, chat with your team, and start work from your editor.
 </div>
 
 <p align="center">
-  <img alt="Synqonix project list view" src=".github/assets/screenshot-project.png" width="860">
+  <video src=".github/assets/synqonix-explainer.mp4" poster=".github/assets/synqonix-explainer-poster.jpg" width="860" controls muted>
+    <a href=".github/assets/synqonix-explainer.mp4">
+      <img alt="Watch the Synqonix explainer video" src=".github/assets/synqonix-explainer-poster.jpg" width="860">
+    </a>
+  </video>
 </p>
 
 ## Why Synqonix

@@ -2,3 +2,6 @@
 .env
 *.log
 .env.production
+
+# /brag video output
+brag-output*/
