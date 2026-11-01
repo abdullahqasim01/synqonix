@@ -1,0 +1,141 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: api } }
+    services:
+      postgres:
+        image: postgres:17.9
+        env: { POSTGRES_USER: synqonix, POSTGRES_PASSWORD: synqonix, POSTGRES_DB: synqonix }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U synqonix" --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://synqonix:synqonix@localhost:5432/synqonix
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: api/package-lock.json }
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx prisma migrate deploy # the e2e suites need the tables to exist
+      - run: npm run test:e2e
+      - run: npm run build
+
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: web/package-lock.json }
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  vscode-extension:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: vscode-extension } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: vscode-extension/package-lock.json }
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  web-e2e:
+    runs-on: ubuntu-latest
+    needs: [api, web]
+    services:
+      postgres:
+        image: postgres:17.9
+        env: { POSTGRES_USER: synqonix, POSTGRES_PASSWORD: synqonix, POSTGRES_DB: synqonix }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U synqonix" --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://synqonix:synqonix@localhost:5432/synqonix
+      THROTTLE_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Start the API
+        working-directory: api
+        run: |
+          npm ci
+          npm run build
+          npx prisma migrate deploy
+          nohup node dist/main > ../api.log 2>&1 &
+          npx --yes wait-on http://localhost:4000/api/v1/health/ready
+      - name: Build and start the web app
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+          nohup npm start > ../web.log 2>&1 &
+          npx --yes wait-on http://localhost:3000/login
+      - name: Browser tests (critical flows, CSP, accessibility)
+        working-directory: web
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with: { name: e2e-logs, path: "api.log\nweb.log\nweb/test-results" }
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t synqonix-api ./api
+      - run: cp web/.env.production.example web/.env.production
+      - run: docker build -t synqonix-web ./web
+
+  # The one-command setup from the README: build everything, start it, and use it.
+  compose-quickstart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the stack, then load the demo data
+        run: |
+          docker compose up -d --build --wait || { docker compose ps -a; docker compose logs --no-color api postgres; exit 1; }
+          docker compose --profile demo run --rm --build seed
+      - name: API and web answer
+        run: |
+          curl -fsS http://localhost:4000/api/v1/health/ready
+          curl -fsS -o /dev/null http://localhost:3000/login
+          curl -fsS -o /dev/null http://localhost:8025
+      - name: Sign in with the demo account and read data
+        run: |
+          token=$(curl -fsS -X POST http://localhost:4000/api/v1/auth/login -H 'content-type: application/json' \
+            -d '{"email":"demo@synqonix.local","password":"demo-password-123"}' | python3 -c 'import sys,json;print(json.load(sys.stdin)["accessToken"])')
+          curl -fsS http://localhost:4000/api/v1/workspaces -H "authorization: Bearer $token" | grep -q "Demo Workspace"
+      - if: failure()
+        run: docker compose --profile demo logs --no-color
+      - if: always()
+        run: docker compose --profile demo down -v
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }

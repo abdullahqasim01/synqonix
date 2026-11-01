@@ -1,0 +1,67 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { HttpThrottlerGuard } from './common/http-throttler.guard.js';
+import { validateEnv } from './config/env.js';
+import { GithubModule } from './github/github.module.js';
+import { HealthController } from './health/health.controller.js';
+import { AgileModule } from './agile/agile.module.js';
+import { DataIoModule } from './dataio/dataio.module.js';
+import { AuditModule } from './audit/audit.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { ChannelsModule } from './channels/channels.module.js';
+import { InsightsModule } from './insights/insights.module.js';
+import { MailModule } from './mail/mail.module.js';
+import { NotificationsModule } from './notifications/notifications.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { RealtimeModule } from './realtime/realtime.module.js';
+import { SearchModule } from './search/search.module.js';
+import { TasksModule } from './tasks/tasks.module.js';
+import { TemplatesModule } from './templates/templates.module.js';
+import { TimeModule } from './time/time.module.js';
+import { AutomationModule } from './automation/automation.module.js';
+import { StorageModule } from './storage/storage.module.js';
+import { RetentionModule } from './retention/retention.module.js';
+import { WebhooksModule } from './webhooks/webhooks.module.js';
+import { ViewsModule } from './views/views.module.js';
+import { WorkspacesModule } from './workspaces/workspaces.module.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
+    EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot({
+      throttlers: [{ ttl: 60_000, limit: 120 }],
+      // Lets e2e suites that create many accounts run without tripping limits.
+      skipIf: () => process.env.THROTTLE_DISABLED === '1',
+    }),
+    PrismaModule,
+    StorageModule,
+    MailModule,
+    AuditModule,
+    AuthModule,
+    WorkspacesModule,
+    ViewsModule,
+    TasksModule,
+    AgileModule,
+    ChannelsModule,
+    GithubModule,
+    NotificationsModule,
+    SearchModule,
+    TimeModule,
+    InsightsModule,
+    DataIoModule,
+    TemplatesModule,
+    WebhooksModule,
+    AutomationModule,
+    RetentionModule,
+    RealtimeModule,
+  ],
+  controllers: [HealthController],
+  providers: [{ provide: APP_GUARD, useClass: HttpThrottlerGuard }],
+})
+export class AppModule {}

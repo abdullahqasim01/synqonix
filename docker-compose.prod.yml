@@ -1,0 +1,38 @@
+# Production-style stack: Postgres + API + web. Each app has its own env file:
+#   cp api/.env.production.example api/.env.production   # and fill it in
+#   cp web/.env.production.example web/.env.production
+#   docker compose -f docker-compose.prod.yml up -d --build
+services:
+  postgres:
+    image: postgres:17.9
+    restart: unless-stopped
+    env_file: ./api/.env.production # uses POSTGRES_PASSWORD only; the other values are ignored by Postgres
+    environment:
+      POSTGRES_USER: synqonix
+      POSTGRES_DB: synqonix
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U synqonix"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+    env_file: ./api/.env.production
+    volumes: [uploads:/app/uploads]
+    ports: ["4000:4000"]
+
+  web:
+    # NEXT_PUBLIC_API_URL comes from web/.env.production, which Next.js reads while building.
+    build: ./web
+    restart: unless-stopped
+    depends_on: [api]
+    ports: ["3000:3000"]
+
+volumes:
+  pgdata:
+  uploads:

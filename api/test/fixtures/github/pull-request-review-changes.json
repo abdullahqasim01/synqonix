@@ -1,0 +1,6 @@
+{
+  "action": "submitted",
+  "review": { "id": 3001, "state": "changes_requested", "body": "LGTM", "user": { "login": "reviewer", "id": 78 }, "html_url": "https://github.com/acme/synqonix/pull/12#pullrequestreview-3001" },
+  "pull_request": { "number": 12, "state": "open", "title": "Add login form (SYN-1)", "html_url": "https://github.com/acme/synqonix/pull/12" },
+  "repository": { "id": 1001, "name": "synqonix", "full_name": "acme/synqonix", "private": true, "html_url": "https://github.com/acme/synqonix", "default_branch": "main", "owner": { "login": "acme", "type": "Organization" } }, "installation": { "id": 5001, "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNTAwMQ==" }, "sender": { "login": "reviewer", "id": 78, "type": "User" }
+}

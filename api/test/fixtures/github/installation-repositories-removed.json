@@ -1,0 +1,1 @@
+{ "action": "removed", "installation": { "id": 5001 }, "repository_selection": "selected", "repositories_added": [], "repositories_removed": [ { "id": 1001, "name": "synqonix", "full_name": "acme/synqonix" } ], "sender": { "login": "octo-dev", "id": 77, "type": "User" } }
